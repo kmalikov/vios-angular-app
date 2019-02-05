@@ -9,6 +9,2389 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="Flatlogic LLC">
   <link rel="icon" type="image/x-icon" href="./assets/icon/favicon-32x32.png">
+
+  <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    //var json = JSON.parse(fs.readFileSync('./content.json').toString());
+    /*
+    var fs = require('fs');
+    var json = JSON.parse(fs.readFileSync('./content.json').toString());
+    */
+    /*
+    var json = (function() {
+            var json = null;
+            $.ajax({
+                'async': false,
+                'global': false,
+                'url': "/DAV/home/sdmonroe/lod.json",
+                'dataType': "json",
+                'success': function (data) {
+                    json = data;
+                }
+            });
+            return json;
+        })();*/
+
+    //console.log(json);
+    //console.log(count());
+
+    /*
+    function count(){
+    var total = 0;
+    var triples = 0;
+    var rows = '';
+
+    jQuery.each(json, function(i, val) {
+      triples = parseInt(val.triples) ;
+      if(triples) total+=triples;
+      rows += ('<tr><td>'+val._id+'</td><td>'+triples+'</td></tr>');
+    });
+
+      $('table tbody').append(rows);
+      $('table tbody').append('<tr><td><b>Total</b></td><td>'+total+'</td></tr>');
+      return total;
+
+    }
+    */
+
+    //** FILE: fct.js **/
+
+
+    var VIEW_TYPE_LIST = "list";
+    var VIEW_TYPE_LIST_COUNT = "list-count";
+    var VIEW_TYPE_PROPVAL_LIST = "propval-list";
+    var VIEW_TYPE_PROPERTIES = "properties";
+    var VIEW_TYPE_PROPERTIES_IN = "properties-in";
+    var VIEW_TYPE_TEXT_PROPERTIES = "text-properties";
+    var VIEW_TYPE_CLASSES = "classes";
+    var VIEW_TYPE_TEXT = "text";
+    var VIEW_TYPE_TEXT_D = "text-d";
+    var VIEW_TYPE_ALPHABET = "alphabet";
+    var VIEW_TYPE_GEO = "geo";
+    var VIEW_TYPE_YEARS = "years";
+    var VIEW_TYPE_MONTHS = "months";
+    var VIEW_TYPE_WEEKS = "weeks";
+    var VIEW_TYPE_ENTITIES_LIST = "entities-list";
+    var VIEW_TYPE_GRAPHS = "graphs";
+    var VIEW_TYPE_DESCRIBE = "describe";
+
+    var NODE_TYPE_PROPERTY = "property";
+    var NODE_TYPE_PROPERTY_OF = "property-of";
+    var NODE_TYPE_CLASS = "class";
+    var NODE_TYPE_TEXT = "text";
+    var NODE_TYPE_VIEW = "view";
+    var NODE_TYPE_VALUE = "value";
+
+    var ATTR_GRAPH_LABEL = "graphLabel";
+
+    var LABEL_ROOT = "root";
+
+    var SIZE_LABEL = 40;
+    var SIZE_RESULT_SET = 30;
+
+    var ID_QUERY = "0";
+    var ID_TEXT = "1";
+    var ID_VIEW = "2";
+
+    // lifespan of query cache item, in hours
+    var POLICY_CACHE_REFRESH = 0; // TODO: not yet implemented
+
+
+    /* xml root element - because html() does not include the root element and we want to
+     * include <report /> in the output. There may be a better way to do this.
+     */
+    var _root = $('<XMLDocument />');
+
+    var query, text, view;
+
+    var fct_isDebug = true;
+
+    var fct_getUrlParameter = function getUrlParameter(sParam) {
+      var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+      for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+          return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+      }
+    }
+
+    var fct_isPermalink = false;
+    var fct_queryTimeout = '5000';
+
+    function fct_init(){
+
+      // Simple helper function creates a new element from a name, so you don't have to add the brackets etc.
+      $.createElement = function(name)
+      {
+        return $('<'+name+' />');
+      };
+
+      // JQ plugin appends a new element created from 'name' to each matched element.
+      $.fn.appendNewElement = function(name)
+      {
+        this.each(function(i)
+        {
+          $(this).append('<'+name+' />');
+        });
+        return this;
+      }
+
+      $.fn.appendNewAttribute = function(name, value)
+      {
+        this.each(function(i)
+        {
+          $(this).attr(name, value);
+        });
+        return this;
+      }
+
+
+      var qxml = fct_getUrlParameter('qxml');
+
+      if(qxml && qxml.length > 0){
+        idct = fct_getUrlParameter('idCt');
+        fct_isPermalink = true;
+        _root.append($.parseHTML(qxml));
+
+      }
+      else {
+        _root.append
+        (
+          // one method of adding a basic structure
+          $('<query/>').attr('class', ID_QUERY).append
+          // (
+          //     $('<text class="'+ID_TEXT+'"/>')
+          // ).append
+          (
+            $('<view class="'+ID_VIEW+'"/>')
+              .appendNewAttribute('limit', '')
+              .appendNewAttribute('type', '')
+              .appendNewAttribute('offset', '')
+          )
+          // example of our plugin
+          //.appendNewElement('property')
+          //.appendNewAttribute('', '')
+        );
+      }
+
+      // get a reference to query
+      query = _root.find('query');
+
+      text = query.find('text');
+      view = query.find('view');
+
+
+      //setQueryText('VIOS');
+      //test();
+      //setViewType(VIEW_TYPE_CLASSES);
+      setViewLimit(SIZE_RESULT_SET);
+      setViewOffset(0);
+    }
+
+    function getQuery(){
+      return _root.find('query'); //TODO: this code needs to be refactored to use getter/setters in place of the calls to _root, also, need to replace the string concats with more efficient routines
+    }
+
+    function setQueryText(str){
+      if(str == VALUE_KEYWORDS_TEXT) {
+        str = '';
+        $('#keywords').val('');
+      }
+      query = _root.find('query');
+      if( (!str || str.length <= 0) && $(_root.find('query > view')).attr('type') != 'list-count') return;
+      if(_root.find('text').length <= 0) {
+        query.append('<text class="'+ID_TEXT+'"/>');
+        //text = _root.find('text');
+      }
+      query.find('text').text(str);
+      query.find('text').attr('label', str.split('  ').join(' ').split(' ').join(' + '));
+    }
+
+    function getQueryGraph(){
+      var g = _root.find('query').attr('graph');
+      //if(!g || g.length <= 0) g = LABEL_ROOT;
+      return g;
+    }
+
+    function getQueryGraphLabel(){
+      var g = _root.find('query').attr(ATTR_GRAPH_LABEL);
+      //if(!g || g.length <= 0) g = LABEL_ROOT;
+      return g;
+    }
+
+    function setQueryGraph(g, label){
+      _root.find('query').attr('graph', g);
+      _root.find('query').attr(ATTR_GRAPH_LABEL, label);
+    }
+
+    function clearQueryGraph(){
+      _root.find('query').removeAttr('graph');
+      _root.find('query').removeAttr(ATTR_GRAPH_LABEL);
+    }
+
+    function getQueryText(){
+      return _root.find('query text').text();
+    }
+
+    function setViewType(type, q){
+      $(q).find('view').attr('type', type);
+    }
+
+    function setViewLimit(lim){
+      _root.find('view').attr('limit', lim);
+    }
+
+    function setViewOffset(offset){
+      _root.find('view').attr('offset', offset);
+    }
+
+    function getViewType(type){
+      return _root.find('view').attr('type');
+    }
+
+    function getViewLimit(lim){
+      return parseInt(_root.find('view').attr('limit'));
+    }
+
+    function getViewOffset(lim){
+      return parseInt(_root.find('view').attr('offset'));
+    }
+
+
+    function getSparql(xml){
+      return $($(xml).find("fct\\:sparql")[0]).text();
+    }
+
+    function getTime(xml){
+      return $($(xml).find("fct\\:time")[0]).text();
+    }
+
+    function getComplete(xml){
+      return $($(xml).find("fct\\:complete")[0]).text();
+    }
+
+    function getTimeout(xml){
+      return $($(xml).find("fct\\:timeout")[0]).text();
+    }
+
+    function getDbActivity(xml){
+      return $($(xml).find("fct\\:db-activity")[0]).text();
+    }
+
+    var fct_sparql, fct_time, fct_complete, fct_timeout, fct_dbActivity;
+
+    var fct_dataSpace = "http://lod.openlinksw.com/fct/service";
+    //var fct_dataSpace = "http://myopenlink.net/fct/service";
+
+    // returns a Java hashCode, see here: https://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+    String.prototype.hashCode = function(){
+      var hash = 0;
+      if (this.length == 0) return hash;
+      for (i = 0; i < this.length; i++) {
+        char = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return hash;
+    }
+    // TODO: need to implement a super-fast server-side cache as a fallback if the local cache does not contain the query
+    // the last resort is to execute the query against the cluster
+    // save the remote cached value locally
+    var fct_cache = {}; // results will be cached in this object
+    var fct_isCache = true;
+
+    function removeCacheItem(id){
+      try{
+        resp = localStorage.removeItem(id);
+      }
+      catch(err){ // TODO: what if localstorage is available, but something else went wrong on this try
+        delete cache.id;
+      }
+    }
+
+    function fct_removeVariableData(query){
+      query.find('*').removeAttr('class');
+      query.removeAttr('timeout');
+      return query;
+    }
+
+    function fct_query(q, viewType, opt){
+      fct_isCache = $('#isCache').is(':checked');
+      fct_isDebug = $('#isDebug').is(':checked');
+      fct_queryTimeout = $('#queryTimeout :selected').attr('value');
+      //console.clear();
+      setViewType(viewType, q);
+      //q = _root.find('query *').removeAttr('class'); // be sure semantically equivalent queries are non-unique
+      //console.log('query: ' + _root.find('query').prop('outerHTML'));
+      q = q.clone();
+      if(fct_isDebug) console.log("Query: " + $(q).prop('outerHTML') );
+      if(q.children.length == 2 && q.find('text').text() == '') q.find('text').remove(); // POI: root query should  have missing text element rather than blank text node, the /fct returns distinct results for each
+      q = fct_removeVariableData(q);
+      var qstr = q.prop('outerHTML');
+      var id = (qstr) ? (qstr).hashCode() : 0;
+      q.attr('timeout', fct_queryTimeout);
+      var resp;
+      if(fct_isCache){
+        try{
+          resp = localStorage.getItem(id);
+        }
+        catch(err){ // TODO: what if localstorage *is* available, but something else went wrong on this try
+          resp = fct_cache[id];
+        }
+      }
+
+      if (resp != null) { // if exist on cache
+        switch(viewType){
+          case VIEW_TYPE_LIST: {
+            fct_handleListResults(resp, opt);
+          } break;
+          case VIEW_TYPE_LIST_COUNT: {
+            fct_handleListCountResults(resp, opt);
+          } break;
+          case VIEW_TYPE_TEXT: {
+            fct_handleTextResults(resp, opt);
+          }; break;
+          case VIEW_TYPE_CLASSES: {
+            fct_handleClassesResults(resp, opt);
+          }; break;
+          case VIEW_TYPE_PROPERTIES: {
+            fct_handlePropertiesResults(resp, opt);
+          }; break;
+          case VIEW_TYPE_PROPERTIES_IN: {
+            fct_handlePropertiesInResults(resp, opt);
+          }; break;
+          case VIEW_TYPE_TEXT_PROPERTIES: {
+            fct_handleTextPropertiesResults(resp, opt);
+          }; break;
+          case VIEW_TYPE_GRAPHS: {
+            fct_handleGraphResults(resp, opt);
+          }; break;
+        }
+        fct_updatePermalink();
+        return;
+      }
+      var req = $.ajax({
+        url: fct_dataSpace,
+        data: $(q).prop('outerHTML'),
+        type: 'POST',
+        contentType: "text/xml",
+        dataType: "text", // POI: can't do dataType: xml, since the service sometimes returns malformed XML
+        cache: fct_isCache,
+        success : function(xml) {
+          //xml = xml.replace('fct:','');
+
+          /* there's a bug that causes "filter ..." to appear at the beginning of the response body, sometimes
+          for example, this query
+
+          <query class='0'><text class="1">Sherman</text><property iri="http://www.openlinksw.com/schema/attribution#providedBy"><value iri="http://www.linkedin.com#this" datatype="uri"></value></property><view class="2" limit="30" type="list-count" offset="0"></view></query>
+
+          */
+          if(!xml.startsWith('<')) xml = xml.substring(xml.indexOf('<'));
+          xml = xml.replace('fct:facets ', 'fct:facets fct:timestamp="' + new Date().getTime() + '" ')
+
+          //console.log("it works");
+
+          fct_sparql = getSparql(xml);
+          fct_time = getTime(xml);
+          fct_complete = getComplete(xml);
+          fct_timeout = getTimeout(xml);
+          fct_dbActivity = getDbActivity(xml);
+          /**/
+          if(fct_isDebug){
+            console.log("Sparql: " + fct_sparql );
+            console.log("Time: " + fct_time );
+            console.log("Complete: " + fct_complete );
+            console.log("Timeout: " + fct_timeout );
+            console.log("Db Activity: " + fct_dbActivity );
+            console.log("View Type: " + viewType);
+          }
+
+          if(fct_complete === 'no') {
+            fct_handleIncompleteResults($("fct\\:row", xml).length, opt, viewType, fct_sparql, fct_time, fct_complete, fct_timeout, fct_dbActivity);
+            if(fct_isDebug) console.log('Results incomplete! Cache id: ' + id); // TODO: need to handle this by asking the user to increase the timeout of this query
+          }
+          if(fct_complete === 'yes' || isAcceptableResults($("fct\\:row", xml).length)) { // POI: don't cache incomplete results, should this be the policy? I clicked phone on the below link, and got no results and incomplete error, but it cached the results
+            // so I had to turn cache off (or increase timeout) to get the actual list, but when I turn cache back on, I get the empty results that were cached on the timeout response
+            // http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html?groupBy=GROUPBY-NONE&showMe=properties&qxml=%3Cquery%20class%3D%220%22%20graph%3D%22%22%20graphlabel%3D%22%22%3E%3Cclass%20class%3D%22-589865979%22%20iri%3D%22http%3A%2F%2Flinkedgeodata.org%2Fontology%2FShop%22%20label%3D%22Shop%22%3E%3C%2Fclass%3E%3Ctext%20class%3D%221%22%20label%3D%22%22%3E%3C%2Ftext%3E%3Cview%20class%3D%222%22%20limit%3D%2230%22%20type%3D%22properties%22%20offset%3D%220%22%3E%3C%2Fview%3E%3C%2Fquery%3E
+
+            if(fct_isCache){
+              try{
+                localStorage.setItem(id, xml);
+              }
+              catch(err){
+                fct_cache[id] = xml;
+              }
+            }
+          }
+
+          switch(viewType){
+            case VIEW_TYPE_LIST: {
+              fct_handleListResults(xml, opt);
+            } break;
+            case VIEW_TYPE_LIST_COUNT: {
+              fct_handleListCountResults(xml, opt);
+            } break;
+            case VIEW_TYPE_TEXT: {
+              fct_handleTextResults(xml, opt);
+            }; break;
+            case VIEW_TYPE_CLASSES: {
+              fct_handleClassesResults(xml, opt);
+            }; break;
+            case VIEW_TYPE_PROPERTIES: {
+              fct_handlePropertiesResults(xml, opt);
+            }; break;
+            case VIEW_TYPE_PROPERTIES_IN: {
+              fct_handlePropertiesInResults(xml, opt);
+            }; break;
+            case VIEW_TYPE_TEXT_PROPERTIES: {
+              fct_handleTextPropertiesResults(xml, opt);
+            }; break;
+            case VIEW_TYPE_GRAPHS: {
+              fct_handleGraphResults(xml, opt);
+            }; break;
+          }
+          //$('#explore').removeClass('errorButton');
+          //$('#explore').attr('title', '');
+
+        },
+        error : function (xhr, ajaxOptions, thrownError){
+          if(fct_isDebug){
+            console.log(xhr.status);
+            console.log(thrownError);
+            if(xhr.status == 500) alert('Server error');
+          }
+          // tried this to help troubleshoot, but the next result comes in too quickly to make the red button noticable
+          //$('#explore').addClass('errorButton');
+          //$('#explore').attr('title', 'Toogle on debug to view error in console');
+          fct_handleError(xhr, ajaxOptions, thrownError);
+        }
+      });
+      fct_updatePermalink();
+      return req;
+    }
+
+    function isAcceptableResults(sz){
+      return sz >= 0.7 * SIZE_RESULT_SET;
+    }
+
+    function beep() {
+      var snd = new Audio("data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA//uQZAUAB1WI0PZugAAAAAoQwAAAEk3nRd2qAAAAACiDgAAAAAAABCqEEQRLCgwpBGMlJkIz8jKhGvj4k6jzRnqasNKIeoh5gI7BJaC1A1AoNBjJgbyApVS4IDlZgDU5WUAxEKDNmmALHzZp0Fkz1FMTmGFl1FMEyodIavcCAUHDWrKAIA4aa2oCgILEBupZgHvAhEBcZ6joQBxS76AgccrFlczBvKLC0QI2cBoCFvfTDAo7eoOQInqDPBtvrDEZBNYN5xwNwxQRfw8ZQ5wQVLvO8OYU+mHvFLlDh05Mdg7BT6YrRPpCBznMB2r//xKJjyyOh+cImr2/4doscwD6neZjuZR4AgAABYAAAABy1xcdQtxYBYYZdifkUDgzzXaXn98Z0oi9ILU5mBjFANmRwlVJ3/6jYDAmxaiDG3/6xjQQCCKkRb/6kg/wW+kSJ5//rLobkLSiKmqP/0ikJuDaSaSf/6JiLYLEYnW/+kXg1WRVJL/9EmQ1YZIsv/6Qzwy5qk7/+tEU0nkls3/zIUMPKNX/6yZLf+kFgAfgGyLFAUwY//uQZAUABcd5UiNPVXAAAApAAAAAE0VZQKw9ISAAACgAAAAAVQIygIElVrFkBS+Jhi+EAuu+lKAkYUEIsmEAEoMeDmCETMvfSHTGkF5RWH7kz/ESHWPAq/kcCRhqBtMdokPdM7vil7RG98A2sc7zO6ZvTdM7pmOUAZTnJW+NXxqmd41dqJ6mLTXxrPpnV8avaIf5SvL7pndPvPpndJR9Kuu8fePvuiuhorgWjp7Mf/PRjxcFCPDkW31srioCExivv9lcwKEaHsf/7ow2Fl1T/9RkXgEhYElAoCLFtMArxwivDJJ+bR1HTKJdlEoTELCIqgEwVGSQ+hIm0NbK8WXcTEI0UPoa2NbG4y2K00JEWbZavJXkYaqo9CRHS55FcZTjKEk3NKoCYUnSQ0rWxrZbFKbKIhOKPZe1cJKzZSaQrIyULHDZmV5K4xySsDRKWOruanGtjLJXFEmwaIbDLX0hIPBUQPVFVkQkDoUNfSoDgQGKPekoxeGzA4DUvnn4bxzcZrtJyipKfPNy5w+9lnXwgqsiyHNeSVpemw4bWb9psYeq//uQZBoABQt4yMVxYAIAAAkQoAAAHvYpL5m6AAgAACXDAAAAD59jblTirQe9upFsmZbpMudy7Lz1X1DYsxOOSWpfPqNX2WqktK0DMvuGwlbNj44TleLPQ+Gsfb+GOWOKJoIrWb3cIMeeON6lz2umTqMXV8Mj30yWPpjoSa9ujK8SyeJP5y5mOW1D6hvLepeveEAEDo0mgCRClOEgANv3B9a6fikgUSu/DmAMATrGx7nng5p5iimPNZsfQLYB2sDLIkzRKZOHGAaUyDcpFBSLG9MCQALgAIgQs2YunOszLSAyQYPVC2YdGGeHD2dTdJk1pAHGAWDjnkcLKFymS3RQZTInzySoBwMG0QueC3gMsCEYxUqlrcxK6k1LQQcsmyYeQPdC2YfuGPASCBkcVMQQqpVJshui1tkXQJQV0OXGAZMXSOEEBRirXbVRQW7ugq7IM7rPWSZyDlM3IuNEkxzCOJ0ny2ThNkyRai1b6ev//3dzNGzNb//4uAvHT5sURcZCFcuKLhOFs8mLAAEAt4UWAAIABAAAAAB4qbHo0tIjVkUU//uQZAwABfSFz3ZqQAAAAAngwAAAE1HjMp2qAAAAACZDgAAAD5UkTE1UgZEUExqYynN1qZvqIOREEFmBcJQkwdxiFtw0qEOkGYfRDifBui9MQg4QAHAqWtAWHoCxu1Yf4VfWLPIM2mHDFsbQEVGwyqQoQcwnfHeIkNt9YnkiaS1oizycqJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");
+      snd.play();
+    }
+
+    function fct_handleIncompleteResults(resultSize, opt, viewType, fct_sparql, fct_time, fct_complete, fct_timeout, fct_dbActivity){
+      if(resultSize > 0) return;
+      beep();
+      $('#timeoutLabel').addClass('incompleteAlert');
+
+      var componentId;
+      switch(viewType){
+        case VIEW_TYPE_LIST: {
+          componentId = 'groupByTable';
+        } break;
+        case VIEW_TYPE_LIST_COUNT: {
+          if(!opt) {
+            componentId = 'groupByMenu';
+          }
+          else {
+            if(opt.tag == TAG_PROPERTY){
+              componentId = 'showMeTable';
+            }
+            else if(opt.tag == TAG_PROPERTY_OF){
+              componentId = 'showMeTable';
+            }
+            else if(opt.tag == TAG_CLASS){
+              componentId = 'showMeTable';
+            }
+            else{
+              componentId = 'groupByTable';
+            }
+          }
+
+        } break;
+        case VIEW_TYPE_TEXT: {
+          componentId = 'groupByTable';
+        }; break;
+        case VIEW_TYPE_CLASSES: {
+          componentId = 'showMeTable';
+        }; break;
+        case VIEW_TYPE_PROPERTIES: {
+          if(opt == OPT_SEND_TO_GROUP_BY){
+            componentId = 'groupByTable';
+          }
+        }; break;
+        case VIEW_TYPE_PROPERTIES_IN: {
+          componentId = 'showMeTable';
+        }; break;
+        case VIEW_TYPE_TEXT_PROPERTIES: {
+          componentId = 'showMeTable';
+        }; break;
+        case VIEW_TYPE_GRAPHS: {
+          componentId = 'showMeTable';
+        }; break;
+      }
+
+      $('#'+componentId).addClass('incompleteComponentAlert');
+      setTimeout(function(){
+        $('#timeoutLabel').removeClass('incompleteAlert');
+        $('#'+componentId).removeClass('incompleteComponentAlert');
+      }, 2000);
+    }
+
+
+    function fct_handleError(xhr, ajaxOptions, thrownError){
+      $('*').removeClass('loading');
+    }
+
+    function fct_updatePermalink(){
+      $('#permalink').attr('href', this_endpoint + '?' +
+        '&dataSpace=' + encodeURIComponent( $('#dataSpaceMenu :selected').attr('value') ) +
+        '&groupBy=' + encodeURIComponent( $('#groupByMenu :selected').attr('value') ) +
+        '&showMe=' + $('#showMeMenu :selected').attr('value') +
+        '&qxml=' + encodeURIComponent(_root.find('query').prop('outerHTML'))
+      ); //+ '&idCt=' + idCt
+
+
+      // TODO: this only works in HTML5 compatible browsers, need to support older browsers also
+
+      if(!fct_isDebug){
+        history.pushState(
+          {},
+          'VIOS: ' + _root.find('query text').text(),
+          $('#permalink').attr('href')
+        );
+      }
+    }
+
+    function fct_handleListResults(xml, opt){
+      if(!opt) {
+      }
+      else {
+        loadInstances(xml, opt);
+        $('#' + opt.parentId).removeClass('loading');
+        $('#keywords').removeClass('loading');
+      }
+    }
+
+    function fct_handleListCountResults(xml, opt){
+      if(!opt) {
+        $('#describe').attr('src', '');
+        //  $('#'+viewType+'').empty();
+        loadGroupByResults(xml);
+        $('#groupByMenu').removeClass('loading');
+        $('#keywords').removeClass('loading');
+      }
+      else {
+        if(opt.tag == TAG_PROPERTY){
+          loadPropertyValues(xml, opt);
+          $('#' + opt.parentId).removeClass('loading');
+          $('#keywords').removeClass('loading');
+        }
+        else if(opt.tag == TAG_PROPERTY_OF){
+          loadPropertyOfValues(xml, opt);
+          $('#' + opt.parentId).removeClass('loading');
+          $('#keywords').removeClass('loading');
+        }
+        else if(opt.tag == TAG_CLASS){
+          loadClassInstances(xml, opt);
+          $('#' + opt.parentId).removeClass('loading');
+          $('#keywords').removeClass('loading');
+        }
+      }
+    }
+
+    function fct_handleTextResults(xml, opt){
+      loadTextResults(xml);
+      $('#groupByMenu').removeClass('loading');
+      $('#keywords').removeClass('loading');
+      //fct_updatePermalink();
+    }
+
+    function fct_handleClassesResults(xml, opt){
+      loadCategoriesResults(xml);
+      $('#showMeMenu').removeClass('loading');
+    }
+
+    function fct_handlePropertiesResults(xml, opt){
+      if(opt == OPT_SEND_TO_GROUP_BY){
+        // $('#'+viewType+'').empty();
+        loadGroupByMenu(xml);
+        $('#groupByMenu').removeClass('loading');
+
+        if(qGroupBy && qGroupBy.length > 0){
+          var qgb = decodeURIComponent(qGroupBy);
+          selectMenuItem('groupByMenu', qgb);
+          //selectGroupBy(true);
+          //if(isDebug) console.log('groupByLoaded: ' + qgb + ', old value:' + qGroupBy);
+          //doQuery(keywords);
+          //selectGroupBy();
+        }
+        else {
+          //if(isDebug) console.log('groupByNotLoaded: ' + qgb + ', old value:' + qGroupBy);
+        }
+
+      }
+      else {
+        loadPropertiesResults(xml);
+        $('#showMeMenu').removeClass('loading');
+      }
+    }
+
+    function fct_handlePropertiesInResults(xml, opt){
+      loadPropertiesInResults(xml);
+      $('#showMeMenu').removeClass('loading');
+    }
+
+    function fct_handleTextPropertiesResults(xml, opt){
+      loadPropertiesResults(xml);
+      $('#showMeMenu').removeClass('loading');
+    }
+
+    function fct_handleGraphResults(xml, opt){
+      loadGraphResults(xml);
+      $('#showMeMenu').removeClass('loading');
+    }
+
+    function hasMainFocus(id){
+      //if(id == ID_TEXT) id = ID_QUERY;
+      var test = $(_root.find('.'+ID_QUERY+ ' view')).parent();
+      var ret = test.attr('class');
+      /*if($(test).attr('class') == ID_TEXT){
+        ret = q.find('view');
+        //console.log('query ('+ret+'): ' + query.html());
+      }*/
+      return ret == id;
+    }
+
+    function getMainFocus(){
+      return $(_root.find('.'+ID_QUERY + ' view')).parent();
+    }
+
+    function getFocus(q){
+      return q.find('view').parent();
+    }
+
+    function takeFocus(tar, q){
+      //console.log('tarid: ' + $(tar).attr('class') + ' qId: ' + $(q).attr('class'));
+      $(q).find('view').appendTo(tar);
+    }
+
+    function takeMainFocus(id){
+
+      //if(id == ID_TEXT) id = ID_QUERY;
+      takeFocus( _root.find('.'+id), getFocus(query));
+      //console.log('query after take focus: ' + $('query').html());
+
+      getFocus(query).find('view').attr('offset', 0);
+      getMainFocus().find('view').attr('offset', 0);
+      page = 0;
+
+
+      doQuery(getQueryText());
+      //$('#breadcrumbs').find('td').removeClass('focus');
+      //$('#facetCollector').find('td').removeClass('focus');
+      //$('#nav'+((id == ID_QUERY) ? ID_TEXT : id) ).addClass('focus');
+
+    }
+
+    function remove(id){
+      // give focus to parent if hasFocus
+      // remove from the query
+      // remove from breadcrumbs and facetCollector
+      // re-run the query
+      //query = _root.find('query');
+
+      if(id == ID_QUERY) {
+        if(!_root.find('query').attr('graph') || _root.find('query').attr('graph').length <= 0){ // POI: in the directory structure, the graph is below the keywords, and repository is above the keywords, and root is root
+          $(_root.find('query text')).remove(); // POI: the /fct API returns different results depending on if <text> has empty string value, or if <text> is missing
+          clearKeywords();
+        }
+        else{
+          clearQueryGraph();
+        }
+      }
+      else {
+        takeMainFocus($(_root.find('.'+id )).parent().attr('class'));
+        $(_root.find('.'+id )).remove();
+      }
+
+      doQuery(getQueryText());
+
+    }
+
+    function removeValue(id){
+      var tar = _root.find('.'+id + ' > value')
+      if(tar.length > 0) tar.remove();
+      else{
+        tar = _root.find('.'+id + ' > class')
+        if(tar.length > 0) tar[0].remove();
+      }
+      //query = _root.find('query');
+      doQuery(getQueryText());
+    }
+
+    function setValue(id, val, valLabel, datatype){
+      val = deSanitizeLabel(val);
+      valLabel = deSanitizeLabel(valLabel);
+      var p = getMainFocus();
+
+      //if(p.attr('id') == ID_QUERY) clearKeywords();
+
+      var v_found = false;
+      var v = _root.find('.'+p.attr('class') + ' > value');
+      if(v.length <= 0) {
+        v = $.createElement('value');
+      }
+      else v_found = true;
+      v.attr('label', valLabel);
+      v.text(val);
+      if(datatype && datatype.length > 0) v.attr('datatype', datatype);
+      //v.attr('same_as', 'yes');
+      _root.find('.'+p.attr('class')).append(v);
+
+
+      getFocus(query).find('view').attr('offset', 0);
+      getMainFocus().find('view').attr('offset', 0);
+      page = 0;
+
+      //if(fct_isDebug) console.log('setView query: ' + query.html());
+      //query = _root.find('query');
+
+      doQuery(getQueryText());
+
+      //getFocus(query).append(p);
+    }
+
+    function setPropertyValue(id, nodeName, contextId, propIRI, propLabel, val, valLabel, datatype){
+      val = deSanitizeLabel(val);
+      valLabel = deSanitizeLabel(valLabel);
+      var p = $.createElement(nodeName); // nodeName is property or property-of
+      p.attr('class', contextId);
+      p.attr('iri', propIRI);
+      p.attr('label', propLabel);
+
+      if(contextId == ID_QUERY) clearKeywords();
+
+      var v = $.createElement('value');
+      v.attr('class', id);
+      v.attr('label', valLabel);
+      v.text(val);
+      if(datatype && datatype.length > 0) v.attr('datatype', datatype);
+      p.append(v);
+      getFocus(query).append(p);
+
+      getFocus(query).find('view').attr('offset', 0);
+      getMainFocus().find('view').attr('offset', 0);
+      page = 0;
+
+      //if(fct_isDebug) console.log('setView query: ' + query.html());
+      //query = _root.find('query');
+
+      doQuery(getQueryText());
+
+      //getFocus(query).append(p);
+    }
+
+    function addPropertyFacet(id, prop, propLabel, val, valLabel, datatype){
+      if(val) val = deSanitizeLabel(val);
+      var p = $.createElement('property');
+      p.attr('class', id);
+      p.attr('iri', prop);
+      p.attr('label', propLabel);
+      if(val){
+        var v = $.createElement('value');
+        v.attr('label', valLabel);
+        v.text(val);
+        if(datatype && datatype.length > 0) v.attr('datatype', datatype);
+        //v.attr('same_as', 'yes');
+        p.append(v);
+      }
+      //prop.attr('exclude', 'yes');
+      //console.log('focus: ' + getFocus().attr('label'));
+
+      getFocus(query).find('view').attr('offset', 0);
+      getMainFocus().find('view').attr('offset', 0);
+      page = 0;
+
+      getFocus(query).append(p);
+      //takeFocus(p, getFocus(query));
+      //takeFocus(query, getFocus(query));
+      doQuery(getQueryText());
+    }
+
+    function addPropertyOfFacet(id, prop, propLabel, val, valLabel, datatype){
+      if(val) val = deSanitizeLabel(val);
+      var p = $.createElement('property-of');
+      p.attr('class', id);
+      p.attr('iri', prop);
+      p.attr('label', propLabel);
+      if(val){
+        var v = $.createElement('value');
+        v.attr('label', valLabel);
+        v.text(val);
+        if(datatype && datatype.length > 0) v.attr('datatype', datatype);
+        //v.attr('same_as', 'yes');
+        p.append(v);
+      }
+      //prop.attr('exclude', 'yes');
+      //console.log('focus: ' + getFocus().attr('label'));
+
+      getFocus(query).find('view').attr('offset', 0);
+      getMainFocus().find('view').attr('offset', 0);
+      page = 0;
+
+      getFocus(query).append(p);
+      //takeFocus(p, getFocus(query));
+      //takeFocus(query, getFocus(query));
+      doQuery(getQueryText());
+    }
+
+    function addClassFacet(id, clazz, label){
+      //clazz = deSanitizeLabel(clazz);
+      var c = $.createElement('class');
+      c.attr('class', id);
+      c.attr('iri', clazz);
+      c.attr('label', label);
+      //prop.attr('exclude', 'yes');
+      //console.log('focus: ' + getFocus().attr('label'));
+
+      getFocus(query).find('view').attr('offset', 0);
+      getMainFocus().find('view').attr('offset', 0);
+      page = 0;
+
+      getFocus(query).prepend(c); // POI: 'prepend' to ensure the last one added is the first returned by $.find()
+      //takeFocus(p, getFocus(query));
+      //takeFocus(query, getFocus(query));
+      doQuery(getQueryText());
+    }
+
+    function setGraphFacet(graph, graphLabel){
+      setQueryGraph(graph, graphLabel);
+      doQuery(getQueryText());
+    }
+
+    function removeGraphFacet(graph){
+      clearQueryGraph();
+      doQuery(getQueryText());
+    }
+
+
+    //** FILE: main.js **/
+
+    var GROUP_BY_NONE_LABEL = "no particular field";
+    var GROUP_BY_NONE_VALUE = "GROUPBY-NONE";
+
+    var GROUP_BY_TEXT_LABEL = "text matches";
+    var GROUP_BY_TEXT_VALUE = "GROUPBY-TEXT";
+
+    var ID_SHOW_ME = "showMe";
+    var ID_GROUP_BY = "groupBy";
+    var ID_RECORD = "record";
+    var ID_MY_RECORDS = "myRecords";
+
+    var VALUE_MANAGED_RECORD = "Managed Record";
+    var VALUE_RECORD_MANAGER = "Record Manager";
+
+    var VALUE_ANON_NODE = "[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]";
+    var VALUE_KEYWORDS_TEXT = "Click 'Explore' to view root"
+    //var VALUE_ROOT = 'root';
+
+    var OPT_SEND_TO_GROUP_BY = 1;
+
+    var TAG_PROPERTY = 'p';
+    var TAG_PROPERTY_OF = 'q';
+    var TAG_CLASS = 'c';
+    var TAG_LIST = 'l';
+    var TAG_GRAPH = 'g';
+
+    var this_endpoint = "http://myopenlink.net/DAV/home/sdmonroe/poc.html";
+    var qGroupBy, qShowMe, qdataSpace;
+
+
+    function init(){
+
+      fct_init(); // this method must be the first method called by the implementation of the fct_ framework
+
+      $('#keywords').val(VALUE_KEYWORDS_TEXT);
+      $('#dsroot').attr('title', fct_dataSpace);
+
+      qGroupBy = fct_getUrlParameter('groupBy'); // the loading of gGroupBy is done in doQuery
+      qShowMe = fct_getUrlParameter('showMe');
+      qdataSpace = fct_getUrlParameter('dataSpace');
+
+      if(qdataSpace && qdataSpace.length > 0){
+        selectMenuItem('dataSpaceMenu', qdataSpace);
+      }
+      if(qShowMe && qShowMe.length > 0) {
+        selectMenuItem('showMeMenu', qShowMe);
+        qShowMe = null;
+      }
+      if(fct_isPermalink) doQuery(getQueryText());
+
+      var demoUrl = window.location.href;
+
+      $('#devDemo').attr('href', demoUrl.replace('poc.html', 'poc_draft.html'));
+      $('#previewsDemo').attr('href', demoUrl.replace('poc.html', 'poc_previews.html'));
+      $('#tableViewDemo').attr('href', demoUrl.replace('poc.html', 'poc_table_view.html'));
+      $('#formViewDemo').attr('href', demoUrl.replace('poc.html', 'poc_form_view.html'));
+      $('#smartViewDemo').attr('href', demoUrl.replace('poc.html', 'poc_smart_view.html'));
+    }
+
+    function clearKeywords(){
+      $("#keywords").val('');
+      _root.find('text').remove();
+      //text=undefined;
+    }
+
+    function sanitizeLabel(label){
+      label = label.split('\'').join("&amp;apos;");
+      label = label.split('&#39;').join("&amp;apos;");
+      label = label.replaceAll('"', '\"');
+      label = label.replaceAll('\\', '\\\\');
+      //label = label.split('_').join(" ");
+      return label;
+    }
+
+    function deSanitizeLabel(label){
+      label = label.split('&amp;apos;').join("\'");
+      label = label.split('&amp;apos;').join("&#39;");
+      return label;
+    }
+
+    function processLabel(label, value, datatype, labelSize){
+      if(!labelSize) labelSize = SIZE_LABEL;
+      label = label.trim();
+      if(label.length <= 0){
+        label = value;
+      }
+      if(label.lastIndexOf("/") == label.length - 1){
+        label = label.substring(0, label.length-1);
+      }
+      else{
+        label = label.substring(label.lastIndexOf("/")+1);
+      }
+      if(label.lastIndexOf("#") == label.length - 1){
+        label = label.substring(0, label.length-1);
+      }
+      else{
+        label = label.substring(label.lastIndexOf("#")+1);
+      }
+
+      if(label.length > 1) {
+        if(label.length > labelSize){
+          label = label.substring(0, labelSize) + " ...";
+        }
+        label = label.split('_').join(" ");
+        // POI: remove reserved chars, these will change in PoC
+        //label = label.replaceAll('/', ' - ');
+        label = label.replaceAll('[', ' - ');
+        label = label.replaceAll(']', ' - ');
+        try{
+          label = decodeURIComponent((label + '').replace(/\+/g, '%20'));
+        }
+        catch(err){
+
+        }
+      }
+      return label;
+    }
+
+    function getHostName(url) {
+      var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+      if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {
+        return match[2];
+      }
+      else {
+        return null;
+      }
+    }
+
+    function test(){
+      // create 'Alice'
+      var newProperty = $.createElement('property');
+      // add 'name' element using standard jQuery
+      newProperty.append($('<property />').text('Alice'));
+      // add 'grade' element using our helper
+      newProperty.append($.createElement('view').text(''));
+
+      // add 'Alice' to <text />
+      query.append(newProperty);
+
+      // create 'Bob'
+      newProperty = $.createElement('property-of');
+      newProperty.append($('<value />').text('Bob'));
+      newProperty.append($.createElement('value').text('Bob'));
+
+      // add 'Bob' to <students />
+      query.append(newProperty);
+
+      // display the markup as text
+      if(fct_isDebug) console.log(_root.html());
+    }
+
+
+    var idCt = 11; // numbers 1 - 10 are reserved
+    function createId(){
+      //return idCt++;
+      return uuid().hashCode(); // TODO: is there a less expensive way?
+    }
+
+    function uuid() {
+      return crypto.getRandomValues(new Uint32Array(4)).join('-');
+    }
+
+    function doFirstKeywords(){
+      if($('#keywords').val() == VALUE_KEYWORDS_TEXT) {
+        $('#keywords').val('');
+      }
+      $('#keywords').removeClass('keywordsDefault');
+    }
+
+    function doExplore(keywords){
+      if(keywords.startsWith('http://') || keywords.startsWith('https://')){
+        //addPropertyFacet(createId(), '[rdf:type]', 'type');
+        var p = $.createElement('property');
+        p.attr('class', createId());
+        p.attr('iri', '[rdf:type]');
+        p.attr('label', 'type');
+        //getQuery().append(p);
+        setValue(0, keywords, processLabel(keywords), 'uri');
+      }
+      else {
+        doQuery(keywords);
+      }
+
+    }
+    var dqct = 0;
+    function doQuery(keywords){
+      //console.log("keywords:" + keywords);
+      setQueryText(keywords);
+
+      //var q = query.clone();
+      //selectMenuItem('groupByMenu', GROUP_BY_NONE_VALUE);
+
+      $('#groupByMenu').addClass('loading');
+      fct_query(query, VIEW_TYPE_PROPERTIES, OPT_SEND_TO_GROUP_BY);
+
+      selectShowMe(false);
+
+
+      // POI: load the groupby list concurrently except if this is the first
+      // load of the page, and the 'groupBy' parameter is present, in this case
+      // load the groupby list after the groupByMenu has finished loading, to
+      // ensure the value of the 'groupBy' parameter is availiable in the drop-down
+      //console.log('ct doQuery: ' + dqct);
+
+      if(dqct == 2){ // POI: the initial load sequence is over after two calls to doQuery, if this fact ever changes, the groupby load from the permalink will break
+        qGroupBy = undefined;
+        $('#keywords').addClass('loading');
+        fct_query(query, VIEW_TYPE_LIST_COUNT);
+      }
+      else {
+        dqct++;
+      }
+
+      //clearKeywords();
+
+      buildNavPath();
+    }
+
+    function selectMenuItem(id, value){
+//  $('#'+id+' option[value=\''+ value +'\']').prop('selected', true); // POI: use escapeSelector if id=groupByMenu, since the values are URIs, which contain special chars
+      $('#'+id).val(value).change(); // POI: use escapeSelector if id=groupByMenu, since the values are URIs, which contain special chars
+    }
+
+    function selectdataSpace(){
+      fct_dataSpace = $('#dataSpaceMenu :selected').attr('value') + '/fct/service';
+      doQuery(getQueryText());
+    }
+
+
+    //** FILE: groupby.js *****************************************************************************************************************************************************************************************/
+
+
+    var page = 0;
+
+    var groupByResultsCt = 0;
+
+    //query.append(view);
+    //doQuery();
+
+    function resetPaging(){
+      page = 0;
+      groupByResultsCt = 0;
+    }
+
+    function pageRight(){
+      setViewOffset(getViewOffset() + SIZE_RESULT_SET);
+      page++;
+      //fct_query(query, VIEW_TYPE_LIST_COUNT);
+      selectGroupBy(true);
+    }
+
+    function pageLeft(){
+      setViewOffset(getViewOffset() - SIZE_RESULT_SET);
+      page--;
+      //fct_query(query, VIEW_TYPE_LIST_COUNT);
+      selectGroupBy(true);
+    }
+
+    function loadTextResults(xml){
+      $('#'+ID_GROUP_BY+'').empty();
+
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      groupByResultsCt = $("fct\\:row", result).length;
+      if(page == 0){
+        $("#leftButton").attr('disabled', 'true');
+        $("#leftButton").addClass('disabled');
+        $('#leftButton').removeAttr('title');
+      }
+      else{
+
+        $("#leftButton").removeAttr('disabled');
+        $("#leftButton").removeClass('disabled');
+        $('#leftButton').attr('title', 'page ' + (page));
+
+      }
+      if(groupByResultsCt < SIZE_RESULT_SET) {
+        $("#rightButton").attr('disabled', 'true');
+        $("#rightButton").addClass('disabled');
+        $('#rightButton').removeAttr('title');
+      }
+      else {
+        $("#rightButton").removeAttr('disabled');
+        $("#rightButton").removeClass('disabled');
+        $('#rightButton').attr('title', 'page ' + (page+2));
+
+      }
+
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+
+        // shortform can be used in lieu of the label for URI values
+        var value, datatype, shortform, label, lang, ct, trank, erank, g, text; // TODO: need to utilize the lang property for filtering results for the user
+
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            //case 0: value = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); lang = $(this).attr('xml\\:lang'); break;
+            case 0: trank = val; break;
+            case 1: erank = val; break;
+            case 2: g = val; break;
+            case 3: value = val; datatype = $(this).attr('datatype'); break;
+            case 4: label = val; break;
+            case 5: text = htmlDecode(val); break;
+          }
+        });
+
+
+        if(value.length <= 0 && label.length <= 0 && ct<= 1){
+          //rows += '<tr><td class="up" id="gbr_'+id+'"><span style="font-size:smaller;font-family:Consolas,Courier New; color: #000" id="'+id+'">';
+          //rows += 'Too many results. Please filter them.';
+          //rows += '</span></td></tr>';
+        }
+        else {
+          label = processLabel(label, value, datatype);
+
+          // POI: the label and values need to have the apostrophe (') char removed before insertion into the javascript functions below
+          // but they need to be desanitized by the respective javascript methods before being used in a query (or else the query will fail due to value mismatch)
+          // also, a double encoding is used by the sanitize function, so we have to desanitize the label before displaying it in the data canvas
+          label = sanitizeLabel(label);
+          value = sanitizeLabel(value);
+          //console.log($(col[0]));
+          var id = createId();
+          rows += '<tr><td class="up" id="txt1_'+id+'"><span id="'+id+'">';
+          rows += '<a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')" onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://www.iconsdb.com/icons/preview/black/blank-file-xxl.png" width="16" height="16" /></a>&nbsp;'+getFavicon(value)+'&nbsp;';
+          label = deSanitizeLabel(label);
+          rows += '<a title="'+value+'" href="#'+id+'" onclick="javascript:describe(\''+value+'\');">'+label+'</a>';
+          rows += '</span></td></tr>';
+          rows += '<tr><td class="txt" id="txt2_'+id+'"><span id="'+id+'">';
+          rows += text;
+          rows += '</span></td></tr>';
+        }
+      });
+      //console.log(rows);
+      $('#'+ID_GROUP_BY+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+
+
+
+
+    } // loadTextResults
+
+    function getFavicon(value){
+      return '<img height="16" width="16" src="http://www.google.com/s2/favicons?domain='+getHostName(value)+'" />';
+    }
+
+    function toJSONString(json){
+      return htmlEncode(JSON.stringify(json).replaceAll('\"','&quot;'));
+    }
+
+    function toJSONObject(str){
+      try{
+        return JSON.parse(htmlDecode(str));
+      }
+      catch(e){
+        console.log('error with json: ' + str + ', err: ' + e);
+      }
+    }
+
+    function htmlDecode(input){
+      var e = document.createElement('div');
+      e.innerHTML = input;
+      return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+
+    function htmlEncode(value){
+      // Create a in-memory div, set its inner text (which jQuery automatically encodes)
+      // Then grab the encoded contents back out. The div never exists on the page.
+      return $('<div/>').text(value).html();
+    }
+
+    function htmlDecode(value){
+      return $('<div/>').html(value).text();
+    }
+
+    // TODO: regex approach might be faster, see here https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
+    String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.split(search).join(replacement);
+    };
+    /*
+    function htmlEncode(input){
+      var e = document.createElement('div');
+      e.innerHTML = input;
+      return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+    */
+
+    function loadGroupByResults(xml){
+      $('#'+ID_GROUP_BY+'').empty();
+
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      groupByResultsCt = $("fct\\:row", result).length;
+      if(page == 0){
+        $("#leftButton").attr('disabled', 'true');
+        $("#leftButton").addClass('disabled');
+        $('#leftButton').removeAttr('title');
+      }
+      else{
+
+        $("#leftButton").removeAttr('disabled');
+        $("#leftButton").removeClass('disabled');
+        $('#leftButton').attr('title', 'page ' + (page));
+
+      }
+      if(groupByResultsCt < SIZE_RESULT_SET) {
+        $("#rightButton").attr('disabled', 'true');
+        $("#rightButton").addClass('disabled');
+        $('#rightButton').removeAttr('title');
+      }
+      else {
+        $("#rightButton").removeAttr('disabled');
+        $("#rightButton").removeClass('disabled');
+        $('#rightButton').attr('title', 'page ' + (page+2));
+
+      }
+
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+
+        // shortform can be used in lieu of the label for URI values
+        var value, datatype, shortform, label, lang, ct; // TODO: need to utilize the lang property for filtering results for the user
+
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: value = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); lang = $(this).attr('xml\\:lang'); break;
+            case 1: label = val; break;
+            case 2: ct = val; break;
+          }
+        });
+
+        if(!datatype) datatype = '';
+
+        if(value.length <= 0 && label.length <= 0 && ct<= 1){
+          //rows += '<tr><td class="up" id="gbr_'+id+'"><span style="font-size:smaller;font-family:Consolas,Courier New; color: #000" id="'+id+'">';
+          //rows += 'Too many results. Please filter them.';
+          //rows += '</span></td></tr>';
+        }
+        else {
+          label = processLabel(label, value, datatype);
+
+          // POI: the label and values need to have the apostrophe (') char removed before insertion into the javascript functions below
+          // but they need to be desanitized by the respective javascript methods before being used in a query (or else the query will fail due to value mismatch)
+          // also, a double encoding is used by the sanitize function, so we have to desanitize the label before displaying it in the data canvas
+          label = sanitizeLabel(label);
+          value = sanitizeLabel(value);
+          //console.log($(col[0]));
+          var id = createId();
+
+          var opts = new Object();
+          opts.tag = TAG_LIST;
+          opts.parentId = 'gbr_'+id;
+          opts.childrenId = opts.tag + opts.parentId;
+
+          rows += '<tr><td class="up" id="'+opts.parentId+'"><span id="'+id+'">';
+          var propIRI = $('#groupByMenu :selected').attr('value');
+          var propLabel = $('#groupByMenu :selected').text();
+          if(propIRI != GROUP_BY_NONE_VALUE && propIRI != GROUP_BY_TEXT_VALUE){
+            rows += '&nbsp;<a  onclick="javascript: remove(\''+_root.find('.' + getMainFocus().attr('class') + ' > [iri=\''+propIRI+'\']').attr('class')+'\'); addPropertyFacet(\''+id+'\', \''+propIRI+'\', \''+propLabel+'\', \''+sanitizeLabel(value)+'\', \''+sanitizeLabel(label)+'\', \''+datatype+'\')"><img src="http://icon-park.com/imagefiles/folder_icon_black.png" width="16" height="16"/></a>&nbsp;';
+          }
+          else {
+            if(datatype=='uri') rows += '<a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')" onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://www.iconsdb.com/icons/preview/black/blank-file-xxl.png" width="16" height="16" /></a>&nbsp;'+getFavicon(value)+'&nbsp;';
+            else rows += '<a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')" onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/tag-512.png" width="16" height="16" /></a>&nbsp;';
+          }
+          label = deSanitizeLabel(label);
+          if(datatype=='uri') rows += '<a title="'+value+'" href="#'+id+'" onclick="javascript:describe(\''+value+'\');">'+label+'</a>';
+          else rows += label;
+          if($('#groupByMenu :selected').attr('value') != GROUP_BY_NONE_VALUE) rows += '&nbsp;&nbsp;<a title="click to drop-down" class="count" href="#'+id+'" onclick="javascript:expand(\''+value+'\', \''+datatype+'\', \''+toJSONString(opts)+'\')">'+ct+'</a>';
+          rows += '</span></td></tr>';
+        }
+      });
+      //console.log(rows);
+      $('#'+ID_GROUP_BY+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+
+
+
+    } // loadGroupByResults
+
+
+    function expand(v, datatype, optsStr){
+      var opts = toJSONObject(optsStr);
+      var childrenId = opts.childrenId;
+      var parentId = opts.parentId;
+      v = deSanitizeLabel(v);
+      if($('#'+parentId+'').attr('class') == 'up'){
+        $('#'+parentId+'').removeClass('up');
+        $('#'+parentId+'').addClass('down');
+      }
+      else{
+        collapse(opts);
+        return;
+      }
+      //console.log('user expanded: ' + childrenId);
+      var children = $.createElement('table').attr('id', childrenId);
+      children.attr('width', '100%');
+      $('#'+parentId+'').append(children);
+
+      var q = query.clone();
+      setViewType(VIEW_TYPE_LIST, q);
+      getFocus(q).find('view').attr('offset', 0);
+
+      var groupByIRI = $('#groupByMenu :selected').attr('value');
+      var prop = $.createElement('property');
+      prop.attr('iri', groupByIRI);
+
+      var val = $.createElement('value');
+      val.text(v);
+      val.attr('datatype', datatype);
+      //val.attr('op', '=');
+      //val.attr('same_as', 'yes');
+      prop.append(val);
+      getFocus(q).append(prop);
+
+      $('#'+parentId+'').addClass('loading');
+      //takeFocus(q, q);
+      fct_query(q, VIEW_TYPE_LIST,opts);
+
+    }
+
+    function collapse(opts){
+      $('#'+opts.childrenId).remove();
+      $('#'+opts.parentId).removeClass('down');
+      $('#'+opts.parentId).addClass('up');
+    }
+
+
+
+    function loadGroupByMenu(xml){
+
+      var opts = "";
+      var result = $(xml).find("fct\\:result")[0];
+      var value, datatype, shortform, label, ct;
+      var defaultVal;
+      $("fct\\:row", result).each(function(i) {
+        val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+        if(i == 0) defaultVal = val;
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          // seems like jquery is commenting out the CDATA
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: value = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); break;
+            case 1: label = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        label = processLabel(label, value, datatype, 14);
+        //console.log($(col[0]));
+        opts += '<option value="'+value+'" id="'+createId()+'">'+label+'</option>';
+      });
+      //console.log(rows);
+
+
+      //var previousGroupBy = $('#groupByMenu :selected').attr('value');
+      $('#groupByMenu').empty();
+      $('#groupByMenu').append('<option value="'+GROUP_BY_NONE_VALUE+'" id="'+createId()+'">'+GROUP_BY_NONE_LABEL+'</option>');
+      $('#groupByMenu').append('<option value="'+GROUP_BY_TEXT_VALUE+'" id="'+createId()+'">'+GROUP_BY_TEXT_LABEL+'</option>');
+      $('#groupByMenu').append(opts);
+
+      /*
+                // allow user to remain in "text result mode"
+                if(previousGroupBy == GROUP_BY_TEXT_VALUE){
+                    $('#groupByMenu').val(previousGroupBy);
+                    selectGroupBy(true);
+                }
+      */
+      if(opts.length > 1) {
+        //$('#groupByMenu').val(defaultVal);
+        //selectGroupBy();
+      }
+
+
+      //$('#groupby').append(rows);
+      //return total;
+
+
+    } // loadCategoriesResults
+
+
+
+    function selectGroupBy(isPaging){
+      // update the Group By list
+      var q = query.clone();
+      var iri = $('#groupByMenu :selected').attr('value');
+      if(iri == GROUP_BY_NONE_VALUE || iri == GROUP_BY_TEXT_VALUE){
+        //takeFocus(q, q);
+      }
+      else{
+        var prop = $.createElement('property');
+        prop.attr('class', $('#groupByMenu :selected').attr('id'));
+        prop.attr('iri', iri);
+        //prop.attr('exclude', 'yes');
+        getFocus(q).append(prop);
+        takeFocus(prop, getFocus(q));
+      }
+
+      if(!isPaging){
+        getFocus(q).find('view').attr('offset', 0);
+        getMainFocus().find('view').attr('offset', 0);
+        page = 0;
+      }
+
+      $('#groupByMenu').addClass('loading');
+      if(getQueryText().length > 0 && iri == GROUP_BY_TEXT_VALUE){
+        fct_query(q, VIEW_TYPE_TEXT);
+      }
+      else fct_query(q, VIEW_TYPE_LIST_COUNT);
+
+      // update the Show Me list
+      // POI: no need to update the show me during paging
+      // need to check whether its ok not to update when a filter is
+      // selected from the groupByMenu, in theory, the groupByMenu
+      // should only list bound fields, but need to make sure
+      // for now, we skip the showMe update when an item is
+      // selected from the groupByMenu
+      //if(!isPaging) selectShowMe();
+    }
+
+
+    //** FILE: showme.js **/
+    var showMePage = 0;
+
+    var showMeResultsCt = 0;
+
+    //query.append(view);
+    //doQuery();
+
+    function showMeResetPaging(){
+      showMePage = 0;
+      showMeResultsCt = 0;
+    }
+
+    function showMePageRight(){
+      setViewOffset(getViewOffset() + SIZE_RESULT_SET);
+      showMePage++;
+      //fct_query(query, VIEW_TYPE_LIST_COUNT);
+      selectShowMe(true);
+    }
+
+    function showMePageLeft(){
+      setViewOffset(getViewOffset() - SIZE_RESULT_SET);
+      showMePage--;
+      //fct_query(query, VIEW_TYPE_LIST_COUNT);
+      selectShowMe(true);
+    }
+
+    function loadCategoriesResults(xml){
+      $('#'+ID_SHOW_ME+'').empty();
+
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      showMeResultsCt = $("fct\\:row", result).length;
+      if(showMePage == 0){
+        $("#showMeLeftButton").attr('disabled', 'true');
+        $("#showMeLeftButton").addClass('disabled');
+        $('#showMeLeftButton').removeAttr('title');
+      }
+      else{
+
+        $("#showMeLeftButton").removeAttr('disabled');
+        $("#showMeLeftButton").removeClass('disabled');
+        $('#showMeLeftButton').attr('title', 'page ' + (showMePage));
+
+      }
+      if(showMeResultsCt < SIZE_RESULT_SET) {
+        $("#showMeRightButton").attr('disabled', 'true');
+        $("#showMeRightButton").addClass('disabled');
+        $('#showMeRightButton').removeAttr('title');
+      }
+      else {
+        $("#showMeRightButton").removeAttr('disabled');
+        $("#showMeRightButton").removeClass('disabled');
+        $('#showMeRightButton').attr('title', 'page ' + (showMePage+2));
+
+      }
+      // POI: custom logic for demo of MyVios Record category
+      /*if(showMePage==0 && $('#nav0 > table > tbody > tr > td.via').text() == VALUE_ROOT) rows += '<tr><td><div class="up" id="'+ID_MY_RECORDS+'"><a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')"><img src="http://icon-park.com/imagefiles/folder_icon_purple.png" width="16" height="16"/></a>&nbsp;<a title="'+VALUE_MANAGED_RECORD+'" href="#'+id+'">'+VALUE_MANAGED_RECORD+'</a> <span class="disabled">'+(Math.floor(Math.random() * 10000) + 1)+'<span></div></td></tr>';*/
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+        var value, datatype, shortform, label, ct;
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          // seems like jquery is commenting out the CDATA
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: uri = val; break;
+            case 1: label = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        label = processLabel(label, uri, datatype);
+        var id = createId();
+        //console.log($(col[0]));
+        var opts = new Object();
+        opts.tag = TAG_CLASS;
+        opts.parentId = 'smr_'+id;
+        opts.childrenId = opts.tag + opts.parentId;
+        opts.contextId = id;
+        rows += '<tr><td><div class="up" id="'+opts.parentId+'"><a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')" onclick="javascript: addClassFacet(\''+id+'\', \''+uri+'\', \''+sanitizeLabel(label)+'\')"><img src="http://icon-park.com/imagefiles/folder_icon_navy_blue.png" width="16" height="16"/></a>&nbsp;<a title="'+uri+'" href="#'+id+'" onclick="javascript:describe(\''+uri+'\');">'+label+'</a>&nbsp;&nbsp;<a title="view instances" class="count" href="#'+id+'" onclick="javascript:expandShowMe(\''+uri+'\', \''+datatype+'\', \''+toJSONString(opts)+'\')">'+ct+'</a></div></td></tr>';
+      });
+      //console.log(rows);
+      $('#'+ID_SHOW_ME+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+    } // loadCategoriesResults
+
+
+    function loadPropertiesResults(xml){
+      $('#'+ID_SHOW_ME+'').empty();
+
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      showMeResultsCt = $("fct\\:row", result).length;
+      if(showMePage == 0){
+        $("#showMeLeftButton").attr('disabled', 'true');
+        $("#showMeLeftButton").addClass('disabled');
+        $('#showMeLeftButton').removeAttr('title');
+      }
+      else{
+
+        $("#showMeLeftButton").removeAttr('disabled');
+        $("#showMeLeftButton").removeClass('disabled');
+        $('#showMeLeftButton').attr('title', 'page ' + (showMePage));
+
+      }
+      if(showMeResultsCt < SIZE_RESULT_SET) {
+        $("#showMeRightButton").attr('disabled', 'true');
+        $("#showMeRightButton").addClass('disabled');
+        $('#showMeRightButton').removeAttr('title');
+      }
+      else {
+        $("#showMeRightButton").removeAttr('disabled');
+        $("#showMeRightButton").removeClass('disabled');
+        $('#showMeRightButton').attr('title', 'page ' + (showMePage+2));
+
+      }
+
+      // POI: demo code
+      /*if(showMePage==0 && $('#nav0 > table > tbody > tr > td.via').text() == VALUE_ROOT) rows += '<tr><td><div class="up" id="'+ID_MY_RECORDS+'"><a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')"><img src="http://icon-park.com/imagefiles/folder_icon_purple.png" width="16" height="16"/></a>&nbsp;<a title="'+VALUE_RECORD_MANAGER+'" href="#'+id+'">'+VALUE_RECORD_MANAGER+'</a> <span class="disabled">'+(Math.floor(Math.random() * 10000) + 1)+'<span></div></td></tr>';*/
+
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+
+        // shortform can be used in lieu of the label for URI values
+        var propIRI, datatype, shortform, propLabel, ct;
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: propIRI = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); break;
+            case 1: propLabel = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        //label = processLabel(label, uri, datatype);
+        //var id = createId();
+        //console.log($(col[0]));
+        propLabel = processLabel(propLabel, propIRI, datatype);
+        //console.log($(col[0]));
+        var id = createId();
+        var opts = new Object();
+        opts.tag = TAG_PROPERTY;
+        opts.parentId = 'smr_'+id;
+        opts.childrenId = opts.tag + opts.parentId;
+        opts.contextId = id;
+        opts.propIRI = propIRI;
+        opts.propLabel = propLabel;
+        rows += '<tr><td class="up" id="'+opts.parentId+'"><span id="'+id+'">';
+        //var propIRI = $('#groupByMenu :selected').attr('value');
+        //var propLabel = $('#groupByMenu :selected').text();
+        if(propIRI != GROUP_BY_NONE_VALUE){
+          rows += '&nbsp;<a  onclick="javascript: addPropertyFacet(\''+id+'\', \''+propIRI+'\', \''+propLabel+'\')"><img src="http://icon-park.com/imagefiles/folder_icon_black.png" width="16" height="16"/></a>&nbsp;';
+        }
+        /*else {
+          if(datatype=='uri') rows += '<a  onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://www.iconsdb.com/icons/preview/black/blank-file-xxl.png" width="16" height="16" /></a>&nbsp;';
+          else rows += '<a  onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/tag-512.png" width="16" height="16" /></a>&nbsp;';
+        }*/
+        // a property is always a uri datatype
+        if(datatype=='uri') rows += '<a title="'+propIRI+'" href="#'+id+'" onclick="javascript:describe(\''+propIRI+'\');">'+propLabel+'</a>';
+        //else
+        //rows += propLabel;
+
+        rows += '&nbsp;&nbsp;<a title="view values" class="count" href="#'+id+'" onclick="javascript:expandShowMe(\''+propIRI+'\', \''+datatype+'\', \''+toJSONString(opts)+'\')">'+ct+'</a>';
+        rows += '</span></td></tr>';
+      });
+      //console.log(rows);
+      $('#'+ID_SHOW_ME+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+    } // loadPropertiesResults
+
+    function loadPropertiesInResults(xml){
+      $('#'+ID_SHOW_ME+'').empty();
+
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      showMeResultsCt = $("fct\\:row", result).length;
+      if(showMePage == 0){
+        $("#showMeLeftButton").attr('disabled', 'true');
+        $("#showMeLeftButton").addClass('disabled');
+        $('#showMeLeftButton').removeAttr('title');
+      }
+      else{
+
+        $("#showMeLeftButton").removeAttr('disabled');
+        $("#showMeLeftButton").removeClass('disabled');
+        $('#showMeLeftButton').attr('title', 'page ' + (showMePage));
+
+      }
+      if(showMeResultsCt < SIZE_RESULT_SET) {
+        $("#showMeRightButton").attr('disabled', 'true');
+        $("#showMeRightButton").addClass('disabled');
+        $('#showMeRightButton').removeAttr('title');
+      }
+      else {
+        $("#showMeRightButton").removeAttr('disabled');
+        $("#showMeRightButton").removeClass('disabled');
+        $('#showMeRightButton').attr('title', 'page ' + (showMePage+2));
+
+      }
+
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+
+        // shortform can be used in lieu of the label for URI values
+        var propIRI, datatype, shortform, propLabel, ct;
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: propIRI = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); break;
+            case 1: propLabel = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        //label = processLabel(label, uri, datatype);
+        //var id = createId();
+        //console.log($(col[0]));
+        propLabel = processLabel(propLabel, propIRI, datatype);
+        //console.log($(col[0]));
+        var id = createId();
+        var opts = new Object();
+        opts.tag = TAG_PROPERTY_OF;
+        opts.parentId = 'smr_'+id;
+        opts.childrenId = opts.tag + opts.parentId;
+        //opts.propIRI = propIRI;
+        //opts.propLabel = propLabel;
+        opts.contextId = id;
+        opts.propIRI = propIRI;
+        opts.propLabel = propLabel;
+        rows += '<tr><td class="up" id="'+opts.parentId+'"><span id="'+id+'">';
+        //var propIRI = $('#groupByMenu :selected').attr('value');
+        //var propLabel = $('#groupByMenu :selected').text();
+        if(propIRI != GROUP_BY_NONE_VALUE){
+          rows += '&nbsp;<a  onclick="javascript: addPropertyOfFacet(\''+id+'\', \''+propIRI+'\', \''+propLabel+'\')"><img src="http://icon-park.com/imagefiles/folder_icon_black.png" width="16" height="16"/></a>&nbsp;';
+        }
+        /*else {
+          if(datatype=='uri') rows += '<a  onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://www.iconsdb.com/icons/preview/black/blank-file-xxl.png" width="16" height="16" /></a>&nbsp;';
+          else rows += '<a  onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/tag-512.png" width="16" height="16" /></a>&nbsp;';
+        }*/
+        // a property-of is always a uri datatype
+        if(datatype=='uri') rows += '<a title="'+propIRI+'" href="#'+id+'" onclick="javascript:describe(\''+propIRI+'\');">'+propLabel+'</a>';
+        //else
+        //rows += propLabel;
+        rows += '&nbsp;&nbsp;<a title="shows up in the \''+propLabel+'\' field of these records" class="count" href="#'+id+'" onclick="javascript:expandShowMe(\''+propIRI+'\', \''+datatype+'\', \''+toJSONString(opts)+'\')">'+ct+'</a>';
+        rows += '</span></td></tr>';
+      });
+      //console.log(rows);
+      $('#'+ID_SHOW_ME+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+    } // loadPropertiesResults
+
+
+    function loadGraphResults(xml){
+      $('#'+ID_SHOW_ME+'').empty();
+
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      showMeResultsCt = $("fct\\:row", result).length;
+      if(showMePage == 0){
+        $("#showMeLeftButton").attr('disabled', 'true');
+        $("#showMeLeftButton").addClass('disabled');
+        $('#showMeLeftButton').removeAttr('title');
+      }
+      else{
+
+        $("#showMeLeftButton").removeAttr('disabled');
+        $("#showMeLeftButton").removeClass('disabled');
+        $('#showMeLeftButton').attr('title', 'page ' + (showMePage));
+
+      }
+      if(showMeResultsCt < SIZE_RESULT_SET) {
+        $("#showMeRightButton").attr('disabled', 'true');
+        $("#showMeRightButton").addClass('disabled');
+        $('#showMeRightButton').removeAttr('title');
+      }
+      else {
+        $("#showMeRightButton").removeAttr('disabled');
+        $("#showMeRightButton").removeClass('disabled');
+        $('#showMeRightButton').attr('title', 'page ' + (showMePage+2));
+
+      }
+
+      // POI: demo code
+      /*if(showMePage==0 && $('#nav0 > table > tbody > tr > td.via').text() == VALUE_ROOT) rows += '<tr><td><div class="up" id="'+ID_MY_RECORDS+'"><a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')"><img src="http://icon-park.com/imagefiles/folder_icon_purple.png" width="16" height="16"/></a>&nbsp;<a title="'+VALUE_RECORD_MANAGER+'" href="#'+id+'">'+VALUE_RECORD_MANAGER+'</a> <span class="disabled">'+(Math.floor(Math.random() * 10000) + 1)+'<span></div></td></tr>';*/
+
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+
+        // shortform can be used in lieu of the label for URI values
+        var graphIRI, datatype, shortform, graphLabel, ct;
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: graphIRI = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); break;
+            case 1: graphLabel = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        //label = processLabel(label, uri, datatype);
+        //var id = createId();
+        //console.log($(col[0]));
+        graphLabel = processLabel(graphLabel, graphIRI, datatype);
+        //console.log($(col[0]));
+        var id = createId();
+        var opts = new Object();
+        opts.tag = TAG_GRAPH;
+        opts.parentId = 'smr_'+id;
+        opts.childrenId = opts.tag + opts.parentId;
+        opts.contextId = id;
+        opts.propIRI = graphIRI;
+        opts.propLabel = graphLabel;
+        rows += '<tr><td class="up" id="'+opts.parentId+'"><span id="'+id+'">';
+        //var propIRI = $('#groupByMenu :selected').attr('value');
+        //var propLabel = $('#groupByMenu :selected').text();
+        if(graphIRI != GROUP_BY_NONE_VALUE){
+          rows += '&nbsp;<a  onclick="javascript:setGraphFacet(\''+graphIRI+'\', \''+graphLabel+'\')"><img src="https://www.iconsdb.com/icons/preview/black/filing-cabinet-xxl.png" width="16" height="16"/></a>&nbsp;'+getFavicon(graphIRI)+'&nbsp;';
+        }
+        /*else {
+          if(datatype=='uri') rows += '<a  onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://www.iconsdb.com/icons/preview/black/blank-file-xxl.png" width="16" height="16" /></a>&nbsp;';
+          else rows += '<a  onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img src="https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/tag-512.png" width="16" height="16" /></a>&nbsp;';
+        }*/
+        // a property is always a uri datatype
+        if(datatype=='uri') rows += '<a title="'+graphIRI+'" href="#'+id+'" onclick="javascript:describe(\''+graphIRI+'\');">'+graphLabel+'</a>';
+        //else
+        //rows += propLabel;
+
+        //rows += '&nbsp;&nbsp;<a title="view values" class="count" href="#'+id+'" onclick="javascript:expandShowMe(\''+propIRI+'\', \''+datatype+'\', \''+toJSONString(opts)+'\')">'+ct+'</a>';
+        rows += '</span></td></tr>';
+      });
+      //console.log(rows);
+      $('#'+ID_SHOW_ME+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+    } // loadPropertiesResults
+
+
+    function selectShowMe(isPaging){
+      var showMeType = $('#showMeMenu :selected').attr('value');
+      if(showMeType == VIEW_TYPE_TEXT_PROPERTIES){
+        if(!_root.find('query text') || _root.find('query text').length <= 0){
+          //('Please enter keywords to view corresponding text fields');
+          $('#'+ID_SHOW_ME+'').empty();
+          return;
+        }
+      }
+      $('#showMeMenu').addClass('loading');
+      var q = query.clone();
+      setViewType(showMeType, q);
+      //q.find('view').attr('limit', SIZE_RESULT_SET);
+      //q.find('view').attr('offset', 0);
+
+      if(!isPaging){
+        getFocus(q).find('view').attr('offset', 0);
+        getMainFocus().find('view').attr('offset', 0);
+        showMePage = 0;
+      }
+
+      //takeFocus(q, q);
+      fct_query(q, showMeType);
+    }
+
+
+
+    function expandShowMe(v, datatype, optsStr){
+      var opts = toJSONObject(optsStr);
+      var childrenId = opts.childrenId;
+      var parentId = opts.parentId;
+      v = deSanitizeLabel(v);
+      if($('#'+parentId+'').attr('class') == 'up'){
+        $('#'+parentId+'').removeClass('up');
+        $('#'+parentId+'').addClass('down');
+      }
+      else{
+        collapse(opts);
+        return;
+      }
+      //console.log('user expanded: ' + id);
+      var children = $.createElement('table').attr('id', childrenId);
+      children.attr('width', '100%');
+      $('#'+parentId+'').append(children);
+
+      var q = query.clone();
+      setViewType(VIEW_TYPE_LIST_COUNT, q);
+      getFocus(q).find('view').attr('offset', 0);
+
+      //var groupByIRI = $('#groupByMenu :selected').attr('value');
+      var prop;
+      if(opts.tag == TAG_PROPERTY) {
+        prop = $.createElement('property');
+        prop.attr('iri', v);
+        getFocus(q).append(prop);
+        takeFocus(prop, q);
+      }
+      else if(opts.tag == TAG_PROPERTY_OF) {
+        prop = $.createElement('property-of');
+        prop.attr('iri', v);
+        getFocus(q).append(prop);
+        takeFocus(prop, q);
+      }
+      else if(opts.tag == TAG_CLASS) {
+        prop = $.createElement('class');
+        prop.attr('iri', v);
+        getFocus(q).append(prop);
+        // leave the focus where it is
+      }
+
+
+      //var val = $.createElement('value');
+      //val.text(v);
+      //val.attr('datatype', datatype);
+      //val.attr('op', '=');
+      //val.attr('same_as', 'yes');
+      //prop.append(val);
+
+      $('#'+parentId+'').addClass('loading');
+      fct_query(q, VIEW_TYPE_LIST_COUNT, opts);
+
+    }
+
+
+    function loadPropertyValues(xml, opts){
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      var value, datatype, shortform, label, ct;
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          // seems like jquery is commenting out the CDATA
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: value = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); break;
+            case 1: label = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        label = processLabel(label, value, datatype);
+        var id = createId();
+        //console.log($(col[0]));
+        rows += '<tr><td class="instance" id="'+id+'"><span id="'+id+'"><a  onclick="javascript: remove(\''+_root.find('.' + getMainFocus().attr('class') + ' > [iri=\''+opts.propIRI+'\']').attr('class')+'\'); setPropertyValue(\''+id+'\', \''+NODE_TYPE_PROPERTY+'\', \''+opts.contextId+'\', \''+opts.propIRI+'\', \''+opts.propLabel+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img style="margin-left:1em" src="http://icon-park.com/imagefiles/folder_icon_black.png" width="16" height="16" /></a>&nbsp;';
+        if(datatype=='uri') rows += '<a title="'+value+'" href="#'+id+'" onclick="javascript:describe(\''+value+'\');">'+label+'</a>';
+        else rows += label;
+        rows += '</span></td></tr>';
+
+
+        //rows += '&nbsp;<a  onclick="javascript: addPropertyFacet(\''+id+'\', \''+propIRI+'\', \''+propLabel+'\', \''+sanitizeLabel(value)+'\', \''+sanitizeLabel(label)+'\', \''+datatype+'\')"><img src="http://icon-park.com/imagefiles/folder_icon_black.png" width="16" height="16"/></a>&nbsp;';
+
+      });
+      // todo: load the first record
+
+
+      //console.log(rows);
+      $('#'+opts.childrenId+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+
+    }
+
+    function loadPropertyOfValues(xml, opts){
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      var value, datatype, shortform, label, ct;
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          // seems like jquery is commenting out the CDATA
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: value = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); break;
+            case 1: label = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        label = processLabel(label, value, datatype);
+        var id = createId();
+        //console.log($(col[0]));
+        rows += '<tr><td class="instance" id="'+id+'"><span id="'+id+'"><a  onclick="javascript:setPropertyValue(\''+id+'\', \''+NODE_TYPE_PROPERTY_OF+'\', \''+opts.contextId+'\', \''+opts.propIRI+'\', \''+opts.propLabel+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img style="margin-left:1em" src="http://icon-park.com/imagefiles/folder_icon_black.png" width="16" height="16" /></a>&nbsp;<a title="'+value+'" href="#'+id+'" onclick="javascript:describe(\''+value+'\');">'+label+'</a></span></td></tr>';
+      });
+      // todo: load the first record
+
+
+      //console.log(rows);
+      $('#'+opts.childrenId+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+
+    }
+
+    function loadClassInstances(xml, opts){
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      var value, datatype, shortform, label, ct;
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          // seems like jquery is commenting out the CDATA
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: value = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); break;
+            case 1: label = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        label = processLabel(label, value, datatype);
+        var id = createId();
+        //console.log($(col[0]));
+        rows += '<tr><td class="instance" id="'+id+'"><span id="'+id+'"><a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')" onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img style="margin-left:1em" src="https://www.iconsdb.com/icons/preview/black/blank-file-xxl.png" width="16" height="16" /></a>&nbsp;'+getFavicon(value)+'&nbsp;<a title="'+value+'" href="#'+id+'" onclick="javascript:describe(\''+value+'\');">'+label+'</a></span></td></tr>';
+      });
+      // todo: load the first record
+
+
+      //console.log(rows);
+      $('#'+opts.childrenId+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+
+    }
+
+
+    //** FILE: record.js **/
+
+
+    var twin = "vios.window.1";
+
+    $(document).ready(function () {
+      $('#describe').on('load', function () {
+        $('#describePanel').removeClass('loadingDescribe');
+      });
+    });
+
+    function describe(src){
+      src = deSanitizeLabel(src);
+      $('#describe').attr('src', src);
+      //$('#recordLabel').val(label);
+
+      $('#describePanel').addClass('loadingDescribe');
+      //window.open(src, twin, 'width="'+window.outerWidth+'" height="'+window.outerHeight+'"');
+    }
+
+    function loadInstances(xml, opts){
+      var rows = "";
+      var result = $(xml).find("fct\\:result")[0];
+      var value, datatype, shortform, label, ct;
+      $("fct\\:row", result).each(function(i) {
+        //console.log($(this).html());
+        var col = $(this).find("fct\\:column");
+        $("fct\\:column", this).each(function(j) {
+          // can't figure out how to access CDATA value of the element, tried many combinations of accessors, none worked
+          // seems like jquery is commenting out the CDATA
+          val = $(this).html().replace("<!--[CDATA[","").replace("]]-->","");
+          //console.log(val);
+          switch(j){
+            case 0: value = val; shortform = $(this).attr('datatype'); datatype = $(this).attr('datatype'); break;
+            case 1: label = val; break;
+            case 2: ct = val; break;
+          }
+        });
+        label = processLabel(label, value, datatype);
+        var id = createId();
+        //console.log($(col[0]));
+        rows += '<tr><td class="instance" id="'+id+'"><span id="'+id+'"><a  onmouseover="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').addClass(\'focus\')" onmouseout="javascript:$(\'#nav'+getMainFocus().attr('class')+'\').removeClass(\'focus\')" onclick="javascript:setValue(\''+id+'\', \''+value+'\', \''+label+'\', \''+datatype+'\')"><img style="margin-left:1em" src="https://www.iconsdb.com/icons/preview/black/blank-file-xxl.png" width="16" height="16" /></a>&nbsp;'+getFavicon(value)+'&nbsp;<a title="'+value+'" href="#'+id+'" onclick="javascript:describe(\''+value+'\');">'+label+'</a></span></td></tr>';
+      });
+
+
+
+      // todo: load the first record
+
+
+      //console.log(rows);
+      $('#'+opts.childrenId+'').append(rows);
+
+      //$('#groupby').append(rows);
+      //return total;
+
+
+    }
+
+
+    //** FILE: nav.js **/
+
+
+    // POI: this function is responsible for building the breadcrumbs and facetCollector
+    function buildNavPath(){
+      $('#breadcrumbPanel').removeClass('hide');
+
+      var breadcrumbs = $('#breadcrumbs');
+      var facetCollector = $('#facetCollector');
+      breadcrumbs.empty();
+      facetCollector.empty();
+
+
+
+      $(_root.find('.'+getMainFocus().attr('class') + ' > property')).each(function(i) {
+        /*var children = $(this).has('property');
+        var tar = (children) ? breadcrumbs : facetCollector ;*/
+        var label = $(this).attr('label');
+        var len = $(this).find('property').length;
+        len += $(this).find('property-of').length;
+        len += $(this).find('class').length;
+        if(len > 0) label += ' [' + len + ']';
+        //len += ', including';
+        facetCollector.append( buildNavigationNode(this,  label, true) );
+      });
+
+      $(_root.find('.'+getMainFocus().attr('class') + ' > property-of')).each(function(i) {
+        /*var children = $(this).has('property');
+        var tar = (children) ? breadcrumbs : facetCollector ;*/
+        var label = $(this).attr('label');
+        var len = $(this).find('property').length;
+        len += $(this).find('property-of').length;
+        len += $(this).find('class').length;
+        if(len > 0) label += ' [' + len + ']';
+        //len += ', including';
+        facetCollector.append( buildNavigationNode(this,  label, true) );
+      });
+
+      // when node.attr('class'), there are no more parents
+      for(node = $(getMainFocus()); $(node).attr('class') && node.attr('class') != ID_QUERY; node = $(node).parent()){
+        breadcrumbs.prepend( buildNavigationNode(node, $(node).attr('label') ) );
+      }
+
+      //if(getQueryText() || _root.find('class').length > 0 || _root.find('property').length > 0){
+
+      var label = "keywords";
+      // showing the count for the root is confusing, use can see the children of the root and their counts, that should suffice
+      //var len = _root.find('query property').length;
+      //if(len > 0) label += ' [' + len + ']';
+
+      breadcrumbs.prepend( buildNavigationNode(_root.find('query'), label));
+
+      //}
+
+    }
+
+    function buildNavigationNode(ele, desc, isFacet){
+
+      var id = $(ele).attr('class');
+      var label = (id == ID_QUERY) ? $(ele).find('text').text() : $(ele).text();
+      var v = _root.find('.'+id + ' > value'); // use only the <value> that is directly under this node, not other descendant <value>'s
+      var c = _root.find('.'+id + ' > class'); // use only the <value> that is directly under this node, not other descendant <value>'s
+      var val, cval;
+      if(v.length > 0) val = v.attr('label');
+      if(c.length > 0) cval = c.attr('label');
+      //val = val.trim();
+
+      var isPropOf = ($(ele).prop('nodeName')) ? $(ele).prop('nodeName').toLowerCase() === 'property-of' : false;
+      //console.log('nodeName: ' + $(ele).prop('nodeName'));
+      //if(isPropOf) console.log('is property-of: ' + label);
+
+      var action = "removeValue";
+      if(!val) {
+        if(!cval) action = "remove";
+        if(id == ID_QUERY) val = label;
+        else{
+          if(cval){
+            val = cval;
+          }
+          else {
+            val = VALUE_ANON_NODE;
+          }
+        }
+      }
+
+      // TODO: decided whether the focus var will ever be used, and if not, remove it; the logic changed so that this is now triggered on mouseover of records and categories
+      var focus = "";// hasMainFocus(id) ? 'class="focus"' : '';
+      //if(focus) console.log("focus set: " + focus);
+      var img = (isFacet) ? '<img src="http://icon-park.com/imagefiles/folder_icon_black.png" width="24" height="24"/>&nbsp;' : '/&nbsp;';
+      if(isFacet) $('#facetCollectorPanel').removeClass('hide');
+      // remove the bracket numbers for child count, this is unsafe, since a bracket may be a legitimate part of the label
+      // instead, need to pass the child count to this method
+
+
+      //if(!desc || desc.length == 0) desc = 'anything'; // POI: !desc if this is the <query> and there are no keywords, if no keywords, set keywords to 'anything'
+
+      if(isPropOf) {
+        var ttd = desc;
+        if(ttd) {
+          if(ttd.indexOf('[') > 0) ttd = ttd.substring(0, ttd.lastIndexOf('['));
+          ttd = ttd.trim();
+        }
+        var tooltip = 'and what uses it as a ' + ttd;
+        if(ttd.endsWith(' to') || ttd.endsWith('To')){
+          tooltip = 'and what ' + ttd + ' it';
+        }
+        else if(ttd.endsWith(' of') || ttd.endsWith('Of')){
+          var isa = 'is a ';
+          if( (ttd.startsWith('is') || ttd.startsWith('Is')) && ttd.length > 2 && (ttd.charAt(2).toUpperCase() == ttd.charAt(2) || ttd.charAt(2) == ' ') ) isa = '';
+          tooltip = 'and what ' + isa + ttd + ' it';
+        }
+        else if(ttd.startsWith('has')){
+          tooltip = 'and what ' + ttd + ' represented by it';
+        }
+        else if(ttd.endsWith('by') || ttd.endsWith('By')){
+          tooltip = 'and what is ' + ttd + ' it';
+        }
+        else if(ttd.endsWith('ing')){
+          tooltip = 'and what is ' + ttd + ' it';
+        }
+        desc += '*';
+      }
+      else {
+        var ttd = desc;
+        if(ttd) {
+          if(ttd.indexOf('[') > 0) ttd = ttd.substring(0, ttd.lastIndexOf('['));
+          ttd = ttd.trim();
+        }
+        var tooltip = 'and what is its ' + ttd;
+        if(ttd.endsWith(' to') || ttd.endsWith('To')){
+          tooltip = 'and what it ' + ttd;
+        }
+        else if(ttd.endsWith(' of') || ttd.endsWith('Of')){
+          var isa = 'is a ';
+          if( (ttd.startsWith('is') || ttd.startsWith('Is')) && ttd.length > 2 && (ttd.charAt(2).toUpperCase() == ttd.charAt(2) || ttd.charAt(2) == ' ') ) isa = '';
+          tooltip = 'and it ' + isa + ttd + ' what';
+        }
+        else if(ttd.startsWith('has') || ttd.startsWith('Has')){
+          tooltip = 'and it ' + ttd + ' among these';
+        }
+        else if(ttd.endsWith('by') || ttd.endsWith('By')){
+          tooltip = 'and what is it ' + ttd;
+        }
+        else if(ttd.endsWith('ing')){
+          tooltip = 'and what is it ' + ttd;
+        }
+      }
+      if(val != VALUE_ANON_NODE && cval != val) {
+        // TODO: this label is due to a bug in Virtuoso, the filters aren't being applied, causing the query to conform to what this label says
+        // bug submitted: https://github.com/openlink/virtuoso-opensource/issues/823
+        //tooltip += ', where one of them is ' + val;
+        tooltip += ' where the answer is ' + val; // the correct tooltip
+      }
+      if(cval){
+        var whichOrAnd = ', where';
+        if(val != VALUE_ANON_NODE && cval != val) whichOrAnd = ', and';
+        tooltip += whichOrAnd + ' each of them is';
+
+        var cvals = _root.find('.'+id + ' > class');
+        for(i = 0; i < cvals.length; i++){
+          if(i > 0 && cvals.length == 1) break;
+          var aoran = aOrAn($( cvals[i] ).attr('label').substring(0, 1));
+          tooltip += ' ' + aoran + ' ' + $( cvals[i] ).attr('label');
+          if(i+1 < cvals.length) {
+            tooltip += ',';
+          }
+          if(i+2 == cvals.length) {
+            tooltip += ' and';
+          }
+        }
+
+      }
+      if(id == ID_QUERY) {
+        if(cval){
+//            desc += '<br/>+ ' + cval;
+          desc = cval;
+//            tooltip += ' a '; // add article for the ensuing category
+        }
+
+        // TODO: need to remove the redundancy here
+        if(v.attr('datatype') == 'uri'){
+          tooltip = 'the record for ' + val;
+          desc = 'record';
+          if(getQueryGraphLabel() && getQueryGraphLabel().length > 0) {
+            desc += '@'+ getQueryGraphLabel();
+          }
+          else if(getQueryGraph() && getQueryGraph().length > 0) {
+            desc += '@'+getQueryGraph();
+          }
+          if(getQueryText() && getQueryText().length){
+            tooltip = 'does ' + tooltip + ' contain keywords: \'' + getQueryText() + '\'';
+          }
+        }
+        else if(val){
+          tooltip = 'what records contain keywords: ' + val;
+          if(getQueryGraphLabel() && getQueryGraphLabel().length > 0) {
+            tooltip += ', in library: ' + getQueryGraphLabel();
+            desc += '@'+ getQueryGraphLabel();
+          }
+          else if(getQueryGraph() && getQueryGraph().length > 0) {
+            tooltip += ', in library: ' + getQueryGraph();
+            desc += '@'+getQueryGraph();
+          }
+        }
+        else {
+          tooltip = 'any record';
+          if(!cval) {
+            if(getQueryGraphLabel() && getQueryGraphLabel().length > 0) {
+              tooltip += ', in library: ' + getQueryGraphLabel();
+              desc += '@'+ getQueryGraphLabel();
+            }
+            else if(getQueryGraph() && getQueryGraph().length > 0) {
+              tooltip += ', in library: ' + getQueryGraph();
+              desc += '@'+getQueryGraph();
+            }
+            else desc = LABEL_ROOT;
+          }
+          else {
+            if(getQueryGraphLabel() && getQueryGraphLabel().length > 0) {
+              tooltip += ', in library: ' + getQueryGraphLabel();
+              desc += '@'+ getQueryGraphLabel();
+            }
+            else if(getQueryGraph() && getQueryGraph().length > 0) {
+              tooltip += ', in library: ' + getQueryGraph();
+              desc += '@'+getQueryGraph();
+            }
+          }
+        }
+        if(cval){
+
+          tooltip += ', and each of them is';
+
+          var cvals = _root.find('.'+id + ' > class');
+          for(i = 0; i < cvals.length; i++){
+            if(i > 0 && cvals.length == 1) break;
+            var aoran = aOrAn($( cvals[i] ).attr('label').substring(0, 1));
+            tooltip += ' ' + aoran + ' ' + $( cvals[i] ).attr('label');
+            if(i+1 < cvals.length) {
+              tooltip += ',';
+            }
+            if(i+2 == cvals.length) {
+              tooltip += ' and';
+            }
+          }
+        }
+      }
+      if( (v.attr('datatype') != 'uri' && (!v.attr('iri') || v.attr('iri').length <= 0)) && ( !cval || id == ID_QUERY)){
+        if(val.length > 0 && val != VALUE_ANON_NODE) val = '\'' + val + '\'';
+      }
+
+      //var slash = (!isFacet) ? '/' : '';
+      var ret =
+        '<td title="'+tooltip+'" id="nav'+id+'" '+focus+'><table><tbody>'+
+        '<tr><td onclick="javascript:'+action+'(\''+id+'\')" class="via '+((!isFacet)?' breadcrumb':'')+'">'+desc+'</td></tr>'+
+        '<tr><td onclick="javascript:takeMainFocus(\''+id+'\')" class="boundValue">' + img + val + '</td></tr>'+
+        '</tbody></table></td>';
+      //console.log("bc added: " + ret);
+      return ret;
+    }
+
+    function aOrAn(word){
+      word = word.toLowerCase();
+      if(word.startsWith('a')||word.startsWith('e')||word.startsWith('i')||word.startsWith('o')||word.startsWith('u')) return 'an';
+      return 'a';
+    }
+
+
+  </script>
 </head>
 <body>
   <app-root>
