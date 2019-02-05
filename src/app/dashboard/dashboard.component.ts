@@ -1,24 +1,31 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import { AppConfig } from '../app.config';
+import {Component, OnInit} from '@angular/core';
+import {MainService} from './main.service';
+import * as xml from 'xml-js';
+
 
 @Component({
   selector: 'dashboard',
   templateUrl: './dashboard.template.html',
   styleUrls: ['./dashboard.style.scss'],
-  encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit {
-  config: any;
-  month: any;
-  year: any;
-
-  constructor(config: AppConfig) {
-    this.config = config.getConfig();
+  groupByList: any[];
+  constructor(private service: MainService) {
   }
 
   ngOnInit(): void {
-    const now = new Date();
-    this.month = now.getMonth() + 1;
-    this.year = now.getFullYear();
+  }
+
+  checkIfKeyDownEnter(event) {
+    if (event && event.keyCode === 13) {
+      this.explore();
+      event.preventDefault();
+    }
+  }
+
+  explore(): void {
+    this.service.doXMLQuery().subscribe(data => {
+      console.log(xml.xml2js(data, {compact: true, cdataKey: '_cdata'}));
+    });
   }
 }

@@ -335,30 +335,12 @@ function loadGroupByMenu(xml){
     //console.log($(col[0]));
     opts += '<option value="'+value+'" id="'+createId()+'">'+label+'</option>';
   });
-  //console.log(rows);
-
 
   //var previousGroupBy = $('#groupByMenu :selected').attr('value');
   $('#groupByMenu').empty();
   $('#groupByMenu').append('<option value="'+GROUP_BY_NONE_VALUE+'" id="'+createId()+'">'+GROUP_BY_NONE_LABEL+'</option>');
   $('#groupByMenu').append('<option value="'+GROUP_BY_TEXT_VALUE+'" id="'+createId()+'">'+GROUP_BY_TEXT_LABEL+'</option>');
   $('#groupByMenu').append(opts);
-
-  /*
-            // allow user to remain in "text result mode"
-            if(previousGroupBy == GROUP_BY_TEXT_VALUE){
-                $('#groupByMenu').val(previousGroupBy);
-                selectGroupBy(true);
-            }
-  */
-  if(opts.length > 1) {
-    //$('#groupByMenu').val(defaultVal);
-    //selectGroupBy();
-  }
-
-
-  //$('#groupby').append(rows);
-  //return total;
 
 
 } // loadCategoriesResults

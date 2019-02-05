@@ -72,6 +72,7 @@
     "shufflejs": "4.2.0",
     "webpack-raphael": "2.1.4",
     "widgster": "1.0.0",
+    "xml-js": "^1.6.9",
     "zone.js": "0.8.26"
   },
   "napa": {
