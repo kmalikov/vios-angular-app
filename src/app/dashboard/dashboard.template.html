@@ -1,89 +1,122 @@
-<div class="row">
-  <div class="col-lg-3 col-12">
-    <form class="d-none d-md-block mr-auto" role="search">
-      <div class="form-group">
-        <div class="input-group input-group-no-border">
-          <input class="form-control" type="text" placeholder="Search Dashboard" (keydown)="checkIfKeyDownEnter($event)">
-          <span class="input-group-append" (click)="explore()">
-            <span class="input-group-text">
-              <i class="la la-search"></i>
-            </span>
-          </span>
-        </div>
-      </div>
-    </form>
-  </div>
+<body onload="javascript: init()" class="vios">
+
+<div >
+  <input class="keywordsDefault" size="35" onfocus="javascript:doFirstKeywords()" id="keywords">
+  <button value="Submit" type="submit" onclick="javascript:doExplore($('#keywords').val())">Explore</button>
+  <button value="Submit" type="submit" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">Clear keywords</button>
+  <button value="Submit" type="submit" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">Clear Library</button>
+  <input id="isSearchAllFields" type="checkbox" onclick="javascript:doQuery(getQueryText());" /> <span>Search All Fields</span> &nbsp;
+  &nbsp;<a id="permalink" >Permalink</a> &nbsp;
+  <a id="dsroot" href="http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html">/root</a> &nbsp;
+  <input id="isCache" type="checkbox" checked="true" /> <span>Cache</span> &nbsp;
+  <input id="isDebug" type="checkbox" checked="true" /> <span>Debug</span> &nbsp;Data Space
+  <select onchange="javascript: selectdataSpace()" id="dataSpaceMenu">
+    <option value="http://lod.openlinksw.com">LOD cloud</option>
+    <option value="http://uriburner.com">URI Burner</option>
+    <option value="http://localhost:8890">localhost</option>
+  </select>
+  &nbsp;<span id="timeoutLabel">Allow <select title="Fetch what I can in this amount of time" onchange="javascript: selectdataSpace()" id="queryTimeout"><option value="10">0.01 secs</option><option value="50">0.5 secs</option><option value="100">0.1 secs</option><option value="500">0.5 secs</option><option value="1000">1 sec</option><option value="5000">5 secs</option><option value="10000">10 secs</option><option value="30000">30 secs</option><option value="60000">1 min</option></select></span>
+  <span style="background-color: #CC0000; font-weight: bold; color: white; font-size: larger;">This page is under development, please you <a id="underDevelopment" href="http://myopenlink.net/DAV/home/sdmonroe/poc.html">Prod</a> instance</span>
+  <span style="background-color: #FFFF88; padding: 4px 4px">
+          <b>More Demos</b>:
+          &nbsp;&nbsp;<a id="prodDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc.html">Prod</a>
+          &nbsp;&nbsp;<a id="previewsDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc_previews.html">Previews</a>
+          &nbsp;&nbsp;<a id="tableViewDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc_table_view.html">Table View</a>
+          &nbsp;&nbsp;<a id="formViewDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc_form_view.html">Form View</a>
+          &nbsp;&nbsp;<a id="smartViewDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc_smart_view.html">Smart View</a>
+        </span>
 </div>
 
-<ol class="breadcrumb">
-  <li class="breadcrumb-item">YOU ARE HERE</li>
-  <li class="breadcrumb-item">Another Accordion</li>
-  <li class="breadcrumb-item">Another Accordion</li>
-  <li class="breadcrumb-item">Another Accordion</li>
-  <li class="breadcrumb-item">Another Accordion</li>
-  <li class="breadcrumb-item active">UI Tabs & Accordion</li>
-</ol>
+<div>
+  <table align="center" id="lod" name="lod" height="100%">
+    <tbody>
+    <!-- Breadcrumb Bar -->
+    <tr>
+      <td colspan="3" class="facets hide" id="breadcrumbPanel" valign="top">
+        <table>
+          <tbody>
+          <tr id="breadcrumbs"></tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
 
-<div class="row">
-  <div class="col-lg-3 col-12">
-    <section widget class="widget">
-      <header>
-        <span>Group By</span>
-        <div class="btn-group">
-          <a class="btn btn-default btn-sm dropdown-toggle" href="#" data-toggle="dropdown">
-            Select
-            <i class="fa fa-angle-down "></i>
-          </a>
-          <ul class="dropdown-menu">
-            <li *ngFor="let item of groupByList"><a class="dropdown-item">{{item}}</a></li>
-          </ul>
-        </div>
-      </header>
-      <div class="widget-body p-0">
-        <div class="list-group list-group-lg" *ngFor="let item of groupByList">
-          <a class="list-group-item">
-            <span class="thumb-sm float-left mr">
-                <img class="rounded-circle" src="assets/img/people/a{{item}}.jpg" alt="...">
-                <i class="status status-bottom bg-success"></i>
-            </span>
-            <div>
-              <h6 class="m-0">Chris Gray</h6>
-              <p class="help-block text-ellipsis m-0">Hey {{item}}! What's up? So many times since we</p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-  </div>
+    <!-- Content Area -->
+    <tr>
+      <td id="groupByTable" class="facets" valign="top">
+        <!-- Facet Collector -->
+        <table border="0" width="100%">
+          <tbody>
+          <tr>
+            <td colspan="3" id="facetCollectorPanel" valign="top">
+              <table width="100%" style="border-bottom: 1px solid #ccc; padding-bottom: 4px">
+                <tbody id="focusCollector">
+                </tbody>
+              </table>
+              <table>
+                <tbody id="facetCollector">
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          </tbody>
+        </table>
 
-  <div class="col-lg-3 col-12">
-    <section widget class="widget">
-      <header>
-        <span>Group By</span>
-        <div class="btn-group">
-          <a class="btn btn-default btn-sm dropdown-toggle" href="#" data-toggle="dropdown">
-            Select
-            <i class="fa fa-angle-down "></i>
-          </a>
-          <ul class="dropdown-menu">
-            <li *ngFor="let item of groupByList"><a class="dropdown-item">{{item}}</a></li>
-          </ul>
+        <!-- Group by menu -->
+        <div style="background-color: #efefef; border-bottom: 1px solid #ccc;">
+          by
+          <select onchange="javascript: selectGroupBy()" id="groupByMenu">
+            <option value="GROUPBY-NONE">record</option>
+            <option value="GROUPBY-TEXT">text matches</option>
+          </select>
+          <button id="leftButton" disabled="true" class="disabled" value="Submit" type="submit" onclick="javascript:pageLeft()">&lt;&lt;</button>
+          <button id="rightButton" disabled="true" class="disabled" value="Submit" type="submit" onclick="javascript:pageRight()">&gt;&gt;</button>
         </div>
-      </header>
-      <div class="widget-body p-0">
-        <div class="list-group list-group-lg" *ngFor="let item of groupByList">
-          <a class="list-group-item">
-            <span class="thumb-sm float-left mr">
-                <img class="rounded-circle" src="assets/img/people/a{{item}}.jpg" alt="...">
-                <i class="status status-bottom bg-success"></i>
-            </span>
-            <div>
-              <h6 class="m-0">Chris Gray</h6>
-              <p class="help-block text-ellipsis m-0">Hey! What's up? So many times since we</p>
-            </div>
-          </a>
+
+        <!-- Record results set -->
+        <table width="100%">
+          <tbody id="groupBy">
+          </tbody>
+        </table>
+      </td>
+
+      <!-- POI: need to explicitly make this column fill the width since the drop-down text is shorter now, both left columns need to be the same width -->
+      <td id="showMeTable" class="facets" valign="top">
+        <div style="background-color: #efefef; border-bottom: 1px solid #ccc;">
+          <select onchange="javascript: selectShowMe()" id="showMeMenu">
+            <option value="classes">Categories</option>
+            <option class="disabled" value="properties">Fields</option>
+            <option class="disabled" value="text-properties">Text</option>
+            <option class="disabled" value="properties-in">Used as</option>
+            <option class="disabled" value="graphs">Libraries</option>
+          </select>
+          <button disabled="true" class="disabled" id="showMeLeftButton" value="Submit" type="submit" onclick="javascript:showMePageLeft()">&lt;&lt;</button>
+          <button disabled="true" class="disabled" id="showMeRightButton" value="Submit" type="submit" onclick="javascript:showMePageRight()">&gt;&gt;</button>
         </div>
-      </div>
-    </section>
-  </div>
+        <table width="100%">
+          <tbody id="showMe">
+          </tbody>
+        </table>
+
+      </td>
+
+      <td class="facets" valign="top" width="100%" height="100%">
+        <table width="100%" height="100%">
+          <tbody id="record">
+          <tr>
+            <td id="describePanel" style="border: 0px solid transparent;" height="100%" valign="top">
+              <!--
+          <div class="header">
+            <p><span id="recordLabel"></span></p>
+          </div>-->
+              <iframe class="iframe" id="describe" src="" height="100%"></iframe>
+            </td></tr>
+          </tbody>
+        </table>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
 </div>
+</body>

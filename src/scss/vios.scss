@@ -1,0 +1,53 @@
+.vios {
+  overflow-x: visible;
+  table {
+    border: none;
+  }
+
+}
+
+#lod {
+  width: 100%;
+  .up {
+    padding: 5px;
+    background: #81c2de;
+    border-radius: 28px;
+  }
+  select {
+    background: transparent;
+    border: none;
+    width: 100%;
+    &:focus {
+      outline-color: transparent !important;
+    }
+  }
+  button {
+    background: transparent;
+    border: none;
+  }
+}
+
+#groupByTable {
+  width: 23% !important;
+  font-size: 12px;
+  div {
+    display: flex;
+    background-color: #efefef;
+    border-bottom: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 5px;
+  }
+}
+
+#showMeTable {
+  width: 23% !important;
+  font-size: 12px;
+  div {
+    display: flex;
+    margin-top: 2px;
+    background-color: #efefef;
+    border-bottom: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 5px;
+  }
+}
