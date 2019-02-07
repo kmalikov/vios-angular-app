@@ -1,17 +1,107 @@
-.vios {
+.vios-body {
+  margin: auto;
   overflow-x: visible;
-  table {
-    border: none;
+  .vios-app {
+    margin-top: 50px;
+    .search-area {
+      background: #fff;
+      display: flex;
+      border: 1px solid #dfe1e5 !important;
+      box-shadow: none;
+      width: 430px;
+      border-radius: 0 24px 24px 0;
+      z-index: 3;
+      height: 44px;
+      margin: 10px 0;
+      input {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        color: rgba(0,0,0,.87);
+        word-wrap: break-word;
+        outline: none;
+        display: flex;
+        flex: 100%;
+        margin-left: 20px;
+      }
+      button {
+        background: transparent;
+        border: none;
+        border-left: 1px solid #ccc;
+      }
+    }
   }
+  table {
+    border: none !important;
+  }
+  div {
+    border: none !important;
+  }
+  .hidden {
+    display: none !important;
+  }
+  .breadcrumb {
+    margin-bottom: 0;
+  }
+}
 
+#breadcrumbs {
+  td {
+    background: #cfe2f3;
+  }
+}
+
+#facetCollectorPanel {
+  table {
+    width: 100%;
+  }
+  table.facetCollectorTable {
+    width: calc(100% - 30px);
+    margin: auto;
+  }
+}
+
+.dataSet {
+  width: calc(100% - 30px);
+  margin: auto;
+}
+
+#nav0 {
+  padding: 9px;
+  background: #b6d7a8;
+  border-radius: 0 20px 20px 0;
+}
+
+#focusCollector > tr > td {
+    padding: 10px;
+    background: #93c47d;
+    border-radius: 0 20px 20px 0;
+}
+
+#facetCollector > tr > td {
+  padding: 9px;
+  background: #b6d7a8;
+  .boundValue {
+    cursor: pointer;
+  }
+  span {
+    cursor: pointer;
+    &.via:hover {
+      color: #CC0000;
+      position: relative;
+      &:after {
+        position:absolute;
+        right: -10px;
+        content: "–";
+      }
+    }
+  }
 }
 
 #lod {
   width: 100%;
   .up {
-    padding: 5px;
-    background: #81c2de;
-    border-radius: 28px;
+    padding: 10px;
   }
   select {
     background: transparent;
@@ -32,22 +122,24 @@
   font-size: 12px;
   div {
     display: flex;
-    background-color: #efefef;
-    border-bottom: 1px solid #ccc;
-    border-radius: 20px;
-    padding: 5px;
+    width: calc(100% - 30px);
+    background: #b6d7a8;
+    margin: auto;
+    padding: 10px;
   }
 }
 
 #showMeTable {
   width: 23% !important;
   font-size: 12px;
-  div {
+  div:not(.up) {
     display: flex;
-    margin-top: 2px;
-    background-color: #efefef;
+    background-color: #ea9999;
     border-bottom: 1px solid #ccc;
     border-radius: 20px;
-    padding: 5px;
+    padding: 10px;
+  }
+  td {
+    padding: 0;
   }
 }

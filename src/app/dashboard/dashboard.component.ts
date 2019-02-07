@@ -11,6 +11,8 @@ import * as xml from 'xml-js';
 export class DashboardComponent implements OnInit {
   groupByList: any[];
   groupItemSelected: any;
+
+  enable = false;
   constructor(private service: MainService) {
   }
 
