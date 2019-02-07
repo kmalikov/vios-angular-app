@@ -46,8 +46,10 @@
 }
 
 #breadcrumbs {
+  font-weight: bold;
   td {
     background: #cfe2f3;
+    border-radius: 0 20px 20px 0;
   }
 }
 
@@ -73,9 +75,10 @@
 }
 
 #focusCollector > tr > td {
-    padding: 10px;
-    background: #93c47d;
-    border-radius: 0 20px 20px 0;
+  padding: 10px;
+  background: #93c47d;
+  border-radius: 0 20px 20px 0;
+  font-weight: bold;
 }
 
 #facetCollector > tr > td {
@@ -142,4 +145,8 @@
   td {
     padding: 0;
   }
+}
+
+#showMeMenu {
+  font-weight: bold;
 }
