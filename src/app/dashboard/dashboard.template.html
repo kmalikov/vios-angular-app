@@ -1,19 +1,17 @@
 <body onload="javascript: init()" class="vios-body">
 
 <div >
-  <button value="Submit" type="submit" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">Clear keywords</button>
-  <button value="Submit" type="submit" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">Clear Library</button>
-  <input id="isSearchAllFields" type="checkbox" checked="true" onclick="javascript:doQuery(getQueryText());" /> <span>Search All Fields</span> &nbsp;
-  &nbsp;<a id="permalink" >Permalink</a> &nbsp;
-  <a id="dsroot" href="http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html">/root</a> &nbsp;
-  <input id="isCache" type="checkbox" checked="true" /> <span>Cache</span> &nbsp;
-  <input id="isDebug" type="checkbox" checked="true" /> <span>Debug</span> &nbsp;Data Space
-  <select onchange="javascript: selectdataSpace()" id="dataSpaceMenu">
+  <!--<button value="Submit" type="submit" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">Clear keywords</button>-->
+  <!--<button value="Submit" type="submit" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">Clear Library</button>-->
+  Data Space
+  <!--<a id="permalink" >Permalink</a> &nbsp;-->
+  <!--<a id="dsroot" href="http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html">/root</a> &nbsp;-->
+  <!--<select onchange="javascript: selectdataSpace()" id="dataSpaceMenu">
     <option value="http://lod.openlinksw.com">LOD cloud</option>
     <option value="http://uriburner.com">URI Burner</option>
     <option value="http://localhost:8890">localhost</option>
-  </select>
-  &nbsp;<span id="timeoutLabel">Allow <select title="Fetch what I can in this amount of time" onchange="javascript: selectdataSpace()" id="queryTimeout"><option value="10">0.01 secs</option><option value="50">0.5 secs</option><option value="100">0.1 secs</option><option value="500">0.5 secs</option><option value="1000">1 sec</option><option value="5000">5 secs</option><option value="10000">10 secs</option><option value="30000">30 secs</option><option value="60000">1 min</option></select></span>
+  </select>-->
+  <!--&nbsp;<span id="timeoutLabel">Allow <select title="Fetch what I can in this amount of time" onchange="javascript: selectdataSpace()" id="queryTimeout"><option value="10">0.01 secs</option><option value="50">0.5 secs</option><option value="100">0.1 secs</option><option value="500">0.5 secs</option><option value="1000">1 sec</option><option value="5000">5 secs</option><option value="10000">10 secs</option><option value="30000">30 secs</option><option value="60000">1 min</option></select></span>-->
 </div>
 
 <div>
@@ -30,9 +28,60 @@
 
 <div class="vios-app">
 
-  <div class="search-area">
-    <input class="keywordsDefault" size="35" onfocus="javascript:doFirstKeywords()" id="keywords" #keywords>
-    <button value="Submit" type="submit" onclick="javascript:doExplore($('#keywords').val())" (click)="enable = true">Explore</button>
+  <div class="d-flex flex-row align-items-center">
+
+    <div class="input-group mr-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">
+
+          <a id="dsroot" href="http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html"><span class="glyphicon glyphicon-home"></span></a> &nbsp;
+        </span>
+      </div>
+      <input class="keywordsDefault" class="form-control" onfocus="javascript:doFirstKeywords()" id="keywords" #keywords>
+      <div class="input-group-append">
+        <span class="input-group-text" onclick="javascript:doExplore($('#keywords').val())" (click)="enable = true">Explore</span>
+      </div>
+    </div>
+
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-secondary active">
+        <input id="isSearchAllFields" type="checkbox" checked="true" onclick="javascript:doQuery(getQueryText());"/><span>Search All Fields</span> &nbsp;
+      </label>
+      <label class="btn btn-secondary active">
+        <input id="isCache" type="checkbox" checked="true"/><span>Cache</span>
+      </label>
+      <label class="btn btn-secondary active">
+        <input id="isDebug" type="checkbox" checked="true"/><span>Debug</span>
+      </label>
+    </div>
+
+    <button type="button" class="btn btn-link btn-share">
+      <a id="permalink">
+        <span class="glyphicon glyphicon-share-alt p-2"></span>
+      </a>
+    </button>
+
+    <div class="btn-group mr-3">
+      <button class="btn btn-default" role="button" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">
+        <span class="clear-data">abc</span>
+      </button>
+      <button class="btn btn-default" role="button" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">
+        <i class="glyphicon glyphicon-book clear-data"></i>
+      </button>
+    </div>
+
+    <div class="dropdown d-flex flex-row align-items-center mr-3">
+      <div class="mr-1">Data Space</div>
+      <select onchange="javascript: selectdataSpace()" id="dataSpaceMenu">
+        <option value="http://lod.openlinksw.com">LOD cloud</option>
+        <option value="http://uriburner.com">URI Burner</option>
+        <option value="http://localhost:8890">localhost</option>
+      </select>
+    </div>
+    <div class="d-flex flex-row align-items-center">
+      <div for="customRange" class="mr-1">Allow</div>
+      <input type="range" onchange="javascript: selectdataSpace()" id="queryTimeout" class="custom-range" min="0" step="10" max="60000" tooltip="Fetch what I can in this amount of time">
+    </div>
   </div>
 
   <table align="center" id="lod" name="lod" height="100%">
