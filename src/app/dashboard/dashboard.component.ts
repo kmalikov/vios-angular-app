@@ -1,12 +1,13 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MainService} from './main.service';
 import * as xml from 'xml-js';
-
+declare const jQuery: any;
 
 @Component({
   selector: 'dashboard',
   templateUrl: './dashboard.template.html',
-  styleUrls: ['./dashboard.style.scss']
+  styleUrls: ['./dashboard.style.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class DashboardComponent implements OnInit {
   groupByList: any[];
@@ -17,6 +18,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    jQuery('.js-slider').slider();
   }
 
   checkIfKeyDownEnter(event) {

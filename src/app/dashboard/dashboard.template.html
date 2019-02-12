@@ -33,8 +33,7 @@
     <div class="input-group mr-3">
       <div class="input-group-prepend">
         <span class="input-group-text">
-
-          <a id="dsroot" href="http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html"><span class="glyphicon glyphicon-home"></span></a> &nbsp;
+          <a id="dsroot" href="http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html"><span class="glyphicon glyphicon-home"></span></a>
         </span>
       </div>
       <input class="keywordsDefault" class="form-control" onfocus="javascript:doFirstKeywords()" id="keywords" #keywords>
@@ -44,13 +43,13 @@
     </div>
 
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      <label class="btn btn-secondary active">
+      <label class="btn btn-gray active">
         <input id="isSearchAllFields" type="checkbox" checked="true" onclick="javascript:doQuery(getQueryText());"/><span>Search All Fields</span> &nbsp;
       </label>
-      <label class="btn btn-secondary active">
+      <label class="btn btn-gray active">
         <input id="isCache" type="checkbox" checked="true"/><span>Cache</span>
       </label>
-      <label class="btn btn-secondary active">
+      <label class="btn btn-gray active">
         <input id="isDebug" type="checkbox" checked="true"/><span>Debug</span>
       </label>
     </div>
@@ -80,7 +79,9 @@
     </div>
     <div class="d-flex flex-row align-items-center">
       <div for="customRange" class="mr-1">Allow</div>
-      <input type="range" onchange="javascript: selectdataSpace()" id="queryTimeout" class="custom-range" min="0" step="10" max="60000" tooltip="Fetch what I can in this amount of time">
+      <div class="mb-sm">
+        <input class="js-slider" onchange="javascript: selectdataSpace()" id="queryTimeout" tooltip="Fetch what I can in this amount of time" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>
+      </div>
     </div>
   </div>
 
