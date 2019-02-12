@@ -226,3 +226,18 @@ button.disabled{
     }
   }
 }
+.breadcrumb {
+  margin-bottom: 0;
+  padding: 10px 5px 10px 0;
+}
+.breadcrumb-item {
+  display: flex;
+  flex-direction: column;
+  .row {
+    margin: 0;
+  }
+}
+.breadcrumb-item + .breadcrumb-item::before {
+  content: '';
+}
+
