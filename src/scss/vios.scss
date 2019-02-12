@@ -241,3 +241,13 @@ button.disabled{
   content: '';
 }
 
+.thumb-sm {
+  width: unset !important;
+}
+.up h6 {
+  display: flex;
+  input {
+    margin-left: auto;
+  }
+}
+
