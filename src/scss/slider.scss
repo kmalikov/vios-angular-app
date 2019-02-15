@@ -81,7 +81,25 @@ $slider-handle-size: 26px;
   }
 
   .tooltip.top {
-    top: -30px;
+    top: -36px;
+  }
+  .tooltip.top .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px 5px 0;
+    border-top-color: #000;
+  }
+
+  .tooltip-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+  .tooltip.in {
+    opacity: .9;
   }
 }
 .slider-track {

@@ -28,6 +28,7 @@ export class LayoutComponent implements OnInit {
   @HostBinding('class.nav-static') navStatic: boolean;
   @HostBinding('class.chat-sidebar-opened') chatOpened: boolean = false;
   @HostBinding('class.app') appClass: boolean = true;
+  @HostBinding('class.nav-collapsed') navCollapsed: boolean = true;
   config: any;
   configFn: any;
   $sidebar: any;

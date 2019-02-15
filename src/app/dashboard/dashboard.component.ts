@@ -18,7 +18,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    jQuery('.js-slider').slider();
+
   }
 
   checkIfKeyDownEnter(event) {

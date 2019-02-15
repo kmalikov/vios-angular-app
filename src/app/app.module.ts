@@ -26,7 +26,6 @@ const APP_PROVIDERS = [
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot(ROUTES, {
-      useHash: true,
       preloadingStrategy: PreloadAllModules
     })
   ],

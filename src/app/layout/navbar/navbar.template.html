@@ -14,16 +14,9 @@
       <i class="ml-3 la la-bars la-lg d-none d-md-block d-lg-none"></i>
     </a>
   </li>
-  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" href="#"><i class="la la-refresh la-lg"></i></a></li>
-  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" href="#"><i class="la la-times la-lg"></i></a></li>
-</ul>
-<ul class="navbar-nav flex-row d-md-none">
-  <li class="nav-item">
-    <!-- toggles chat -->
-    <a class="nav-link" href="#" (click)="toggleChat()">
-      <span class="rounded rounded-lg bg-gray text-white"><i class="la la-globe la-lg"></i></span>
-    </a>
-  </li>
+  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" id="backHistory"><i class="la la-arrow-left la-lg"></i></a></li>
+  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" id="forwardHistory"><i class="la la-arrow-right la-lg"></i></a></li>
+  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" id="permalink"><i class="la la-chain la-lg"></i></a></li>
 </ul>
 <a class="navbar-brand d-md-none" [routerLink]=" ['/app/dashboard'] ">
   <i class="la la-circle la-sm text-gray mr-n-sm"></i>
@@ -39,59 +32,93 @@
 <form class="navbar-form d-none d-md-block mr-auto" role="search">
   <div class="form-group">
     <div class="input-group input-group-no-border">
-      <input class="form-control" type="text" placeholder="Search Dashboard">
-      <span class="input-group-append">
+      <input size="35" onfocus="javascript:doFirstKeywords()" id="keywords" class="form-control" placeholder="Explore" type="text">
+      <span style="cursor:pointer;" onclick="javascript:doExplore($('#keywords').val())" class="input-group-append">
         <span class="input-group-text">
-          <i class="la la-search"></i>
+          <i class="la la-search text-warning fw-bold"></i>
         </span>
       </span>
     </div>
   </div>
 </form>
-<ul class="navbar-nav mr-3 d-none d-md-flex flex-row" (click)="$event.preventDelault()">
-    <li class="nav-item dropdown" dropdown placement="bottom right" [autoClose]="false">
-      <a href="#" dropdownToggle class="nav-link dropdown-toggle dropdown-toggle-notifications"
-         id="notifications-dropdown-toggle">
-         <span class="avatar thumb-sm float-left mr-2">
-            <img class="rounded-circle" src="assets/img/people/a5.jpg" alt="..." />
-          </span>
-          <span class="small">Philip <span class="fw-semi-bold">Smith</span></span>
-          <span class="ml-1 circle bg-warning text-white fw-bold">13</span>
-        <b class="caret"></b>
-      </a>
-      <!-- ready to use notifications dropdown. inspired by smartadmin template.
-                   consists of three components:
-                   notifications, messages, progress. leave or add what's important for you.
-                   uses Sing's ajax-load plugin for async content loading. See #load-notifications-btn -->
-      <app-notifications *dropdownMenu class="dropdown-menu dropdown-menu-right animated animated-last ladeInUp"></app-notifications>
-    </li>
-    <li class="nav-item dropdown" dropdown placement="bottom right">
-      <a href="#" class="nav-link dropdown-toggle" dropdownToggle>
-        <i class="la la-cog la-lg"></i>
-      </a>
-      <ul *dropdownMenu class="dropdown-menu dropdown-menu-right">
-        <li><a class="dropdown-item" href="#"><i class="glyphicon glyphicon-user"></i> &nbsp; My Account</a></li>
-        <li class="dropdown-divider"></li>
-        <li><a class="dropdown-item" [routerLink]=" ['/error'] ">Calendar</a></li>
-        <li><a class="dropdown-item" [routerLink]=" ['/error'] ">Inbox &nbsp;&nbsp;<span class="badge badge-pill badge-danger animated bounceIn">9</span></a></li>
-        <li class="dropdown-divider"></li>
-        <li><a class="dropdown-item" [routerLink]=" ['/login'] "><i class="la la-sign-out"></i> &nbsp; Log Out</a></li>
-      </ul>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#" (click)="toggleChat()" id="toggle-chat">
-        <i class="la la-globe la-lg"></i>
-      </a>
-      <div id="chat-notification" class="chat-notification hide" (click)="toggleChat()">
-        <div class="chat-notification-inner">
-          <h6 class="title">
-            <span class="thumb-xs">
-                <img src="assets/img/people/a6.jpg" class="rounded-circle mr-xs float-left">
-            </span>
-            Jess Smith
-          </h6>
-          <p class="text">Hi there! <br> This is a completely new version of Sing App <br> built with <strong class="text-danger">Angular 5.0 Final Release</strong> </p>
-        </div>
+
+<ul class="navbar-nav mr-3 d-none d-md-flex flex-row align-items-center">
+  <li class="nav-item mr-3">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-gray active">
+        <input id="isSearchAllFields" type="checkbox" checked="true" onclick="javascript:doQuery(getQueryText());"/><span>Expand Search</span> &nbsp;
+      </label>
+      <label class="btn btn-gray active">
+        <input id="isCache" type="checkbox" checked="true"/><span>Cache</span>
+      </label>
+      <label class="btn btn-gray active">
+        <input id="isDebug" type="checkbox" checked="true"/><span>Debug</span>
+      </label>
+    </div>
+  </li>
+  <li class="nav-item mr-4">
+    <div>
+      <button class="btn btn-default" role="button" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">
+        <span class="clear-data">Clear Keywords</span>
+      </button>
+      <button class="btn btn-default" role="button" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">
+        <span class="clear-data">Clear Library</span>
+      </button>
+    </div>
+  </li>
+  <li class="nav-item">
+    <div class="d-flex flex-row align-items-center">
+      <div class="mb-sm">
+        <input class="js-slider"  id="queryTimeout" tooltip="Fetch what I can in this amount of time" data-slider-id='ex1Slider' type="text" data-slider-min="10" data-slider-max="20000" data-slider-step="10" data-slider-value="10"/>
       </div>
-    </li>
-  </ul>
+    </div>
+  </li>
+<!--  <li class="nav-item">
+    <select onchange="javascript: selectdataSpace('http://lod.openlinksw.com')" id="dataSpaceMenu">
+      <option value="http://lod.openlinksw.com">LOD cloud</option>
+      <option value="http://uriburner.com">URI Burner</option>
+      <option value="http://localhost:8890">localhost</option>
+    </select>
+  </li>-->
+  <li class="nav-item dropdown" dropdown placement="bottom right">
+    <a class="nav-link dropdown-toggle" dropdownToggle id="dataSpaceMenu">
+      <i class="la la-hdd-o la-lg fs-largest"></i>
+    </a>
+    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right">
+      <li><a class="dropdown-item active" onclick="selectdataSpace('http://lod.openlinksw.com', 'LOD Cloud')">LOD Cloud</a></li>
+      <li><a class="dropdown-item" onclick="selectdataSpace('https://id.myopenlink.net', 'ODS Demo')">ODS Demo</a></li>
+      <li><a class="dropdown-item" onclick="selectdataSpace('http://uriburner.com', 'URI Burner')">URI Burner</a></li>
+      <li class="dropdown-divider"></li>
+      <li><a class="dropdown-item" onclick="selectdataSpace('http://localhost:8890', 'localhost')">localhost</a></li>
+    </ul>
+  </li>
+  <li class="nav-item dropdown" dropdown placement="bottom right" [autoClose]="false">
+    <a href="#" dropdownToggle class="nav-link dropdown-toggle dropdown-toggle-notifications"
+       id="notifications-dropdown-toggle">
+       <span class="avatar thumb-sm float-left mr-2">
+          <img class="rounded-circle" src="assets/img/people/a5.jpg" alt="..." />
+        </span>
+        <span class="small">John <span class="fw-semi-bold">Nash</span></span>
+        <span class="ml-1 circle bg-warning text-white fw-bold">1</span>
+      <!--<b class="caret"></b>-->
+    </a>
+    <!-- ready to use notifications dropdown. inspired by smartadmin template.
+                 consists of three components:
+                 notifications, messages, progress. leave or add what's important for you.
+                 uses Sing's ajax-load plugin for async content loading. See #load-notifications-btn -->
+    <!--<app-notifications *dropdownMenu class="dropdown-menu dropdown-menu-right animated animated-last ladeInUp"></app-notifications>-->
+  </li>
+  <!--<li class="nav-item dropdown" dropdown placement="bottom right">
+    <a href="#" class="nav-link dropdown-toggle" dropdownToggle>
+      <i class="la la-cog la-lg"></i>
+    </a>
+    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right">
+      <li><a class="dropdown-item" href="#"><i class="glyphicon glyphicon-user"></i> &nbsp; My Account</a></li>
+      <li class="dropdown-divider"></li>
+      <li><a class="dropdown-item" [routerLink]=" ['/error'] ">Calendar</a></li>
+      <li><a class="dropdown-item" [routerLink]=" ['/error'] ">Inbox &nbsp;&nbsp;<span class="badge badge-pill badge-danger animated bounceIn">9</span></a></li>
+      <li class="dropdown-divider"></li>
+      <li><a class="dropdown-item" [routerLink]=" ['/login'] "><i class="la la-sign-out"></i> &nbsp; Log Out</a></li>
+    </ul>
+  </li>-->
+</ul>

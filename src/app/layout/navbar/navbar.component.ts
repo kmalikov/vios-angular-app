@@ -54,5 +54,22 @@ export class NavbarComponent implements OnInit {
       jQuery(this).parents('.input-group')
         [e.type === 'focus' ? 'addClass' : 'removeClass']('focus');
     });
+
+    this.initSlider();
+
+  }
+
+  initSlider() {
+    const toSeconds = millis => {
+      const milliseconds = millis % 1000;
+      const seconds = Math.floor((millis / 1000) % 60);
+      return seconds + '.' + milliseconds.toString().substring(0, 2) + ' secs';
+    };
+    jQuery('.js-slider').slider({
+      tooltip_position: 'bottom',
+      formatter: function(value) {
+        return 'Allow: ' + toSeconds(value);
+      }
+    });
   }
 }

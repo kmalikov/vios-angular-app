@@ -1,91 +1,8 @@
 <body onload="javascript: init()" class="vios-body">
 
-<div >
-  <!--<button value="Submit" type="submit" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">Clear keywords</button>-->
-  <!--<button value="Submit" type="submit" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">Clear Library</button>-->
-  Data Space
-  <!--<a id="permalink" >Permalink</a> &nbsp;-->
-  <!--<a id="dsroot" href="http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html">/root</a> &nbsp;-->
-  <!--<select onchange="javascript: selectdataSpace()" id="dataSpaceMenu">
-    <option value="http://lod.openlinksw.com">LOD cloud</option>
-    <option value="http://uriburner.com">URI Burner</option>
-    <option value="http://localhost:8890">localhost</option>
-  </select>-->
-  <!--&nbsp;<span id="timeoutLabel">Allow <select title="Fetch what I can in this amount of time" onchange="javascript: selectdataSpace()" id="queryTimeout"><option value="10">0.01 secs</option><option value="50">0.5 secs</option><option value="100">0.1 secs</option><option value="500">0.5 secs</option><option value="1000">1 sec</option><option value="5000">5 secs</option><option value="10000">10 secs</option><option value="30000">30 secs</option><option value="60000">1 min</option></select></span>-->
-</div>
-
-<div>
-  <span style="background-color: #CC0000; font-weight: bold; color: white; font-size: larger;">This page is under development, please you <a id="underDevelopment" href="http://myopenlink.net/DAV/home/sdmonroe/poc.html">Prod</a> instance</span>
-  <span style="background-color: #FFFF88; padding: 4px 4px">
-          <b>More Demos</b>:
-          &nbsp;&nbsp;<a id="prodDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc.html">Prod</a>
-          &nbsp;&nbsp;<a id="previewsDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc_previews.html">Previews</a>
-          &nbsp;&nbsp;<a id="tableViewDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc_table_view.html">Table View</a>
-          &nbsp;&nbsp;<a id="formViewDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc_form_view.html">Form View</a>
-          &nbsp;&nbsp;<a id="smartViewDemo" href="http://myopenlink.net/DAV/home/sdmonroe/poc_smart_view.html">Smart View</a>
-        </span>
-</div>
-
 <div class="vios-app">
 
-  <div class="d-flex flex-row align-items-center">
-
-    <div class="input-group mr-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">
-          <a id="dsroot" href="http://myopenlink.net/DAV/home/sdmonroe/poc_draft.html"><span class="glyphicon glyphicon-home"></span></a>
-        </span>
-      </div>
-      <input class="keywordsDefault" class="form-control" onfocus="javascript:doFirstKeywords()" id="keywords" #keywords>
-      <div class="input-group-append">
-        <span class="input-group-text" onclick="javascript:doExplore($('#keywords').val())" (click)="enable = true">Explore</span>
-      </div>
-    </div>
-
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      <label class="btn btn-gray active">
-        <input id="isSearchAllFields" type="checkbox" checked="true" onclick="javascript:doQuery(getQueryText());"/><span>Search All Fields</span> &nbsp;
-      </label>
-      <label class="btn btn-gray active">
-        <input id="isCache" type="checkbox" checked="true"/><span>Cache</span>
-      </label>
-      <label class="btn btn-gray active">
-        <input id="isDebug" type="checkbox" checked="true"/><span>Debug</span>
-      </label>
-    </div>
-
-    <button type="button" class="btn btn-link btn-share">
-      <a id="permalink">
-        <span class="glyphicon glyphicon-share-alt p-2"></span>
-      </a>
-    </button>
-
-    <div class="btn-group mr-3">
-      <button class="btn btn-default" role="button" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">
-        <span class="clear-data">abc</span>
-      </button>
-      <button class="btn btn-default" role="button" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">
-        <i class="glyphicon glyphicon-book clear-data"></i>
-      </button>
-    </div>
-
-    <div class="dropdown d-flex flex-row align-items-center mr-3">
-      <div class="mr-1">Data Space</div>
-      <select onchange="javascript: selectdataSpace()" id="dataSpaceMenu">
-        <option value="http://lod.openlinksw.com">LOD cloud</option>
-        <option value="http://uriburner.com">URI Burner</option>
-        <option value="http://localhost:8890">localhost</option>
-      </select>
-    </div>
-    <div class="d-flex flex-row align-items-center">
-      <div for="customRange" class="mr-1">Allow</div>
-      <div class="mb-sm">
-        <input class="js-slider" onchange="javascript: selectdataSpace()" id="queryTimeout" tooltip="Fetch what I can in this amount of time" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>
-      </div>
-    </div>
-  </div>
-
-  <table align="center" id="lod" name="lod" height="100%">
+  <table align="center" id="lod" name="lod" height="100%" class="hide">
     <tbody>
     <!-- Breadcrumb Bar -->
     <tr>
@@ -144,7 +61,7 @@
             <option value="classes">Categories</option>
             <option class="disabled" value="properties">Fields</option>
             <option class="disabled" value="text-properties">Text</option>
-            <option class="disabled" value="properties-in">Used as</option>
+            <option class="disabled" value="properties-in">Roles</option>
             <option class="disabled" value="graphs">Libraries</option>
           </select>
           <button disabled="true" class="disabled" id="showMeLeftButton" value="Submit" type="submit" onclick="javascript:showMePageLeft()">&lt;&lt;</button>

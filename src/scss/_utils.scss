@@ -475,6 +475,10 @@ $z-index-variants: (more: 1, less: -1, '10': 10, '-10': -10);
   font-size: $font-size-larger;
 }
 
+.fs-largest{
+  font-size: $font-size-larger;
+}
+
 .btlr{
   border-top-left-radius: $border-radius;
 }
