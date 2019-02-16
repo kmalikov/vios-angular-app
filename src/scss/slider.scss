@@ -2,15 +2,15 @@
  * Bootstrap slider. converted from less files
  */
 
-$slider-line-height: 8px;
-$slider-handle-size: 26px;
+$slider-line-height: 4px;
+$slider-handle-size: 20px;
 
 .slider {
   display: inline-block;
   vertical-align: middle;
   position: relative;
   &.slider-horizontal {
-    width: 210px;
+    width: 150px;
     height: $slider-line-height;
     .slider-track {
       height: $slider-line-height/2;

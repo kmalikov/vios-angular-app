@@ -25,10 +25,17 @@
   background-color: #9964e3 !important;
 }
 
-/*
+.clear-data {
+  text-decoration: line-through;
+}
+
+
 .vios-app {
   .form-group {
     margin-bottom: 0;
+  }
+  .thumb-sm {
+    width: unset !important;
   }
 }
 
@@ -51,32 +58,35 @@
   content: '';
 }
 
-.thumb-sm {
-  width: unset !important;
-}
-div h6 {
-  display: flex;
+#showMeColumn div h6 {
   width: calc(100% - 90px);
-  i {
-    position: absolute;
-    top: 9px;
-    right: 8px;
-  }
-  div {
-    margin-left: auto;
-    position: absolute;
-    top: -1px;
-    right: 8px;
-  }
 }
 
+div h6 {
+    display: flex;
+    i {
+      position: absolute;
+      top: 9px;
+      right: 8px;
+    }
+    div {
+      margin-left: auto;
+      position: absolute;
+      top: -1px;
+      right: 8px;
+    }
+    .la-compress {
+      right: 46px;
+      top: 10px;
+    }
+  }
 .table.table-striped {
   h6 {
     position: relative;
     .form-check-inline {
       position: absolute;
       top: -10px;
-      right: -70px;
+      right: -58px;
     }
   }
 }
@@ -88,10 +98,6 @@ div h6 {
       top: -10px;
     }
   }
-}
-
-.vios-body {
-  padding: 20px 20px 20px 0;
 }
 
 .vios-button a {
@@ -106,20 +112,25 @@ div h6 {
 }
 
 #dataCanvas {
-  .bg-info {
+  // EXPERIMENTAL!!!
+/*  .bg-info {
     background-color: #af86e9 !important;
     #focusHeader {
       border-radius: 0.25rem;
       background-color: #9964e3 !important;
     }
-  }
+  }*/
 }
 
 #ex1Slider .slider-selection {
   background-color: red;
 }
 
-.content-wrap {
-  left: 0;
+.content {
+  padding: 55px 40px 40px;
 }
-*/
+
+/*.content-wrap {
+  left: 0;
+}*/
+

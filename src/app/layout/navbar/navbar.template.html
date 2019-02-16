@@ -16,14 +16,12 @@
   </li>
   <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" id="backHistory"><i class="la la-arrow-left la-lg"></i></a></li>
   <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" id="forwardHistory"><i class="la la-arrow-right la-lg"></i></a></li>
-  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" id="permalink"><i class="la la-chain la-lg"></i></a></li>
+  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2 text-info" id="permalink"><i class="la la-chain la-lg"></i></a></li>
 </ul>
 <a class="navbar-brand d-md-none" [routerLink]=" ['/app/dashboard'] ">
   <i class="la la-circle la-sm text-gray mr-n-sm"></i>
   <i class="la la-circle la-sm text-warning"></i>
-  &nbsp;
   {{config.name}}
-  &nbsp;
   <i class="la la-circle la-sm text-warning mr-n-sm"></i>
   <i class="la la-circle la-sm text-gray"></i>
 </a>
@@ -45,24 +43,32 @@
 <ul class="navbar-nav mr-3 d-none d-md-flex flex-row align-items-center">
   <li class="nav-item mr-3">
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      <label class="btn btn-gray active">
-        <input id="isSearchAllFields" type="checkbox" checked="true" onclick="javascript:doQuery(getQueryText());"/><span>Expand Search</span> &nbsp;
+      <label class="btn btn-gray">
+        <input id="isSearchAllFields" type="checkbox" onclick="javascript:doQuery(getQueryText());"/><span>Expand Search</span> &nbsp;
       </label>
       <label class="btn btn-gray active">
         <input id="isCache" type="checkbox" checked="true"/><span>Cache</span>
       </label>
-      <label class="btn btn-gray active">
-        <input id="isDebug" type="checkbox" checked="true"/><span>Debug</span>
+      <label class="btn btn-gray">
+        <input id="isDebug" type="checkbox"/><span>Debug</span>
       </label>
     </div>
   </li>
   <li class="nav-item mr-4">
-    <div>
+    <div class="d-sm-none">
       <button class="btn btn-default" role="button" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">
-        <span class="clear-data">Clear Keywords</span>
+        <span>Clear Keywords</span>
       </button>
       <button class="btn btn-default" role="button" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">
-        <span class="clear-data">Clear Library</span>
+        <span>Clear Library</span>
+      </button>
+    </div>
+    <div class="d-sm-block">
+      <button class="btn btn-default" role="button" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">
+        <span class="clear-data">Keywords</span>
+      </button>
+      <button class="btn btn-default" role="button" onclick="javascript:clearQueryGraph();doQuery($('#keywords').val())">
+        <span class="clear-data">Library</span>
       </button>
     </div>
   </li>
@@ -88,8 +94,12 @@
       <li><a class="dropdown-item active" onclick="selectdataSpace('http://lod.openlinksw.com', 'LOD Cloud')">LOD Cloud</a></li>
       <li><a class="dropdown-item" onclick="selectdataSpace('https://id.myopenlink.net', 'ODS Demo')">ODS Demo</a></li>
       <li><a class="dropdown-item" onclick="selectdataSpace('http://uriburner.com', 'URI Burner')">URI Burner</a></li>
+      <li><a class="dropdown-item" onclick="selectdataSpace('http://id.myopenlink.com', 'myopenlink')">id.myopenlink.com</a></li>
+      <li><a class="dropdown-item" onclick="selectdataSpace('http://id.myopenlink.net', 'myopenlink')">id.myopenlink.net</a></li>
+      <li><a class="dropdown-item" onclick="selectdataSpace('http://demo.openlinksw.com', 'openlinksw')">demo.openlinksw.com</a></li>
+      <li><a class="dropdown-item" onclick="selectdataSpace('http://dbpedia.org', 'dbpedia')">dbpedia.org</a></li>
       <li class="dropdown-divider"></li>
-      <li><a class="dropdown-item" onclick="selectdataSpace('http://localhost:8890', 'localhost')">localhost</a></li>
+      <li><a class="dropdown-item" onclick="selectdataSpace('http://vios.dev-team.com/api', 'Proxy')">Proxy</a></li>
     </ul>
   </li>
   <li class="nav-item dropdown" dropdown placement="bottom right" [autoClose]="false">
