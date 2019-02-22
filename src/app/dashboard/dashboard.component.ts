@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MainService} from './main.service';
-import * as xml from 'xml-js';
-declare const jQuery: any;
+declare const google: any;
 
 @Component({
   selector: 'dashboard',

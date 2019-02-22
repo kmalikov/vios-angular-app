@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import * as xml from 'xml-js';
+import {of} from 'rxjs/observable/of';
 
 @Injectable()
 export class MainService {
@@ -14,8 +15,8 @@ export class MainService {
   }
 
   queryBuilder(viewType): string {
-    const str = `<query class="0" varname="s1" timeout="10">${this.setViewType(viewType)}<text label="device">device</text></query>`;
-    return str;
+    // const str = `<query class="0" varname="s1" timeout="10">${this.setViewType(viewType)}<text label="device">device</text></query>`;
+    return '';
   }
 
   doXMLQuery(viewType): Observable<any> {
@@ -155,7 +156,8 @@ export class MainService {
 
   }
 
-  setViewType(viewType) {
-    return `<view limit="30" type="${viewType}" offset="0"></view>`;
+  getMapData() {
+    return of([{lat: 51.51, lng: -0.12}, {lat: 51.51, lng: -0.12}, {lat: 51.51, lng: -0.12}]);
   }
+
 }

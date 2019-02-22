@@ -25,9 +25,7 @@ const APP_PROVIDERS = [
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    RouterModule.forRoot(ROUTES, {
-      preloadingStrategy: PreloadAllModules
-    })
+    RouterModule.forRoot(ROUTES)
   ],
   providers: [
     APP_PROVIDERS
