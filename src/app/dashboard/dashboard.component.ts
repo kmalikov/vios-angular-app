@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MainService} from './main.service';
 declare const google: any;
+declare const window: any;
 
 @Component({
   selector: 'dashboard',
@@ -17,7 +18,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    window.init();
   }
 
   checkIfKeyDownEnter(event) {

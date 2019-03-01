@@ -86,20 +86,21 @@
       <option value="http://localhost:8890">localhost</option>
     </select>
   </li>-->
-  <li class="nav-item dropdown" dropdown placement="bottom right">
-    <a class="nav-link dropdown-toggle" dropdownToggle id="dataSpaceMenu">
+  <li class="nav-item dropdown" placement="bottom right">
+    <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dataSpaceMenu" [tooltip]="'Proxy connections'" placement="bottom">
       <i class="la la-hdd-o la-lg fs-largest"></i>
     </a>
-    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right">
-      <li><a class="dropdown-item active" onclick="selectdataSpace('http://lod.openlinksw.com', 'LOD Cloud')">LOD Cloud</a></li>
-      <li><a class="dropdown-item" onclick="selectdataSpace('https://id.myopenlink.net', 'ODS Demo')">ODS Demo</a></li>
-      <li><a class="dropdown-item" onclick="selectdataSpace('http://uriburner.com', 'URI Burner')">URI Burner</a></li>
-      <li><a class="dropdown-item" onclick="selectdataSpace('http://id.myopenlink.com', 'myopenlink')">id.myopenlink.com</a></li>
-      <li><a class="dropdown-item" onclick="selectdataSpace('http://id.myopenlink.net', 'myopenlink')">id.myopenlink.net</a></li>
-      <li><a class="dropdown-item" onclick="selectdataSpace('http://demo.openlinksw.com', 'openlinksw')">demo.openlinksw.com</a></li>
-      <li><a class="dropdown-item" onclick="selectdataSpace('http://dbpedia.org', 'dbpedia')">dbpedia.org</a></li>
-      <li class="dropdown-divider"></li>
-      <li><a class="dropdown-item" onclick="selectdataSpace('http://vios.dev-team.com/api', 'Proxy')">Proxy</a></li>
+    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+      <!--<li><a class="dropdown-item" onclick="selectdataSpace('http://poc.vios.network/proxy/-start-http://lod.openlinksw.com-end-', 'LOD Cloud')">LOD Cloud</a></li>-->
+      <!--<li><a class="dropdown-item" onclick="selectdataSpace('http://poc.vios.network/proxy/-start-https://id.myopenlink.net-end-', 'ODS Demo')">ODS Demo</a></li>-->
+      <!--<li><a class="dropdown-item" onclick="selectdataSpace('http://poc.vios.network/proxy/-start-http://uriburner.com-end-', 'URI Burner')">URI Burner</a></li>-->
+      <!--<li><a class="dropdown-item" onclick="selectdataSpace('http://poc.vios.network/proxy/-start-http://id.myopenlink.com-end-', 'myopenlink')">id.myopenlink.com</a></li>-->
+      <!--<li><a class="dropdown-item" onclick="selectdataSpace('http://poc.vios.network/proxy/-start-http://id.myopenlink.net-end-', 'myopenlink')">id.myopenlink.net</a></li>-->
+      <!--<li><a class="dropdown-item" onclick="selectdataSpace('http://poc.vios.network/proxy/-start-http://demo.openlinksw.com-end-', 'openlinksw')">demo.openlinksw.com</a></li>-->
+      <!--<li><a class="dropdown-item" onclick="selectdataSpace('http://poc.vios.network/proxyDBPedia', 'dbpedia')">dbpedia.org</a></li>-->
+      <!--<li><a class="dropdown-item" onclick="selectdataSpace('http://poc.vios.network/proxy/-start-http://data.vios.network-end-', 'dbpedia')">data.vios.network</a></li>-->
+      <!--<li class="dropdown-divider"></li>-->
+      <li><a class="dropdown-item" (click)="addDataspace(addDataspaceModal)">Add Dataspace</a></li>
     </ul>
   </li>
   <li class="nav-item dropdown" dropdown placement="bottom right" [autoClose]="false">
@@ -132,3 +133,39 @@
     </ul>
   </li>-->
 </ul>
+
+<ng-template #addDataspaceModal>
+  <form class="modal-body" #addDataspaceForm="ngForm">
+    <legend><strong>Add</strong> Dataspace</legend>
+    <div class="form-group row">
+      <label for="LabelInput" class="col-md-4 form-control-label text-md-right">Label</label>
+      <div class="col-md-7">
+        <input required type="text" id="LabelInput" [(ngModel)]="addDataspaceModel.label" #LabelInput="ngModel" class="form-control" placeholder="" name="label">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="DomainInput" class="col-md-4 form-control-label text-md-right">Domain</label>
+      <div class="col-md-7">
+        <input required type="text" id="DomainInput" [(ngModel)]="addDataspaceModel.domain" #DomainInput="ngModel" class="form-control" placeholder="" name="domain">
+      </div>
+    </div>
+    <div class="form-check abc-checkbox abc-checkbox-primary row d-flex">
+      <span for="DomainInput" class="col-md-4 form-control-label text-md-right">Secure</span>
+      <div class="col-md-2">
+        <input class="form-check-input" #SecureInput type="checkbox" id="Secure">
+        <label class="form-check-label" for="Secure"></label>
+      </div>
+    </div>
+    <div class="form-actions text-center">
+      <div class="row">
+        <div class="col-md-12 col-12">
+          <button type="button" class="btn btn-default" (click)="declineModal(addDataspaceForm)">Cancel</button>
+          <button [disabled]="!addDataspaceForm.form.valid"
+                  type="button" class="btn btn-primary"
+                  (click)="confirmModal(DomainInput.value, LabelInput.value, SecureInput.checked)">Add</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</ng-template>

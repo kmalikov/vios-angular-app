@@ -1,7 +1,9 @@
 import { Component, EventEmitter, OnInit, ElementRef, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppConfig } from '../../app.config';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 declare let jQuery: any;
+declare const window: any;
 
 @Component({
   selector: 'app-navbar',
@@ -13,8 +15,15 @@ export class NavbarComponent implements OnInit {
   $el: any;
   config: any;
   router: Router;
+  modalRef: BsModalRef;
+  disabled: boolean;
+  addDataspaceModel = {
+    label: '',
+    domain: ''
+  };
 
-  constructor(el: ElementRef, config: AppConfig, router: Router) {
+  constructor(el: ElementRef, config: AppConfig, router: Router,
+              private modalService: BsModalService) {
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
     this.router = router;
@@ -71,5 +80,23 @@ export class NavbarComponent implements OnInit {
         return 'Allow: ' + toSeconds(value);
       }
     });
+  }
+
+  addDataspace(template) {
+    this.modalRef = this.modalService.show(template);
+  }
+
+  confirmModal(domain, label, secure): void {
+    window.addDataspace(domain, label, secure);
+    this.modalRef.hide();
+
+  }
+
+  declineModal(addDataspaceForm): void {
+    this.modalRef.hide();
+  }
+
+  checkDataspaceForm(domain, label) {
+    this.disabled = !(domain.length > 0 && label.length > 0);
   }
 }

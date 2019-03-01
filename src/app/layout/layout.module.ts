@@ -3,7 +3,7 @@ import 'jquery-slimscroll';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BsDropdownModule, TooltipModule } from 'ngx-bootstrap';
+import {BsDropdownModule, BsModalService, ModalModule, TooltipModule} from 'ngx-bootstrap';
 
 import { ROUTES } from './layout.routes';
 
@@ -25,7 +25,8 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
     BsDropdownModule.forRoot(),
     ROUTES,
     FormsModule,
-    LoadingBarRouterModule
+    LoadingBarRouterModule,
+    ModalModule.forRoot()
   ],
   declarations: [
     LayoutComponent,
@@ -36,7 +37,9 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
     NotificationsComponent,
     NotificationsLoadDirective,
     ChatMessageComponent
-  ]
+  ],
+  providers: [],
+  entryComponents: []
 })
 export class LayoutModule {
 }

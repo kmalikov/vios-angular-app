@@ -20,9 +20,14 @@
 .text-warning {
   color: #9964e3 !important;
 }
-
 .bg-warning {
   background-color: #9964e3 !important;
+}
+.vios-button a {
+  color: #9964e3 !important;
+  &:hover {
+    color: #8444dd !important;
+  }
 }
 
 .clear-data {
@@ -97,13 +102,6 @@ div h6 {
     .abc-checkbox label::before {
       top: -10px;
     }
-  }
-}
-
-.vios-button a {
-  color: #9964e3 !important;
-  &:hover {
-    color: #8444dd !important;
   }
 }
 
