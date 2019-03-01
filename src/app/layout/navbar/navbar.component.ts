@@ -88,6 +88,10 @@ export class NavbarComponent implements OnInit {
 
   confirmModal(domain, label, secure): void {
     window.addDataspace(domain, label, secure);
+    this.addDataspaceModel = {
+      label: '',
+      domain: ''
+    };
     this.modalRef.hide();
 
   }
