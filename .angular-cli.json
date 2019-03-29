@@ -57,7 +57,8 @@
         "../node_modules/jquery.flot.animator/jquery.flot.animator.min.js",
         "../node_modules/morris.js/morris.js",
         "../node_modules/bootstrap-application-wizard/src/bootstrap-wizard.js",
-        "../node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"
+        "../node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js",
+        "../node_modules/@arkane-network/arkane-connect/dist/connect.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

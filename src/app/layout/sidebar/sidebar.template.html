@@ -3,7 +3,7 @@
     <a href="index.html"><span class="text-info" style="padding-left: 5px;">vios</span> network</a>
   </header>
   <div class="sidebar-status d-md-none dropdown" dropdown [autoClose]="false" (isOpenChange)="toggleSidebarOverflow($event)"
-    placement="bottom left">
+       placement="bottom left">
     <a [routerLink]="" class="dropdown-toggle" dropdownToggle>
       <span class="thumb-sm avatar float-right">
         <img class="rounded-circle" src="assets/img/people/a5.jpg" alt="...">
@@ -85,12 +85,7 @@
         <i class="toggle fa fa-angle-down"></i>
       </a>
       <ul id="sidebar-ecommerce" class="collapse">
-        <li>
-          <a >Cards</a>
-        </li>
-        <li>
-          <a >E-Cards</a>
-        </li>
+        <li><a class="dropdown-item" [routerLink]=" ['/login'] "><i class="la la-sign-out"></i>My Wallet</a></li>
       </ul>
     </li>
   </ul>
@@ -253,7 +248,7 @@
       <br>
       <div class="progress progress-xs mt-xs mb-0">
         <div class="progress-bar progress-bar-gray-light" role="progressbar" style="width: 16%" aria-valuenow="11" aria-valuemin="0"
-          aria-valuemax="100"></div>
+             aria-valuemax="100"></div>
       </div>
       <small>Total files... 11%</small>
     </div>
