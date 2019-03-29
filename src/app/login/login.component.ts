@@ -13,7 +13,7 @@ export class LoginComponent implements AfterViewInit {
   app: any = {};
   constructor() {
     this.app.initApp = async () => {
-      window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'staging'});
+      window.arkaneConnect = new ArkaneConnect('vios', {environment: 'staging'});
       try {
         const authenticationResult = await window.arkaneConnect.checkAuthenticated();
         authenticationResult.authenticated(async (auth) => {
