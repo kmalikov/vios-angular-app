@@ -85,6 +85,9 @@
     "jquery.flot.animator": "https://github.com/Codicode/flotanimator.git#3c256c0183d713fd3bf41d04417873928eb1a751",
     "jQuery-Mapael": "https://github.com/neveldo/jQuery-Mapael.git#0.7.1"
   },
+  "config": {
+    "unsafe-perm": true
+  },
   "devDependencies": {
     "@angular/cli": "1.7.4",
     "@angular/compiler-cli": "5.2.11",
