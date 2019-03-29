@@ -2,6 +2,8 @@ import {Component, OnInit, ElementRef, AfterViewInit} from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
 import { AppConfig } from '../../app.config';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import {WalletsModalComponent} from '../../components/wallets-modal/wallets-modal.component';
 declare let jQuery: any;
 
 @Component({
@@ -15,8 +17,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   configFn: any;
   router: Router;
   location: Location;
+  bsModalRef: BsModalRef;
 
-  constructor(config: AppConfig, el: ElementRef, router: Router, location: Location) {
+  constructor(config: AppConfig, el: ElementRef, router: Router, location: Location,
+              private modalService: BsModalService) {
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
     this.configFn = config;
@@ -77,5 +81,19 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
   logout() {
     this.router.navigate(['/login']);
+  }
+
+  openWalletsModal() {
+    const initialState = {
+      list: [
+        'Open a modal with component',
+        'Pass your data',
+        'Do something else',
+        '...'
+      ],
+      title: 'Modal with component'
+    };
+    this.bsModalRef = this.modalService.show(WalletsModalComponent, {initialState});
+    this.bsModalRef.content.closeBtnName = 'Close';
   }
 }

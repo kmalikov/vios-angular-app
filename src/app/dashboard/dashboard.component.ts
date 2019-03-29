@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MainService} from './main.service';
-declare const google: any;
 declare const window: any;
 
 @Component({

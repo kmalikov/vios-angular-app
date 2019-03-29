@@ -1,21 +1,23 @@
-import {AfterViewInit, Component, HostBinding, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {WalletsModalService} from './wallets-modal.service';
+import { BsModalRef } from 'ngx-bootstrap';
 import {ArkaneConnect} from '@arkane-network/arkane-connect';
 declare const $;
 declare const window;
 
 @Component({
-  selector: 'app-login',
-  styleUrls: [ './login.style.scss' ],
-  templateUrl: './login.template.html'
+  selector: 'wallets-modal',
+  templateUrl: './wallets-modal.template.html',
+  styleUrls: ['./wallets-modal.style.scss']
 })
-export class LoginComponent implements OnInit, AfterViewInit {
-  @HostBinding('class') classes = 'login-page app';
+export class WalletsModalComponent implements OnInit, AfterViewInit {
   app: any = {};
   loggedIn = false;
   wallets = [];
   name = '';
-  constructor() {
+  constructor(public bsModalRef: BsModalRef, private service: WalletsModalService) {
   }
+
 
   ngOnInit() {
     this.initApp();

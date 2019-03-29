@@ -17,6 +17,8 @@ import { NotificationsLoadDirective } from './notifications/notifications-load.d
 import { NotificationsComponent } from './notifications/notifications.component';
 
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import {WalletsModalComponent} from '../components/wallets-modal/wallets-modal.component';
+import {WalletsModalService} from '../components/wallets-modal/wallets-modal.service';
 
 @NgModule({
   imports: [
@@ -36,10 +38,15 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
     SearchPipe,
     NotificationsComponent,
     NotificationsLoadDirective,
-    ChatMessageComponent
+    ChatMessageComponent,
+    WalletsModalComponent
   ],
-  providers: [],
-  entryComponents: []
+  providers: [
+    WalletsModalService
+  ],
+  entryComponents: [
+    WalletsModalComponent
+  ]
 })
 export class LayoutModule {
 }
