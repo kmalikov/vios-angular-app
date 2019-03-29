@@ -7,7 +7,6 @@ import 'jQuery-Mapael/js/maps/world_countries.js';
 
 import { WidgetsComponent } from './widgets.component';
 import { LiveTileModule } from '../components/tile/tile.module';
-import { SkyconsModule } from '../components/skycon/skycon.module';
 import { WidgetModule } from '../layout/widget/widget.module';
 import { FlotChartModule } from '../components/flot/flot.module';
 import { RickshawChartModule } from '../components/rickshaw/rickshaw.module';
@@ -37,7 +36,6 @@ export const routes = [
     CommonModule,
     RouterModule.forChild(routes),
     LiveTileModule,
-    SkyconsModule,
     WidgetModule,
     FlotChartModule,
     RickshawChartModule,
