@@ -11,7 +11,7 @@
 <div class="modal-body">
   <div *ngIf="loggedIn">
 
-    <form id="transaction-form">
+    <form id="transaction-form" (submit)="doTransaction()">
       <div id="wallets">
         <h1>Wallets</h1>
 

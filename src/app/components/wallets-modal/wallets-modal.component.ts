@@ -24,26 +24,6 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
-    $('#transaction-form').submit(async (event) => {
-      event.preventDefault();
-      const signer = window.arkaneConnect.createSigner();
-
-      try {
-        const transactionResult = await signer.executeTransaction(
-          {
-            walletId: $('#transaction-form select[name=\'from\']').val(),
-            to: $('#transaction-form input[name=\'to\']').val(),
-            value: ($('#transaction-form input[name=\'amount\']').val()),
-            secretType: $('#transaction-form input[name=\'secretType\']').val(),
-            tokenAddress: $('#transaction-form select[name=\'tokenAddress\']').val(),
-          }
-        );
-        console.log(transactionResult.result.transactionHash);
-      } catch (reason) {
-        console.error(reason);
-      }
-    });
   }
 
   async initApp() {
@@ -132,6 +112,24 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
       } else {
         $('#selected-wallet').addClass('hidden');
       }
+    }
+  }
+
+  async doTransaction (event) {
+    const signer = window.arkaneConnect.createSigner();
+    try {
+      const transactionResult = await signer.executeTransaction(
+        {
+          walletId: $('#transaction-form select[name=\'from\']').val(),
+          to: $('#transaction-form input[name=\'to\']').val(),
+          value: ($('#transaction-form input[name=\'amount\']').val()),
+          secretType: $('#transaction-form input[name=\'secretType\']').val(),
+          tokenAddress: $('#transaction-form select[name=\'tokenAddress\']').val(),
+        }
+      );
+      console.log(transactionResult.result.transactionHash);
+    } catch (reason) {
+      console.error(reason);
     }
   }
 }
