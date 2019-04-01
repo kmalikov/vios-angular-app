@@ -74,7 +74,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     } catch (reason) {
       console.error(reason);
     }
-  };
+  }
 
   convertArrayToMap(array, key) {
     return array.reduce((obj, item) => {

@@ -1,9 +1,15 @@
-<div class="auth-logged-in" *ngIf="loggedIn">
-  <div>
-    <div id="user">
-      <h1>User <span id="auth-username">{{name}}</span></h1>
-      <a id="auth-logout" href="javascript:void(0)" (click)="doLogout()"><span>Logout</span></a>
-    </div>
+<div class="modal-header">
+  <div *ngIf="loggedIn">
+    <h1>User <span id="auth-username">{{name}}</span></h1>
+    <a id="auth-logout" href="javascript:void(0)" (click)="doLogout()"><span>Logout</span></a>
+  </div>
+  <div *ngIf="!loggedIn">
+    <h3>User authorization...</h3>
+  </div>
+</div>
+
+<div class="modal-body">
+  <div *ngIf="loggedIn">
 
     <form id="transaction-form">
       <div id="wallets">
@@ -53,8 +59,16 @@
       </div>
     </form>
   </div>
+
+  <div class="auth-not-logged-in" *ngIf="!loggedIn">
+    <div class="loader animated fadeIn text-center">
+       <span class="spinner"><i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i></span>
+    </div>
+  </div>
+
 </div>
 
-<div class="auth-not-logged-in" *ngIf="!loggedIn">
-  <a id="auth-loginlink" href="javascript:void(0)" (click)="doLogin()">Login</a>
+<div class="modal-footer">
 </div>
+
+

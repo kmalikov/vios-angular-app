@@ -4,7 +4,9 @@ import { Location } from '@angular/common';
 import { AppConfig } from '../../app.config';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import {WalletsModalComponent} from '../../components/wallets-modal/wallets-modal.component';
-declare let jQuery: any;
+import {ArkaneConnect} from '@arkane-network/arkane-connect';
+declare const jQuery: any;
+declare const window: any;
 
 @Component({
   selector: 'app-sidebar',
@@ -26,6 +28,14 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.configFn = config;
     this.router = router;
     this.location = location;
+    this.checkIfAfterLoginOnArkane(router);
+  }
+
+  checkIfAfterLoginOnArkane(router) {
+    const url = router.routerState.snapshot.url;
+    if (url.includes('state') && url.includes('session_state') && url.includes('code')) {
+      this.openWallet();
+    }
   }
 
   initSidebarScroll(): void {
@@ -83,17 +93,29 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/login']);
   }
 
-  openWalletsModal() {
-    const initialState = {
-      list: [
-        'Open a modal with component',
-        'Pass your data',
-        'Do something else',
-        '...'
-      ],
-      title: 'Modal with component'
-    };
-    this.bsModalRef = this.modalService.show(WalletsModalComponent, {initialState});
+  async openWalletOrLogin() {
+    window.arkaneConnect = new ArkaneConnect('vios', {environment: 'staging'});
+    try {
+      const authenticationResult = await window.arkaneConnect.checkAuthenticated();
+      authenticationResult
+        .authenticated(async (auth) => {
+          this.openWallet();
+        })
+        .notAuthenticated((auth) => {
+          console.log('This user is not authenticated', auth);
+        });
+    } catch (reason) {
+      this.openLogin();
+      console.error(reason);
+    }
+  }
+
+  openWallet() {
+    this.bsModalRef = this.modalService.show(WalletsModalComponent, {class: 'modal-lg'});
     this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  openLogin() {
+    window.arkaneConnect.authenticate();
   }
 }
