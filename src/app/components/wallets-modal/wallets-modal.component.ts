@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {WalletsModalService} from './wallets-modal.service';
 import { BsModalRef } from 'ngx-bootstrap';
 import {ArkaneConnect} from '@arkane-network/arkane-connect';
+import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 declare const $;
 declare const window;
 
@@ -15,6 +16,8 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   loggedIn = false;
   wallets = [];
   name = '';
+  alerts: any[] = [];
+
   constructor(public bsModalRef: BsModalRef, private service: WalletsModalService) {
   }
 
@@ -128,8 +131,21 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
         }
       );
       console.log(transactionResult.result.transactionHash);
+      this.add();
     } catch (reason) {
       console.error(reason);
     }
+  }
+
+  add(): void {
+    this.alerts.push({
+      type: 'success',
+      msg: `Transaction was succeed!`,
+      timeout: 5000
+    });
+  }
+
+  onClosed(dismissedAlert: AlertComponent): void {
+    this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
   }
 }

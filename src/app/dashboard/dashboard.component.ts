@@ -15,12 +15,10 @@ export class DashboardComponent implements OnInit {
 
   enable = false;
   constructor(private service: MainService) {
-    console.log(solid);
   }
 
   ngOnInit(): void {
     window.init();
-    const popupUri = 'popup.html';
   }
 
   login() {

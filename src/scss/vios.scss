@@ -14,20 +14,16 @@
     border-radius: 0 0.3rem 0.3rem 0;
   }
 }
-.badge-warning {
-  background-color: #9964e3 !important;
-}
-.text-warning {
-  color: #9964e3 !important;
-}
-.bg-warning {
-  background-color: #9964e3 !important;
-}
+
 .vios-button a {
   color: #9964e3 !important;
   &:hover {
     color: #8444dd !important;
   }
+}
+
+.alert-dismissible {
+  padding-right: 1.25rem;
 }
 
 .clear-data {

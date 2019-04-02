@@ -33,7 +33,8 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
   checkIfAfterLoginOnArkane(router) {
     const url = router.routerState.snapshot.url;
-    if (url.includes('state') && url.includes('session_state') && url.includes('code')) {
+    if ((url.includes('state') && url.includes('session_state') && url.includes('code')) ||
+         url.includes('status=SUCCESS')) {
       this.openWallet();
     }
   }

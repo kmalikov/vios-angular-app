@@ -3,7 +3,7 @@ import 'jquery-slimscroll';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {BsDropdownModule, BsModalService, ModalModule, TooltipModule} from 'ngx-bootstrap';
+import {AlertModule, BsDropdownModule, BsModalService, ModalModule, TooltipModule} from 'ngx-bootstrap';
 
 import { ROUTES } from './layout.routes';
 
@@ -28,7 +28,8 @@ import {WalletsModalService} from '../components/wallets-modal/wallets-modal.ser
     ROUTES,
     FormsModule,
     LoadingBarRouterModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    AlertModule.forRoot()
   ],
   declarations: [
     LayoutComponent,
