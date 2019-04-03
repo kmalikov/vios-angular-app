@@ -79,7 +79,7 @@
     <li>
       <a class="collapsed" (click)="openWalletOrLogin()">
         <span class="icon">
-          <i class="fi flaticon-diamond"></i>
+          <i id="walletDiamond" class="fi flaticon-diamond" [class.text-warning]="wallets"></i>
         </span>
         Wallet
       </a>

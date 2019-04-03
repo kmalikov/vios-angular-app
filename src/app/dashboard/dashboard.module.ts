@@ -14,6 +14,7 @@ import {BootstrapWizardModule} from '../components/wizard/wizard.module';
 import {NKDatetimeModule} from 'ng2-datetime/src/ng2-datetime/ng2-datetime.module';
 import {Select2Module} from 'ng2-select2';
 import {EditorModule} from '@tinymce/tinymce-angular';
+import {ToastService} from '../components/toast-directive/toast.service';
 
 export const routes = [
   { path: '', component: DashboardComponent, pathMatch: 'full' }
@@ -38,7 +39,8 @@ export const routes = [
     EditorModule
   ],
   providers: [
-    MainService
+    MainService,
+    ToastService
   ],
   declarations: [
     DashboardComponent

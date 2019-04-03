@@ -5,8 +5,10 @@ import { AppConfig } from '../../app.config';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import {WalletsModalComponent} from '../../components/wallets-modal/wallets-modal.component';
 import {ArkaneConnect} from '@arkane-network/arkane-connect';
+import {ToastService} from '../../components/toast-directive/toast.service';
 declare const jQuery: any;
 declare const window: any;
+declare const $: any;
 
 @Component({
   selector: 'app-sidebar',
@@ -20,15 +22,17 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   router: Router;
   location: Location;
   bsModalRef: BsModalRef;
+  wallets: string;
 
   constructor(config: AppConfig, el: ElementRef, router: Router, location: Location,
-              private modalService: BsModalService) {
+              private modalService: BsModalService, private toastService: ToastService) {
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
     this.configFn = config;
     this.router = router;
     this.location = location;
     this.checkIfAfterLoginOnArkane(router);
+    this.checkWallets();
   }
 
   checkIfAfterLoginOnArkane(router) {
@@ -36,7 +40,15 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     if ((url.includes('state') && url.includes('session_state') && url.includes('code')) ||
          url.includes('status=SUCCESS')) {
       this.openWallet();
+    } else if (url.includes('status=ABORTED')) {
+      this.toastService.showToast('Unsuccessful', 'Request aborted');
+    } else if (url.includes('status=FAILED&error=NOT_AUTHORIZED')) {
+
     }
+  }
+
+  checkWallets() {
+    this.wallets = localStorage.getItem('wallets');
   }
 
   initSidebarScroll(): void {
@@ -95,28 +107,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   async openWalletOrLogin() {
-    window.arkaneConnect = new ArkaneConnect('vios', {environment: 'staging'});
-    try {
-      const authenticationResult = await window.arkaneConnect.checkAuthenticated();
-      authenticationResult
-        .authenticated(async (auth) => {
-          this.openWallet();
-        })
-        .notAuthenticated((auth) => {
-          console.log('This user is not authenticated', auth);
-        });
-    } catch (reason) {
-      this.openLogin();
-      console.error(reason);
-    }
+    this.openWallet();
   }
 
   openWallet() {
     this.bsModalRef = this.modalService.show(WalletsModalComponent, {class: 'modal-lg'});
     this.bsModalRef.content.closeBtnName = 'Close';
-  }
-
-  openLogin() {
-    window.arkaneConnect.authenticate();
   }
 }

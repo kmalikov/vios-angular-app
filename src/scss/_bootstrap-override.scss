@@ -1129,3 +1129,9 @@ code {
 .badge-inverse {
   @include badge-variant($gray-400);
 }
+
+.toast {
+  position: absolute;
+  z-index: 10000;
+  right: 10px;
+}

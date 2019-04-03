@@ -9,8 +9,6 @@ export class MainService {
   SIZE_LABEL = 40;
   GROUP_BY_NONE_VALUE = 'GROUPBY-NONE';
   GROUP_BY_TEXT_VALUE = 'GROUPBY-TEXT';
-  VIEW_TYPE_TEXT = 'text';
-  VIEW_TYPE_LIST_COUNT = 'list-count';
   constructor(private http: HttpClient) {
   }
 

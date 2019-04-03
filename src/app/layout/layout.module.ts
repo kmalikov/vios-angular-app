@@ -19,6 +19,8 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import {WalletsModalComponent} from '../components/wallets-modal/wallets-modal.component';
 import {WalletsModalService} from '../components/wallets-modal/wallets-modal.service';
+import {ToastModule} from '../components/toast-directive/toast.module';
+import {ToastService} from '../components/toast-directive/toast.service';
 
 @NgModule({
   imports: [
@@ -29,7 +31,8 @@ import {WalletsModalService} from '../components/wallets-modal/wallets-modal.ser
     FormsModule,
     LoadingBarRouterModule,
     ModalModule.forRoot(),
-    AlertModule.forRoot()
+    AlertModule.forRoot(),
+    ToastModule
   ],
   declarations: [
     LayoutComponent,
@@ -43,7 +46,8 @@ import {WalletsModalService} from '../components/wallets-modal/wallets-modal.ser
     WalletsModalComponent
   ],
   providers: [
-    WalletsModalService
+    WalletsModalService,
+    ToastService
   ],
   entryComponents: [
     WalletsModalComponent

@@ -12,8 +12,8 @@ declare const solid: any;
 export class DashboardComponent implements OnInit {
   groupByList: any[];
   groupItemSelected: any;
-
   enable = false;
+
   constructor(private service: MainService) {
   }
 

@@ -3,6 +3,7 @@ import {WalletsModalService} from './wallets-modal.service';
 import { BsModalRef } from 'ngx-bootstrap';
 import {ArkaneConnect} from '@arkane-network/arkane-connect';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
+import {ToastService} from '../toast-directive/toast.service';
 declare const $;
 declare const window;
 
@@ -15,10 +16,12 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   app: any = {};
   loggedIn = false;
   wallets = [];
+  wallet: any;
   name = '';
   alerts: any[] = [];
 
-  constructor(public bsModalRef: BsModalRef, private service: WalletsModalService) {
+  constructor(public bsModalRef: BsModalRef, private service: WalletsModalService,
+              private toastService: ToastService) {
   }
 
 
@@ -43,18 +46,20 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
           if (wallets.length > 0) {
             const walletsMap = this.convertArrayToMap(wallets, 'id');
             localStorage.setItem('wallets', JSON.stringify(walletsMap));
+            $('#walletDiamond').addClass('text-warning');
             this.populateWalletsSelect(wallets);
           } else {
             this.manageWallet('ETHEREUM');
           }
         } catch (err) {
-          console.error('Something went wrong while fetching the user\'s wallets');
+          this.toastService.showToast('Failed', 'Something went wrong while fetching the user\'s wallets');
         }
       })
         .notAuthenticated((auth) => {
           console.log('This user is not authenticated', auth);
         });
     } catch (reason) {
+      window.arkaneConnect.authenticate();
       console.error(reason);
     }
   }
@@ -87,6 +92,8 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
 
   doLogout() {
     window.arkaneConnect.logout();
+    localStorage.removeItem('wallets');
+    $('#walletDiamond').removeClass('text-warning');
   }
 
   manageWallet(name) {
@@ -94,27 +101,22 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   }
 
   async selectWallet(event) {
-    {
-      event.preventDefault();
-      if (event.target['value']) {
-        const wallets = JSON.parse(localStorage.getItem('wallets'));
-        const wallet = wallets[event.target['value']];
-        $('#wallet-address').html(wallet.address);
-        $('#wallet-balance').html(`${wallet.balance.balance} ${wallet.balance.symbol}`);
-        $('#wallet-gas-balance').html(`${wallet.balance.gasBalance} ${wallet.balance.gasSymbol}`);
+    if (event) {
+      const wallets = JSON.parse(localStorage.getItem('wallets'));
+      const wallet = wallets[event];
+      this.wallet = wallet;
 
-        const tokenBalances = await window.arkaneConnect.api.getTokenBalances(wallet.id);
-        $('#wallet-tokens').html(
-          tokenBalances.map((tokenBalance) => `${tokenBalance.balance} ${tokenBalance.symbol}`).join('<br/>')
-        );
+      const tokenBalances = await window.arkaneConnect.api.getTokenBalances(wallet.id);
+      $('#wallet-tokens').html(
+        tokenBalances.map((tokenBalance) => `${tokenBalance.balance} ${tokenBalance.symbol}`).join('<br/>')
+      );
 
-        $('#secret-type').val(wallet.secretType);
-        this.preFillTransactionTokens(wallet, tokenBalances);
+      $('#secret-type').val(wallet.secretType);
+      this.preFillTransactionTokens(wallet, tokenBalances);
 
-        $('#selected-wallet').removeClass('hidden');
-      } else {
-        $('#selected-wallet').addClass('hidden');
-      }
+      $('#selected-wallet').removeClass('hidden');
+    } else {
+      $('#selected-wallet').addClass('hidden');
     }
   }
 
@@ -130,22 +132,10 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
           tokenAddress: $('#transaction-form select[name=\'tokenAddress\']').val(),
         }
       );
-      console.log(transactionResult.result.transactionHash);
-      this.add();
+      this.toastService.showToast('Success', 'Transaction was succeed');
     } catch (reason) {
       console.error(reason);
     }
   }
 
-  add(): void {
-    this.alerts.push({
-      type: 'success',
-      msg: `Transaction was succeed!`,
-      timeout: 5000
-    });
-  }
-
-  onClosed(dismissedAlert: AlertComponent): void {
-    this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
-  }
 }
