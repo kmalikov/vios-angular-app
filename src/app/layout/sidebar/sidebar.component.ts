@@ -4,10 +4,10 @@ import { Location } from '@angular/common';
 import { AppConfig } from '../../app.config';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import {WalletsModalComponent} from '../../components/wallets-modal/wallets-modal.component';
-import {ArkaneConnect} from '@arkane-network/arkane-connect';
 import {ToastService} from '../../components/toast-directive/toast.service';
 declare const jQuery: any;
 declare const window: any;
+declare const solid: any;
 declare const $: any;
 
 @Component({
@@ -23,6 +23,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   location: Location;
   bsModalRef: BsModalRef;
   wallets: string;
+  solidAccount: string;
 
   constructor(config: AppConfig, el: ElementRef, router: Router, location: Location,
               private modalService: BsModalService, private toastService: ToastService) {
@@ -32,7 +33,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.router = router;
     this.location = location;
     this.checkIfAfterLoginOnArkane(router);
-    this.checkWallets();
+    this.checkWalletsAndSolid();
   }
 
   checkIfAfterLoginOnArkane(router) {
@@ -47,8 +48,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     }
   }
 
-  checkWallets() {
+  checkWalletsAndSolid() {
     this.wallets = localStorage.getItem('wallets');
+    this.solidAccount = localStorage.getItem('solid-auth-client');
   }
 
   initSidebarScroll(): void {
@@ -113,5 +115,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   openWallet() {
     this.bsModalRef = this.modalService.show(WalletsModalComponent, {class: 'modal-lg'});
     this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  login() {
+    const popupUri = 'https://solid.github.io/solid-auth-client/dist/popup.html';
+    solid.auth.popupLogin({ popupUri });
   }
 }

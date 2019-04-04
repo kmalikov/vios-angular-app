@@ -1135,3 +1135,11 @@ code {
   z-index: 10000;
   right: 10px;
 }
+
+.modal-content {
+  background-color: #f9fbfd;
+}
+
+.widget {
+  box-shadow: 0 23px 20px -20px rgba(115,162,208,0.1), 0 0 15px rgba(115,162,208,0.06) !important;
+}

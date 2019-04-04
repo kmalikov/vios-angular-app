@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MainService} from './main.service';
 declare const window: any;
-declare const solid: any;
 
 @Component({
   selector: 'dashboard',
@@ -19,11 +18,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     window.init();
-  }
-
-  login() {
-    const popupUri = 'https://solid.github.io/solid-auth-client/dist/popup.html';
-    solid.auth.popupLogin({ popupUri });
   }
 
   checkIfKeyDownEnter(event) {

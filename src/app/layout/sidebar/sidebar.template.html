@@ -71,7 +71,7 @@
     <li>
       <a >
         <span class="icon">
-          <i class="fi flaticon-database-1"></i>
+          <i class="fi flaticon-binoculars"></i>
         </span>
         Briefcase
       </a>
@@ -82,6 +82,14 @@
           <i id="walletDiamond" class="fi flaticon-diamond" [class.text-warning]="wallets"></i>
         </span>
         Wallet
+      </a>
+    </li>
+    <li>
+      <a class="collapsed" (click)="login()">
+        <span class="icon">
+          <i id="solidAccount" class="fi flaticon-database-1" [class.text-warning]="solidAccount"></i>
+        </span>
+        Solid
       </a>
     </li>
   </ul>

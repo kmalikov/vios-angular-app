@@ -1,12 +1,14 @@
 <div class="modal-header">
   <div style="width: 100%;">
     <div *ngIf="loggedIn">
-      <h3>Arkan User - {{name}}</h3>
-      <div>
-        <a class="text-sm" href="javascript:void(0)" (click)="doLogout()"><span>logout</span></a>
+      <div class="d-flex justify-content-between flex-wrap">
+        <h3>Arkan User - {{name}}</h3>
+        <div>
+          <a class="text-sm" href="javascript:void(0)" (click)="doLogout()"><span>logout</span></a>
+        </div>
       </div>
       <div class="btn-group" dropdown>
-        <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+        <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle btn-gray"
                 aria-controls="dropdown-basic">
           Wallets <span class="caret"></span>
         </button>
@@ -18,34 +20,41 @@
         </ul>
       </div>
       <div id="wallet-details" *ngIf="wallet">
-        <div class="offset-md-6 col-md-6">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="flex-column">
-                <div>Balance</div>
-                <div class="font-weight-bold">{{wallet.balance?.balance}} {{wallet.balance?.symbol}}</div>
+        <div class="offset-lg-6 col-sm-12 col-lg-6 col-xl-6">
+          <div class="pb-xlg h-100">
+            <section class="widget mb-0 h-100">
+              <header class="d-flex justify-content-between flex-wrap">
+                <h5 class="d-flex align-items-center pb-1 big-stat-title">
+                  <span class="circle bg-info mr-sm" style="font-size: 6px;"></span>
+                  Balance
+                </h5>
+              </header>
+              <div class="widget-body p-0">
+                <h5 class="fw-semi-bold ml-lg mb-lg">{{wallet.balance?.balance}} {{wallet.balance?.symbol}}</h5>
+                <div class="d-flex border-top">
+                  <div class="w-50 border-right p-3 px-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <h6>Gas Balance</h6>
+                      <i class="fa fa-circle float-right text-success mt-sm"></i>
+                    </div>
+                    <p class="text-muted mb-0 mr"><small class="fw-semi-bold">{{wallet.balance?.gasBalance}} {{wallet.balance?.gasSymbol}}</small></p>
+                  </div>
+                  <div class="w-50 p-3 px-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <h6>Tokens</h6>
+                      <i class="fa fa-circle float-right text-success mt-sm"></i>
+                    </div>
+                    <p class="text-muted mb-0 mr"><small id="wallet-tokens" class="fw-semi-bold"></small></p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="flex-column">
-                <div>Gas Balance</div>
-                <div class="font-weight-bold">{{wallet.balance?.gasBalance}} {{wallet.balance?.gasSymbol}}</div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="flex-column">
-                <div>Tokens</div>
-                <div id="wallet-tokens" class="font-weight-bold"></div>
-              </div>
-            </div>
+            </section>
           </div>
         </div>
       </div>
-      <div class="font-weight-light" *ngIf="wallet">
+      <h3 class="font-weight-light" *ngIf="wallet">
         Send <span class="font-weight-bold">Payment</span>
-      </div>
+      </h3>
     </div>
     <div *ngIf="!loggedIn">
       <h3>User authorization...</h3>
@@ -57,16 +66,31 @@
   <form id="transaction-form" (submit)="doTransaction()">
     <div id="wallets">
       <div id="selected-wallet" class="hidden">
-        <div id="transaction">
-          <h1>Transaction</h1>
-          <input type="hidden" id="secret-type" name="secretType" value=""/>
-          <label for="transaction-to">To:</label>
-          <input type="text" id="transaction-to" name="to" value=""/>
-          <label for="transaction-token">Token (optional):</label>
-          <select id="transaction-token" name="tokenAddress"></select>
-          <label for="transaction-amount">Amount:</label>
-          <input type="text" id="transaction-amount" name="amount" value=""/>
-          <input type="submit" value="Execute transaction"/>
+        <div id="transaction" class="m-auto">
+          <div class="form-group row">
+            <label for="transaction-to" class="col-md-4 form-control-label text-md-right">To:</label>
+            <div class="col-md-7">
+              <input type="hidden" id="secret-type" name="secretType" value="" class="form-control"/>
+              <input type="text" id="transaction-to" name="to" value="" class="form-control"/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Token (optional):</label>
+            <div class="col-md-7">
+              <select id="transaction-token" name="tokenAddress"></select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Amount:</label>
+            <div class="col-md-7">
+              <input type="text" id="transaction-amount" name="amount" value=""/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12">
+              <input type="submit" class="m-auto" style="width: unset" value="Execute transaction"/>
+            </div>
+          </div>
         </div>
       </div>
     </div>
