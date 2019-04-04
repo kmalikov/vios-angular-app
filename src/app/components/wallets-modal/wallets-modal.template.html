@@ -3,9 +3,6 @@
     <div *ngIf="loggedIn">
       <div class="d-flex justify-content-between flex-wrap">
         <h3>Arkan User - {{name}}</h3>
-        <div>
-          <a class="text-sm" href="javascript:void(0)" (click)="doLogout()"><span>logout</span></a>
-        </div>
       </div>
       <div class="btn-group" dropdown>
         <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle btn-gray"
@@ -63,7 +60,7 @@
 </div>
 
 <div class="modal-body" *ngIf="wallet">
-  <form id="transaction-form" (submit)="doTransaction()">
+  <form id="transaction-form" #transactionForm="ngForm">
     <div id="wallets">
       <div id="selected-wallet" class="hidden">
         <div id="transaction" class="m-auto">
@@ -71,25 +68,29 @@
             <label for="transaction-to" class="col-md-4 form-control-label text-md-right">To:</label>
             <div class="col-md-7">
               <input type="hidden" id="secret-type" name="secretType" value="" class="form-control"/>
-              <input type="text" id="transaction-to" name="to" value="" class="form-control"/>
+              <input type="hidden" id="wallet-address" name="secretType" value="{{wallet.address}}" class="form-control"/>
+              <input required type="text" id="transaction-to" [(ngModel)]="transactionModel.to" #toInput="ngModel" class="form-control" name="to">
             </div>
           </div>
           <div class="form-group row">
             <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Token (optional):</label>
             <div class="col-md-7">
-              <select id="transaction-token" name="tokenAddress"></select>
+              <select id="transaction-token" [(ngModel)]="transactionModel.tokenAddress" #tokenAddressInput="ngModel" name="tokenAddress"></select>
             </div>
           </div>
           <div class="form-group row">
             <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Amount:</label>
             <div class="col-md-7">
-              <input type="text" id="transaction-amount" name="amount" value=""/>
+              <input required type="text" id="transaction-amount" [(ngModel)]="transactionModel.amount" #amountInput="ngModel" class="form-control" name="amount"/>
             </div>
           </div>
           <div class="form-group row">
-            <div class="col-12">
-              <input type="submit" class="m-auto" style="width: unset" value="Execute transaction"/>
-            </div>
+            <button class="btn btn-success width-100 mb-xs m-auto"
+                    role="button"
+                    [disabled]="!transactionForm.form.valid"
+                    (click)="doTransaction(transactionModel)">
+              Transfer
+            </button>
           </div>
         </div>
       </div>
@@ -103,10 +104,19 @@
       <span class="spinner"><i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i></span>
     </div>
   </div>
+  <div *ngIf="loggedIn">
+    <h3>Choose any <span class="font-weight-bold">wallet</span></h3>
+  </div>
 </div>
 
 
-<div class="modal-footer" *ngIf="wallet">
+<div class="modal-footer" *ngIf="loggedIn">
+  <button class="btn btn-gray width-100 mb-xs" role="button">
+    <small>Browse IDNs</small>
+  </button>
+  <button class="btn btn-warning width-100 mb-xs" role="button" (click)="doLogout()">
+    <small>Logout</small>
+  </button>
 </div>
 
 

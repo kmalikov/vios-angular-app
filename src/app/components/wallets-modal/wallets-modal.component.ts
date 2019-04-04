@@ -19,6 +19,11 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   wallet: any;
   name = '';
   alerts: any[] = [];
+  transactionModel = {
+    to: '',
+    amount: '',
+    tokenAddress: ''
+  };
 
   constructor(public bsModalRef: BsModalRef, private service: WalletsModalService,
               private toastService: ToastService) {
@@ -86,10 +91,6 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     });
   }
 
-  doLogin() {
-    window.arkaneConnect.authenticate();
-  }
-
   doLogout() {
     window.arkaneConnect.logout();
     localStorage.removeItem('wallets');
@@ -120,19 +121,28 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async doTransaction (event) {
+  async doTransaction (model) {
     const signer = window.arkaneConnect.createSigner();
     try {
       const transactionResult = await signer.executeTransaction(
         {
-          walletId: $('#transaction-form select[name=\'from\']').val(),
-          to: $('#transaction-form input[name=\'to\']').val(),
-          value: ($('#transaction-form input[name=\'amount\']').val()),
-          secretType: $('#transaction-form input[name=\'secretType\']').val(),
-          tokenAddress: $('#transaction-form select[name=\'tokenAddress\']').val(),
+          walletId: this.wallet.id,
+          to: model.to,
+          value: model.amount,
+          secretType: this.wallet.secretType,
+          tokenAddress: model.tokenAddress
         }
       );
-      this.toastService.showToast('Success', 'Transaction was succeed');
+      if (transactionResult && transactionResult.status === 'SUCCESS') {
+        this.toastService.showToast('Success', 'Transaction was succeed');
+      } else {
+        this.toastService.showToast('Failed', 'Something went wrong...');
+      }
+      this.transactionModel = {
+        to: '',
+        amount: '',
+        tokenAddress: ''
+      };
     } catch (reason) {
       console.error(reason);
     }
