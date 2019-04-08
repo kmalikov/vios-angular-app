@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  viosNetworkApi: 'http://data.vios.network/ods/api/'
+  viosNetworkApi: 'https://ggg.vios.network/ods/api/'
 };

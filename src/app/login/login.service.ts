@@ -13,9 +13,9 @@ export class LoginService {
       `user.authenticate?user_name=${login}&password_hash=${passwordHash}`);
   }
 
-  registration(): Observable<any> {
+  registration(name, password, email): Observable<any> {
     return this.httpClient.get(environment.viosNetworkApi +
-      'user.authenticate?user_name=smonroe&password_hash=6853b3adae38362df75648336946a44b3e30a8ef');
+      `user.register?name=${name}&password=${password}&email=${email}`);
   }
 
   logout() {

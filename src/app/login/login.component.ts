@@ -28,6 +28,7 @@ export class LoginComponent {
       .login(this.formModel.login, sha1(this.formModel.login + this.formModel.password))
       .filter(data => !!data)
       .subscribe(result => {
+        debugger;
         if (result) {
           this.router.navigate(['/app', 'home']);
         }
@@ -40,17 +41,14 @@ export class LoginComponent {
       /*
       Pass the API calls through the alpha.vios.network proxy server.!!!
        */
-
-      /*
-      user_name = user id
-      password_hash = SHA1(user_name+password)
-       */
     });
   }
 
   doRegister() {
-    // this.service.registration().subscribe(data => {
-      // what next?
-    // });
+    this.service
+      .registration(this.formModel.login, this.formModel.password, this.formModel.email)
+      .subscribe(data => {
+        debugger;
+      });
   }
 }
