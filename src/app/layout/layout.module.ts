@@ -29,20 +29,20 @@ import {ToastService} from '../components/toast-directive/toast.service';
     BsDropdownModule.forRoot(),
     ROUTES,
     FormsModule,
-    LoadingBarRouterModule,
+    // LoadingBarRouterModule,NotificationsComponent
     ModalModule.forRoot(),
-    AlertModule.forRoot(),
+    // AlertModule.forRoot(),
     ToastModule
   ],
   declarations: [
     LayoutComponent,
     SidebarComponent,
     NavbarComponent,
-    ChatSidebarComponent,
+    // ChatSidebarComponent,
     SearchPipe,
-    NotificationsComponent,
-    NotificationsLoadDirective,
-    ChatMessageComponent,
+    // NotificationsComponent,
+    // NotificationsLoadDirective,
+    // ChatMessageComponent,
     WalletsModalComponent
   ],
   providers: [

@@ -1,4 +1,4 @@
-<ul class="navbar-nav flex-row" (click)="$event.preventDelault()">
+<ul class="navbar-nav flex-row" (click)="$event.preventDefault()">
   <li class="nav-item">
     <ng-template #sidebarToggleTooltip>
       Turn on/off <br> sidebar <br>collapsing
@@ -103,22 +103,22 @@
       <li><a class="dropdown-item" (click)="addDataspace(addDataspaceModal)">Add Dataspace</a></li>
     </ul>
   </li>
-  <li class="nav-item dropdown" dropdown placement="bottom right" [autoClose]="false">
-    <a href="#" dropdownToggle class="nav-link dropdown-toggle dropdown-toggle-notifications"
-       id="notifications-dropdown-toggle">
-       <span class="avatar thumb-sm float-left mr-2">
-          <img class="rounded-circle" src="assets/img/people/a5.jpg" alt="..." />
-        </span>
-        <span class="small">John <span class="fw-semi-bold">Nash</span></span>
-        <span class="ml-1 circle bg-info text-white fw-bold">1</span>
+  <!--<li class="nav-item dropdown" dropdown placement="bottom right" [autoClose]="false">-->
+    <!--<a href="#" dropdownToggle class="nav-link dropdown-toggle dropdown-toggle-notifications"-->
+       <!--id="notifications-dropdown-toggle">-->
+       <!--<span class="avatar thumb-sm float-left mr-2">-->
+          <!--<img class="rounded-circle" src="assets/img/people/a5.jpg" alt="..." />-->
+        <!--</span>-->
+        <!--<span class="small">John <span class="fw-semi-bold">Nash</span></span>-->
+        <!--<span class="ml-1 circle bg-info text-white fw-bold">1</span>-->
       <!--<b class="caret"></b>-->
-    </a>
-    <!-- ready to use notifications dropdown. inspired by smartadmin template.
-                 consists of three components:
-                 notifications, messages, progress. leave or add what's important for you.
-                 uses Sing's ajax-load plugin for async content loading. See #load-notifications-btn -->
+    <!--</a>-->
+     <!--ready to use notifications dropdown. inspired by smartadmin template.-->
+                 <!--consists of three components:-->
+                 <!--notifications, messages, progress. leave or add what's important for you.-->
+                 <!--uses Sing's ajax-load plugin for async content loading. See #load-notifications-btn -->
     <!--<app-notifications *dropdownMenu class="dropdown-menu dropdown-menu-right animated animated-last ladeInUp"></app-notifications>-->
-  </li>
+  <!--</li>-->
   <!--<li class="nav-item dropdown" dropdown placement="bottom right">
     <a href="#" class="nav-link dropdown-toggle" dropdownToggle>
       <i class="la la-cog la-lg"></i>

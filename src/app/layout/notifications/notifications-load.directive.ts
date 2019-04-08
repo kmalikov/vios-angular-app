@@ -1,10 +1,9 @@
 import { Directive, ElementRef, OnInit } from '@angular/core';
 declare let jQuery: any;
 
-@Directive ({
-  selector: '[appNotificationsLoad]'
-})
-
+// @Directive ({
+//   selector: '[appNotificationsLoad]'
+// })
 export class NotificationsLoadDirective implements OnInit {
   $el: any;
   resetData: any = null;

@@ -1,144 +1,70 @@
-*, *::after, *::before {
-  box-sizing: border-box;
+@import "../../scss/helpers";
+
+/***********************************/
+/**             LOGIN             **/
+/***********************************/
+
+:host {
+  background-color: $gray-light;
 }
 
-.hidden {
-  display: none !important;
-}
-
-.flex {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.flex > * {
-  margin: 0 20px 20px 0;
-}
-
-.auth-logged-in {
-  flex-wrap: wrap;
-}
-
-.auth-logged-in > * {
-  flex-grow: 1;
-  flex-shrink: 0;
-  overflow-y: scroll;
-  max-height: calc(100vh - 16px);
-}
-
-.auth-logged-in > :first-child {
-  max-width: 100%;
-  margin: 0 10px;
-}
-
-.auth-logged-in > :last-child {
-  width: 400px;
-  max-width: 100%;
-}
-
-.btn {
-  max-width: 400px;
-}
-
-form {
-  font-family: arial, sans-serif;
-}
-
-form label {
-  margin-bottom: 5px;
-  display: block;
-}
-
-form a,
-form input,
-form textarea,
-form select {
-  display: block;
-  width: 100%;
-  text-decoration: none;
-  color: #444;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  line-height: 24px;
-  padding: 0 5px;
-  margin-bottom: 10px;
-  max-width: 400px;
-}
-
-form select {
-  height: 26px;
-}
-
-form a,
-form input[type=submit] {
-  font-size: 11px;
+:host .page-footer {
+  margin-bottom: 25px;
+  font-size: $font-size-mini;
+  color: $text-muted;
   text-align: center;
-  cursor: pointer;
-  background-color: #f5f5f5;
+  @media (min-height: 600px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 }
 
-form a:hover,
-form input[type=submit]:hover {
-  background-color: #f0f0f0;
+.widget-login-container{
+  padding-top: 10%;
 }
 
-#appLog {
-  width: 100%;
-  height: 500px;
-  white-space: pre-wrap;
-  font-family: monospace;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  overflow: scroll;
+.widget-login-logo{
+  margin-top: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: $font-weight-normal;
+  .fa-circle{
+    font-size: 13px;
+    margin: 0 20px;
+  }
 }
 
-.form-method-selector {
-  display: flex;
-  justify-content: center;
+.widget-login{
+  padding: 30px;
+
+  > header{
+    h1,h2,h3,h4,h5,h6{
+      font-weight: $font-weight-normal;
+      text-align: center;
+    }
+  }
 }
 
-.form-method-selector label {
-  display: flex;
-  flex-direction: column;
-  font-size: 10px;
-  margin: 0 5px;
-  align-items: center;
-}
-.form-method-selector label input {
-  width: auto;
+.widget-login-info{
+  font-size: $font-size-mini;
+  color: #888;
+  margin-top: 1px;
+  margin-bottom: 0;
+  text-align: center;
 }
 
-#wallets-manage a {
-  margin-right: 20px;
-}
-
-#wallets-select {
-  margin: 20px 0;
-}
-
-#selected-wallet {
-  display: flex;
-  border-top: 1px solid black;
-}
-
-#selected-wallet > div {
-  width: 600px;
-}
-
-.auth-logged-in {
-  display: flex;
-}
-
-#sign {
-  display: none;
-}
-
-#execute {
-  display: none;
-}
-
-#auth-token {
-  width: 80%;
-  height: 75px;
+.login-form{
+  .form-control{
+    font-size: $font-size-mini;
+    border: none;
+    background-color: $gray-300;
+    &:focus{
+      background-color: $gray-200;
+    }
+  }
+  .abc-checkbox label::before {
+    top: -1px;
+  }
 }

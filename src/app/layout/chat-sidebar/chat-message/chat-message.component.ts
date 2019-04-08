@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-@Component({
-
-  selector: 'app-chat-message',
-  templateUrl: './chat-message.template.html'
-})
+// @Component({
+//
+//   selector: 'app-chat-message',
+//   templateUrl: './chat-message.template.html'
+// })
 export class ChatMessageComponent {
   @Input() conversation: any;
   @Input() open: boolean;

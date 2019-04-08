@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { LoginComponent } from './login.component';
+import {LoginService} from './login.service';
 
 export const routes = [
   { path: '', component: LoginComponent, pathMatch: 'full' }
@@ -17,6 +18,9 @@ export const routes = [
     CommonModule,
     FormsModule,
     RouterModule.forChild(routes),
+  ],
+  providers: [
+    LoginService
   ]
 })
 export class LoginModule {

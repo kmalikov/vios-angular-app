@@ -1,60 +1,78 @@
-<div class="auth-logged-in" *ngIf="loggedIn">
-  <div>
-    <div id="user">
-      <h1>User <span id="auth-username">{{name}}</span></h1>
-      <a id="auth-logout" href="javascript:void(0)" (click)="doLogout()"><span>Logout</span></a>
-    </div>
+<div class="container">
+  <main id="content" class="widget-login-container" role="main">
+    <div class="row justify-content-center">
+      <div class="col-xl-4 col-md-6 col-10">
+        <h5 class="widget-login-logo animated fadeInUp">
+          <i class="fa fa-circle text-gray"></i>
+          vios
+          <i class="fa fa-circle text-info"></i>
+        </h5>
+        <section class="widget widget-login animated fadeInUp">
+          <header>
+            <h3>Login to your account</h3>
+          </header>
+          <div class="widget-body">
+            <p class="widget-login-info">
+              Use your login to sign in.
+            </p>
+            <p class="widget-login-info">
+              Don't have an account? Sign up now!
+            </p>
+            <form class="login-form mt-lg" #form="ngForm">
+              <div class="form-group">
+                <input required type="text" id="login" [(ngModel)]="formModel.login" #login="ngModel" name="login" placeholder="Login"  class="form-control">
+              </div>
+              <div class="form-group" *ngIf="registrationForm">
+                <input required type="text" id="email" [(ngModel)]="formModel.email" #email="ngModel" name="email" placeholder="Email" class="form-control">
+              </div>
+              <div class="form-group">
+                <input required type="password" id="password" [(ngModel)]="formModel.password" #password="ngModel" name="password" placeholder="Password" class="form-control">
+              </div>
+              <div class="form-group" *ngIf="registrationForm">
+                <input required type="password" id="passwordCheck" [(ngModel)]="formModel.passwordCheck" #passwordCheck="ngModel" name="passwordCheck" placeholder="Enter password again" class="form-control">
+              </div>
+              <div class="clearfix">
+                <div class="btn-toolbar float-right m-t-1">
+                  <button (click)="registrationForm = false"
+                          *ngIf="registrationForm"
+                          class="btn btn-default btn-sm"
+                          type="button">Back to login</button>
 
-    <form id="transaction-form">
-      <div id="wallets">
-        <h1>Wallets</h1>
+                  <button (click)="registrationForm = true"
+                          *ngIf="!registrationForm"
+                          class="btn btn-default btn-sm"
+                          type="button">Create an Account</button>
 
-        <div id="wallets-manage">
-          <a id="manage-eth-wallets" class="btn" (click)="manageWallet('ETHEREUM')"><span>Manage Ethereum Wallets</span></a>
-          <a id="manage-vechain-wallets" class="btn" (click)="manageWallet('VECHAIN')"><span>Manage VeChain Wallets</span></a>
-        </div>
+                  <a *ngIf="!registrationForm"
+                     [class.disabled]="!form.form.valid"
+                     (click)="doLogin()" class="btn btn-inverse btn-sm" href="">Login</a>
 
-        <select id="wallets-select" name="from" (change)="selectWallet($event)">
-          <option value="">Please select a wallet</option>
-          <option *ngFor="let wallet of wallets" [value]="wallet.id">{{wallet.secretType}} - {{wallet.address}}</option>
-        </select>
-
-        <div id="selected-wallet" class="hidden">
-          <div id="wallet-details">
-            <h2>Details</h2>
-            <table>
-              <tr>
-                <td>Address</td><td id="wallet-address"></td>
-              </tr>
-              <tr>
-                <td>Balance</td><td id="wallet-balance"></td>
-              </tr>
-              <tr>
-                <td>Gas Balance</td><td id="wallet-gas-balance"></td>
-              </tr>
-              <tr>
-                <td>Tokens</td><td id="wallet-tokens"></td>
-              </tr>
-            </table>
+                  <a *ngIf="registrationForm"
+                     [class.disabled]="!form.form.valid || !(formModel.password === formModel.passwordCheck)"
+                     (click)="doRegister()" class="btn btn-inverse btn-sm" href="">Register</a>
+                </div>
+              </div>
+              <div class="row m-t-1">
+                <div class="col-md-6 order-md-2">
+                  <div class="clearfix">
+                    <div class="form-check abc-checkbox widget-login-info float-right pl-0">
+                      <input class="form-check-input" type="checkbox" id="checkbox1">
+                      <label class="form-check-label" for="checkbox1">Keep signed in </label>
+                    </div>
+                  </div>
+                </div>
+                {{formModel | json}}
+                <!--<div class="col-md-6 order-md-1">
+                  <a class="mr-n-lg" href="#">Trouble with account?</a>
+                </div>-->
+              </div>
+            </form>
           </div>
-
-          <div id="transaction">
-            <h1>Transaction</h1>
-            <input type="hidden" id="secret-type" name="secretType" value=""/>
-            <label for="transaction-to">To:</label>
-            <input type="text" id="transaction-to" name="to" value=""/>
-            <label for="transaction-token">Token (optional):</label>
-            <select id="transaction-token" name="tokenAddress"></select>
-            <label for="transaction-amount">Amount:</label>
-            <input type="text" id="transaction-amount" name="amount" value=""/>
-            <input type="submit" value="Execute transaction"/>
-          </div>
-        </div>
+        </section>
       </div>
-    </form>
-  </div>
-</div>
-
-<div class="auth-not-logged-in" *ngIf="!loggedIn">
-  <a id="auth-loginlink" href="javascript:void(0)" (click)="doLogin()">Login</a>
+    </div>
+  </main>
+  <!--<footer class="page-footer">
+    2017 &copy; Sing. Admin Dashboard Template.
+  </footer>-->
 </div>

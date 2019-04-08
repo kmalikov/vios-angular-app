@@ -3,10 +3,10 @@ import { ChatService } from './chat.service';
 declare let jQuery: any;
 declare let Hammer: any;
 
-@Component({
-  selector: 'app-chat-sidebar',
-  templateUrl: './chat-sidebar.template.html'
-})
+// @Component({
+//   selector: 'app-chat-sidebar',
+//   templateUrl: './chat-sidebar.template.html'
+// })
 export class ChatSidebarComponent implements OnInit {
   conversations: ChatService;
   newMessage: string = '';
