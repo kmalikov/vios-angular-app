@@ -26,11 +26,10 @@ export class LoginComponent {
   doLogin() {
     this.service
       .login(this.formModel.login, sha1(this.formModel.login + this.formModel.password))
-      .filter(data => !!data)
       .subscribe(result => {
         debugger;
         if (result) {
-          this.router.navigate(['/app', 'home']);
+          // this.router.navigate(['/app', 'home']);
         }
       /*
       After calling these API methods from the ./login page,
@@ -41,7 +40,11 @@ export class LoginComponent {
       /*
       Pass the API calls through the alpha.vios.network proxy server.!!!
        */
-    });
+    },
+        err => {
+          debugger
+          console.error(err)
+        });
   }
 
   doRegister() {

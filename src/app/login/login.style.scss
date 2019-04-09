@@ -67,4 +67,9 @@
   .abc-checkbox label::before {
     top: -1px;
   }
+
+  .abc-checkbox label::after {
+    top: -1px;
+    left: -1px;
+  }
 }

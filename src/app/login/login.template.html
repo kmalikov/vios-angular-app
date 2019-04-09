@@ -45,11 +45,11 @@
 
                   <a *ngIf="!registrationForm"
                      [class.disabled]="!form.form.valid"
-                     (click)="doLogin()" class="btn btn-inverse btn-sm" href="">Login</a>
+                     (click)="doLogin()" class="btn btn-inverse btn-sm" [routerLink]="">Login</a>
 
                   <a *ngIf="registrationForm"
                      [class.disabled]="!form.form.valid || !(formModel.password === formModel.passwordCheck)"
-                     (click)="doRegister()" class="btn btn-inverse btn-sm" href="">Register</a>
+                     (click)="doRegister()" class="btn btn-inverse btn-sm" [routerLink]="">Register</a>
                 </div>
               </div>
               <div class="row m-t-1">
