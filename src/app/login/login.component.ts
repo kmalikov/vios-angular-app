@@ -38,11 +38,11 @@ export class LoginComponent {
           const uid = this.getValue(result, 'uid');
           const dba = this.getValue(result, 'dba');
 
-          this.cookieService.set('ods.sid', sid, 30, '/', environment.domain, true);
-          this.cookieService.set('ods.realm', realm, 30, '/', environment.domain, true);
-          this.cookieService.set('ods.uname', uname, 30, '/', environment.domain, true);
-          this.cookieService.set('ods.uid', uid, 30, '/', environment.domain, true);
-          this.cookieService.set('ods.dba', dba, 30, '/', environment.domain, true);
+          this.cookieService.set('ods.sid', sid, 30, '/', '', true);
+          this.cookieService.set('ods.realm', realm, 30, '/', '', true);
+          this.cookieService.set('ods.uname', uname, 30, '/', '', true);
+          this.cookieService.set('ods.uid', uid, 30, '/', '', true);
+          this.cookieService.set('ods.dba', dba, 30, '/', '', true);
 
           this.router.navigate(['/app', 'home']);
         } else {
