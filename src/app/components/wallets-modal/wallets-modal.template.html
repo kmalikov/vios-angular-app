@@ -2,19 +2,11 @@
   <div style="width: 100%;">
     <div *ngIf="loggedIn">
       <div class="d-flex justify-content-between flex-wrap">
-        <h3>Arkan User - {{name}}</h3>
-      </div>
-      <div class="btn-group" dropdown>
-        <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle btn-gray"
-                aria-controls="dropdown-basic">
-          Wallets <span class="caret"></span>
-        </button>
-        <ul id="wallets-select" *dropdownMenu class="dropdown-menu"
-            role="menu" aria-labelledby="button-basic">
-          <li *ngFor="let wallet of wallets" (click)="selectWallet(wallet.id)">
-            <a class="dropdown-item">{{wallet.secretType}} - {{wallet.address}}</a>
-          </li>
-        </ul>
+        <h3>Arkane User - {{name}}</h3>
+        <div class="widget-controls">
+          <a [routerLink]="" (click)="initApp()"><i class="la la-refresh"></i></a>
+          <a [routerLink]="" data-widgster="close" (click)="bsModalRef.hide()"><i class="la la-remove"></i></a>
+        </div>
       </div>
       <div id="wallet-details" *ngIf="wallet">
         <div class="offset-lg-6 col-sm-12 col-lg-6 col-xl-6">
@@ -22,7 +14,6 @@
             <section class="widget mb-0 h-100">
               <header class="d-flex justify-content-between flex-wrap">
                 <h5 class="d-flex align-items-center pb-1 big-stat-title">
-                  <span class="circle bg-info mr-sm" style="font-size: 6px;"></span>
                   Balance
                 </h5>
               </header>
@@ -32,14 +23,12 @@
                   <div class="w-50 border-right p-3 px-4">
                     <div class="d-flex justify-content-between align-items-center">
                       <h6>Gas Balance</h6>
-                      <i class="fa fa-circle float-right text-success mt-sm"></i>
                     </div>
                     <p class="text-muted mb-0 mr"><small class="fw-semi-bold">{{wallet.balance?.gasBalance}} {{wallet.balance?.gasSymbol}}</small></p>
                   </div>
                   <div class="w-50 p-3 px-4">
                     <div class="d-flex justify-content-between align-items-center">
                       <h6>Tokens</h6>
-                      <i class="fa fa-circle float-right text-success mt-sm"></i>
                     </div>
                     <p class="text-muted mb-0 mr"><small id="wallet-tokens" class="fw-semi-bold"></small></p>
                   </div>
@@ -49,9 +38,7 @@
           </div>
         </div>
       </div>
-      <h3 class="font-weight-light" *ngIf="wallet">
-        Send <span class="font-weight-bold">Payment</span>
-      </h3>
+
     </div>
     <div *ngIf="!loggedIn">
       <h3>User authorization...</h3>
@@ -59,58 +46,97 @@
   </div>
 </div>
 
-<div class="modal-body" *ngIf="wallet">
-  <form id="transaction-form" #transactionForm="ngForm">
-    <div id="wallets">
-      <div id="selected-wallet" class="hidden">
-        <div id="transaction" class="m-auto">
-          <div class="form-group row">
-            <label for="transaction-to" class="col-md-4 form-control-label text-md-right">To:</label>
-            <div class="col-md-7">
-              <input type="hidden" id="secret-type" name="secretType" value="" class="form-control"/>
-              <input type="hidden" id="wallet-address" name="secretType" value="{{wallet.address}}" class="form-control"/>
-              <input required type="text" id="transaction-to" [(ngModel)]="transactionModel.to" #toInput="ngModel" class="form-control" name="to">
+<div class="modal-body">
+  <legend *ngIf="wallet">
+    <h4>
+      <strong>Send</strong> Payment
+    </h4>
+  </legend>
+  <div class="clearfix">
+    <ul class="nav nav-tabs float-left" id="infoTabButton" role="tablist">
+      <li class="nav-item dropdown">
+        <a aria-controls="info" aria-haspopup="true" aria-expanded="true"
+           class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#info"
+           id="info-tab" role="button"> Manage wallets <b class="caret"></b>
+        </a>
+        <div class="dropdown-menu" x-placement="bottom-start"
+             style="position: absolute; transform: translate3d(0px, 45px, 0px); top: 0px; left: 0px; will-change: transform;">
+          <a *ngFor="let wallet of wallets" (click)="selectWallet(wallet.id)" aria-controls="fields" aria-expanded="false"
+             class="dropdown-item show" data-toggle="tab" href="#fields" id="fields-tab" role="tab"
+             aria-selected="true">{{wallet.secretType}} - {{wallet.address}}</a>
+        </div>
+      </li>
+      <li class="nav-item"><a aria-controls="tools" aria-expanded="false" class="nav-link" data-toggle="tab"
+                              href="#tools" id="tools-tab" role="tab"> Options </a></li>
+    </ul>
+  </div>
+  <div class="tab-content" id="infoTab">
+    <div aria-expanded="true" aria-labelledby="fields-tab" class="tab-pane active in clearfix" id="fields"
+         role="tabpanel" style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
+      <form id="transaction-form" #transactionForm="ngForm" *ngIf="wallet">
+        <div id="wallets">
+          <div id="selected-wallet" class="hidden">
+            <div id="transaction" class="m-auto">
+              <div class="form-group row">
+                <label for="transaction-to" class="col-md-4 form-control-label text-md-right">To</label>
+                <div class="col-md-7">
+                  <input type="hidden" id="secret-type" name="secretType" value="" class="form-control"/>
+                  <input type="hidden" id="wallet-address" name="secretType" value="{{wallet.address}}" class="form-control"/>
+                  <input required type="text" id="transaction-to" [(ngModel)]="transactionModel.to" #toInput="ngModel" class="form-control" name="to">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Token (optional)</label>
+                <div class="col-md-7">
+                  <select id="transaction-token" [(ngModel)]="transactionModel.tokenAddress" #tokenAddressInput="ngModel" name="tokenAddress"></select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Amount</label>
+                <div class="col-md-7">
+                  <input required type="text" id="transaction-amount" [(ngModel)]="transactionModel.amount" #amountInput="ngModel" class="form-control" name="amount"/>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="transaction-to" class="col-md-4 form-control-label text-md-right"></label>
+                <div class="col-md-7">
+                  <button class="btn btn-info width-100 mb-xs m-auto"
+                          role="button"
+                          [disabled]="!transactionForm.form.valid"
+                          (click)="doTransaction(transactionModel)">
+                    Transfer
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="form-group row">
-            <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Token (optional):</label>
-            <div class="col-md-7">
-              <select id="transaction-token" [(ngModel)]="transactionModel.tokenAddress" #tokenAddressInput="ngModel" name="tokenAddress"></select>
-            </div>
+        </div>
+      </form>
+
+      <div *ngIf="!wallet">
+        <div class="auth-not-logged-in" *ngIf="!loggedIn">
+          <div class="loader animated fadeIn text-center">
+            <span class="spinner"><i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i></span>
           </div>
-          <div class="form-group row">
-            <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Amount:</label>
-            <div class="col-md-7">
-              <input required type="text" id="transaction-amount" [(ngModel)]="transactionModel.amount" #amountInput="ngModel" class="form-control" name="amount"/>
-            </div>
-          </div>
-          <div class="form-group row">
-            <button class="btn btn-success width-100 mb-xs m-auto"
-                    role="button"
-                    [disabled]="!transactionForm.form.valid"
-                    (click)="doTransaction(transactionModel)">
-              Transfer
-            </button>
-          </div>
+        </div>
+        <div class="p-2" *ngIf="loggedIn">
+          <h5>Choose any <span class="font-weight-bold">wallet</span></h5>
         </div>
       </div>
     </div>
-  </form>
-</div>
+    <div aria-labelledby="tools-tab" class="tab-pane" id="tools" role="tabpanel"
+         style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
+      <div class="clearfix" style="padding-left:30em; padding-right:30em;">
 
-<div class="modal-body" *ngIf="!wallet">
-  <div class="auth-not-logged-in" *ngIf="!loggedIn">
-    <div class="loader animated fadeIn text-center">
-      <span class="spinner"><i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i></span>
+      </div>
     </div>
   </div>
-  <div *ngIf="loggedIn">
-    <h3>Choose any <span class="font-weight-bold">wallet</span></h3>
-  </div>
 </div>
 
-
 <div class="modal-footer" *ngIf="loggedIn">
+  <button class="btn btn-gray width-100 mb-xs" role="button" (click)="bsModalRef.hide()">
+    <small>Close</small>
+  </button>
   <button class="btn btn-gray width-100 mb-xs" role="button">
     <small>Browse IDNs</small>
   </button>
