@@ -18,8 +18,12 @@ export class ToastComponent implements OnInit {
       this.title = data.title;
       this.body = data.body;
       this.$el.classList.add('showing');
-      setTimeout(() => this.$el.classList.remove('showing'), 1500);
+      setTimeout(() => this.$el.classList.remove('showing'), 4000);
     });
+  }
+
+  deleteToast() {
+    this.$el.classList.remove('showing');
   }
 
 }

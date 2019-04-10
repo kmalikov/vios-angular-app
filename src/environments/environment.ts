@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
+  domain: 'dev.vios.network',
   viosNetworkApi: 'http://vio.sn/ods/api'
 };
