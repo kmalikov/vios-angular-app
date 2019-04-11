@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import * as sha1 from 'js-sha1/build/sha1.min.js';
 import {ToastService} from '../components/toast-directive/toast.service';
 import {CookieService} from 'ngx-cookie-service';
-import {environment} from '../../environments/environment';
+import {LoginModelEnum} from '../enums/login-model';
 
 @Component({
   selector: 'app-login',
@@ -38,11 +38,11 @@ export class LoginComponent {
           const uid = this.getValue(result, 'uid');
           const dba = this.getValue(result, 'dba');
 
-          this.cookieService.set('ods.sid', sid, 30, '/', '', true);
-          this.cookieService.set('ods.realm', realm, 30, '/', '', true);
-          this.cookieService.set('ods.uname', uname, 30, '/', '', true);
-          this.cookieService.set('ods.uid', uid, 30, '/', '', true);
-          this.cookieService.set('ods.dba', dba, 30, '/', '', true);
+          this.cookieService.set('ods.sid', sid, 40, '/', '', true);
+          this.cookieService.set(LoginModelEnum.realm, realm, 40, '/', '', true);
+          this.cookieService.set(LoginModelEnum.uname, uname, 40, '/', '', true);
+          this.cookieService.set(LoginModelEnum.uid, uid, 40, '/', '', true);
+          this.cookieService.set(LoginModelEnum.dba, dba, 40, '/', '', true);
 
           this.router.navigate(['/app', 'home']);
         } else {

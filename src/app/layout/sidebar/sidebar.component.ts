@@ -5,6 +5,8 @@ import { AppConfig } from '../../app.config';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import {WalletsModalComponent} from '../../components/wallets-modal/wallets-modal.component';
 import {ToastService} from '../../components/toast-directive/toast.service';
+import {CookieService} from 'ngx-cookie-service';
+import {LoginModelEnum} from '../../enums/login-model';
 declare const jQuery: any;
 declare const window: any;
 declare const solid: any;
@@ -24,9 +26,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   bsModalRef: BsModalRef;
   wallets: string;
   solidAccount: string;
+  loggedIn: boolean;
 
   constructor(config: AppConfig, el: ElementRef, router: Router, location: Location,
-              private modalService: BsModalService, private toastService: ToastService) {
+              private modalService: BsModalService, private toastService: ToastService,
+              private cookieService: CookieService) {
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
     this.configFn = config;
@@ -34,9 +38,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.location = location;
     this.checkIfAfterLoginOnArkane(router);
     this.checkWalletsAndSolid();
+    this.checkIfLoggedIn();
   }
 
-  checkIfAfterLoginOnArkane(router) {
+  checkIfAfterLoginOnArkane(router): void {
     const url = router.routerState.snapshot.url;
     if ((url.includes('state') && url.includes('session_state') && url.includes('code')) ||
          url.includes('status=SUCCESS')) {
@@ -44,13 +49,17 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     } else if (url.includes('status=ABORTED')) {
       this.toastService.showToast('Unsuccessful', 'Request aborted');
     } else if (url.includes('status=FAILED&error=NOT_AUTHORIZED')) {
-
+      this.toastService.showToast('Failed', 'Not authorized');
     }
   }
 
-  checkWalletsAndSolid() {
+  checkWalletsAndSolid(): void {
     this.wallets = localStorage.getItem('wallets');
     this.solidAccount = localStorage.getItem('solid-auth-client');
+  }
+
+  checkIfLoggedIn() {
+    this.loggedIn = !!this.cookieService.get(LoginModelEnum.sid);
   }
 
   initSidebarScroll(): void {
@@ -104,8 +113,14 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  logout() {
-    this.router.navigate(['/login']);
+  doLogout() {
+    this.cookieService.delete(LoginModelEnum.sid, '/', '');
+    this.cookieService.delete(LoginModelEnum.realm, '/', '');
+    this.cookieService.delete(LoginModelEnum.uname, '/', '');
+    this.cookieService.delete(LoginModelEnum.uid, '/', '');
+    this.cookieService.delete(LoginModelEnum.dba, '/', '');
+
+    this.checkIfLoggedIn();
   }
 
   async openWalletOrLogin() {

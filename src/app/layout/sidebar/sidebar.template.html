@@ -24,14 +24,23 @@
     <li>
       <a class="collapsed" data-target="#sidebar-dashboard" data-toggle="collapse" data-parent="#sidebar">
         <span class="icon">
-          <i class="fi flaticon-home"></i>
+          <i class="fi flaticon-home" [class.text-warning]="loggedIn"></i>
         </span>
-        Dashboard
+        My Account
         <i class="toggle fa fa-angle-down"></i>
       </a>
       <ul id="sidebar-dashboard" class="collapse">
-        <li>
+        <li *ngIf="loggedIn">
+          <a [routerLink]="">Settings</a>
+        </li>
+        <li *ngIf="loggedIn">
+          <a [routerLink]="">Preferences</a>
+        </li>
+        <li *ngIf="!loggedIn">
           <a [routerLink]=" ['../', 'login'] ">Login</a>
+        </li>
+        <li *ngIf="loggedIn">
+          <a [routerLink]="" (click)="doLogout()">Logout</a>
         </li>
       </ul>
     </li>

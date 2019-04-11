@@ -73,3 +73,7 @@
     left: -1px;
   }
 }
+
+button.disabled, a.disabled {
+  display: block;
+}
