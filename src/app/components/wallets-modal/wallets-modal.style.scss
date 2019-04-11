@@ -134,9 +134,8 @@ form input[type=submit]:hover {
   height: 20px;
 }
 
-.modal-header.loading {
-  background-color: #547fff;
-  animation-name: loading-record-item;
-  animation-duration: 2s;
-  animation-iteration-count: infinite;
+form {
+  input, select {
+    margin-bottom: 0px
+  }
 }
