@@ -17,6 +17,7 @@ import {WalletsModalService} from '../components/wallets-modal/wallets-modal.ser
 import {ToastModule} from '../components/toast-directive/toast.module';
 import {ToastService} from '../components/toast-directive/toast.service';
 import {CookieService} from 'ngx-cookie-service';
+import {WalletIdPipe} from '../components/wallets-modal/wallet-id.pipe';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import {CookieService} from 'ngx-cookie-service';
     // NotificationsComponent,
     // NotificationsLoadDirective,
     // ChatMessageComponent,
-    WalletsModalComponent
+    WalletsModalComponent,
+    WalletIdPipe
   ],
   providers: [
     WalletsModalService,

@@ -15,7 +15,9 @@ declare const window;
 export class WalletsModalComponent implements OnInit, AfterViewInit {
   app: any = {};
   loggedIn = false;
+  walletsLoading = false;
   wallets = [];
+  tokenBalances = [];
   wallet: any;
   name = '';
   alerts: any[] = [];
@@ -45,20 +47,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
         console.log('This user is authenticated', auth);
         this.loggedIn = true;
         this.name = auth.idTokenParsed.name;
-
-        try {
-          const wallets = await window.arkaneConnect.api.getWallets();
-          if (wallets.length > 0) {
-            const walletsMap = this.convertArrayToMap(wallets, 'id');
-            localStorage.setItem('wallets', JSON.stringify(walletsMap));
-            $('#walletDiamond').addClass('text-warning');
-            this.populateWalletsSelect(wallets);
-          } else {
-            this.manageWallet('ETHEREUM');
-          }
-        } catch (err) {
-          this.toastService.showToast('Failed', 'Something went wrong while fetching the user\'s wallets');
-        }
+        this.getWallets();
       })
         .notAuthenticated((auth) => {
           console.log('This user is not authenticated', auth);
@@ -66,6 +55,32 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     } catch (reason) {
       window.arkaneConnect.authenticate();
       console.error(reason);
+    }
+  }
+
+  async getWallets() {
+    try {
+      this.walletsLoading = true;
+      const wallets = await window.arkaneConnect.api.getWallets();
+      if (wallets.length > 0) {
+        const walletsMap = this.convertArrayToMap(wallets, 'id');
+        localStorage.setItem('wallets', JSON.stringify(walletsMap));
+        $('#walletDiamond').addClass('text-warning');
+        this.populateWalletsSelect(wallets);
+      } else {
+        this.manageWallet('ETHEREUM');
+      }
+      this.refreshSelectedWallet();
+      this.walletsLoading = false;
+    } catch (err) {
+      this.walletsLoading = false;
+      this.toastService.showToast('Failed', 'Something went wrong while fetching the user\'s wallets');
+    }
+  }
+
+  refreshSelectedWallet() {
+    if (!!this.wallet) {
+      this.wallet = this.wallets.find(i => i.id === this.wallet.id);
     }
   }
 
@@ -108,9 +123,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
       this.wallet = wallet;
 
       const tokenBalances = await window.arkaneConnect.api.getTokenBalances(wallet.id);
-      $('#wallet-tokens').html(
-        tokenBalances.map((tokenBalance) => `${tokenBalance.balance} ${tokenBalance.symbol}`).join('<br/>')
-      );
+      this.tokenBalances = tokenBalances;
 
       $('#secret-type').val(wallet.secretType);
       this.preFillTransactionTokens(wallet, tokenBalances);
@@ -135,6 +148,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
       );
       if (transactionResult && transactionResult.status === 'SUCCESS') {
         this.toastService.showToast('Success', 'Transaction was succeed');
+        this.getWallets();
       } else {
         this.toastService.showToast('Failed', 'Something went wrong...');
       }

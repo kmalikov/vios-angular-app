@@ -133,3 +133,10 @@ form input[type=submit]:hover {
 .close {
   height: 20px;
 }
+
+.modal-header.loading {
+  background-color: #547fff;
+  animation-name: loading-record-item;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}

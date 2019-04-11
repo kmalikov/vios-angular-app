@@ -38,7 +38,7 @@ export class LoginComponent {
           const uid = this.getValue(result, 'uid');
           const dba = this.getValue(result, 'dba');
 
-          this.cookieService.set('ods.sid', sid, 40, '/', '', true);
+          this.cookieService.set(LoginModelEnum.sid, sid, 40, '/', '', true);
           this.cookieService.set(LoginModelEnum.realm, realm, 40, '/', '', true);
           this.cookieService.set(LoginModelEnum.uname, uname, 40, '/', '', true);
           this.cookieService.set(LoginModelEnum.uid, uid, 40, '/', '', true);
