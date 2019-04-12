@@ -29,6 +29,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   select2Options: any = {
     theme: 'bootstrap'
   };
+  viosBalance: number;
 
   constructor(public bsModalRef: BsModalRef, private service: WalletsModalService,
               private toastService: ToastService) {
@@ -96,6 +97,10 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
 
   populateWalletsSelect(wallets) {
     this.wallets = wallets;
+    if (!!this.wallet) {
+      this.refreshSelectedWallet();
+      return;
+    }
     const firstVechain = this.wallets.find(item => item.secretType === 'VECHAIN');
     if (!!firstVechain) {
       this.setWallet(firstVechain);
@@ -113,21 +118,6 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
         $('<option>', {value: tokenBalance.tokenAddress}).text(tokenBalance.symbol)
       );
     });
-  }
-
-  tokenBalancesData() {
-    return [{
-      id: 'Magellanic',
-      text: 'Large Magellanic Cloud'
-    },
-      {
-        id: 'Andromeda',
-        text: 'Andromeda Galaxy'
-      },
-      {
-        id: 'Sextans',
-        text: 'Sextans A'
-      }];
   }
 
   doLogout() {
@@ -156,8 +146,12 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
       const tokenBalances = await window.arkaneConnect.api.getTokenBalances(wallet.id);
       this.tokenBalances = tokenBalances;
 
+
       $('#secret-type').val(wallet.secretType);
       this.preFillTransactionTokens(wallet, tokenBalances);
+
+      const viosBalance = tokenBalances.find(item => item.symbol === 'VIOS');
+      this.viosBalance = viosBalance ? viosBalance.balance : 0;
     }
   }
 
@@ -175,7 +169,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
       );
       if (transactionResult && transactionResult.status === 'SUCCESS') {
         this.toastService.showToast('Success', 'Transaction was succeed');
-        this.getWallets();
+        this.refreshSelectedWallet();
       } else {
         this.toastService.showToast('Failed', 'Something went wrong...');
       }
