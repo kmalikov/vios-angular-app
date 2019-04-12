@@ -26,6 +26,9 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     amount: '',
     tokenAddress: ''
   };
+  select2Options: any = {
+    theme: 'bootstrap'
+  };
 
   constructor(public bsModalRef: BsModalRef, private service: WalletsModalService,
               private toastService: ToastService) {
@@ -93,6 +96,12 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
 
   populateWalletsSelect(wallets) {
     this.wallets = wallets;
+    const firstVechain = this.wallets.find(item => item.secretType === 'VECHAIN');
+    if (!!firstVechain) {
+      this.setWallet(firstVechain);
+    } else {
+      this.setWallet(this.wallets[0]);
+    }
   }
 
   preFillTransactionTokens(wallet, tokenBalances) {
@@ -106,6 +115,21 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     });
   }
 
+  tokenBalancesData() {
+    return [{
+      id: 'Magellanic',
+      text: 'Large Magellanic Cloud'
+    },
+      {
+        id: 'Andromeda',
+        text: 'Andromeda Galaxy'
+      },
+      {
+        id: 'Sextans',
+        text: 'Sextans A'
+      }];
+  }
+
   doLogout() {
     window.arkaneConnect.logout();
     localStorage.removeItem('wallets');
@@ -116,10 +140,17 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     window.arkaneConnect.manageWallets(name);
   }
 
-  async selectWallet(event) {
+  async selectWallet(event, type?) {
     if (event) {
       const wallets = JSON.parse(localStorage.getItem('wallets'));
       const wallet = wallets[event];
+      this.wallet = wallet;
+      this.setWallet(wallet);
+    }
+  }
+
+  async setWallet(wallet) {
+    if (!!wallet) {
       this.wallet = wallet;
 
       const tokenBalances = await window.arkaneConnect.api.getTokenBalances(wallet.id);
@@ -127,10 +158,6 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
 
       $('#secret-type').val(wallet.secretType);
       this.preFillTransactionTokens(wallet, tokenBalances);
-
-      $('#selected-wallet').removeClass('hidden');
-    } else {
-      $('#selected-wallet').addClass('hidden');
     }
   }
 

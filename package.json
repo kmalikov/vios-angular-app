@@ -8,7 +8,8 @@
     "start": "ng serve",
     "build": "ng build --prod",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "postinstall": "napa"
   },
   "private": true,
   "dependencies": {
@@ -22,7 +23,7 @@
     "@angular/platform-browser": "5.2.11",
     "@angular/platform-browser-dynamic": "5.2.11",
     "@angular/router": "5.2.11",
-    "@arkane-network/arkane-connect": "1.1.9",
+    "@arkane-network/arkane-connect": "1.1.10",
     "@ngx-loading-bar/router": "1.1.2",
     "@tinymce/tinymce-angular": "1.0.9",
     "angular2-datatable": "0.6.0",

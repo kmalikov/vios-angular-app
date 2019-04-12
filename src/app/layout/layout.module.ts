@@ -18,6 +18,8 @@ import {ToastModule} from '../components/toast-directive/toast.module';
 import {ToastService} from '../components/toast-directive/toast.service';
 import {CookieService} from 'ngx-cookie-service';
 import {WalletIdPipe} from '../components/wallets-modal/wallet-id.pipe';
+import {WalletBalancePipe} from '../components/wallets-modal/wallet-balance.pipe';
+import {Select2Module} from 'ng2-select2';
 
 @NgModule({
   imports: [
@@ -29,7 +31,8 @@ import {WalletIdPipe} from '../components/wallets-modal/wallet-id.pipe';
     // LoadingBarRouterModule,NotificationsComponent
     ModalModule.forRoot(),
     // AlertModule.forRoot(),
-    ToastModule
+    ToastModule,
+    Select2Module
   ],
   declarations: [
     LayoutComponent,
@@ -41,7 +44,8 @@ import {WalletIdPipe} from '../components/wallets-modal/wallet-id.pipe';
     // NotificationsLoadDirective,
     // ChatMessageComponent,
     WalletsModalComponent,
-    WalletIdPipe
+    WalletIdPipe,
+    WalletBalancePipe,
   ],
   providers: [
     WalletsModalService,
