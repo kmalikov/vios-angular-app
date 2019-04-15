@@ -128,8 +128,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   openWallet() {
-    this.bsModalRef = this.modalService.show(WalletsModalComponent, {class: 'modal-lg'});
+    this.bsModalRef = this.modalService.show(WalletsModalComponent, {class: 'modal-lg', ignoreBackdropClick: true});
     this.bsModalRef.content.closeBtnName = 'Close';
+    this.bsModalRef.content.onClose.subscribe(data => {
+      window.activate();
+    })
   }
 
   login() {

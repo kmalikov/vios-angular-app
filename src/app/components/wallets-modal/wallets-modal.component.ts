@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {WalletsModalService} from './wallets-modal.service';
 import { BsModalRef } from 'ngx-bootstrap';
 import {ArkaneConnect} from '@arkane-network/arkane-connect';
@@ -13,6 +13,7 @@ declare const window;
   styleUrls: ['./wallets-modal.style.scss']
 })
 export class WalletsModalComponent implements OnInit, AfterViewInit {
+  @Output() onClose = new EventEmitter();
   app: any = {};
   loggedIn = false;
   walletsLoading = false;
@@ -187,5 +188,10 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     } catch (reason) {
       console.error(reason);
     }
+  }
+
+  closeModal() {
+    this.onClose.emit();
+    this.bsModalRef.hide();
   }
 }

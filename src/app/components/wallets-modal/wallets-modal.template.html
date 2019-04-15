@@ -5,7 +5,7 @@
         <h5 class="modal-title">Arkane Account - <span class="fw-semi-bold">{{name}}</span></h5>
         <div class="widget-controls">
           <a [routerLink]="" (click)="getWallets()"><i class="la la-refresh"></i></a>
-          <a [routerLink]="" data-widgster="close" (click)="bsModalRef.hide()"><i class="la la-remove"></i></a>
+          <a [routerLink]="" data-widgster="close" (click)="closeModal()"><i class="la la-remove"></i></a>
         </div>
       </div>
     </div>
@@ -149,12 +149,12 @@
     </div>
     <div aria-labelledby="walletopts-tab" class="tab-pane p-3" id="walletopts" role="tabpanel"
          style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
-      <h6 class="m-0">Manage wallets</h6>
+      <legend>Manage Wallets</legend>
       <div class="d-flex">
         <select class="select-wallet mr-2" [(ngModel)]="chosenWallet" #tokenAddressInput="ngModel" name="tokenAddress">
           <option *ngFor="let wallet of walletsNameList" value="{{wallet}}">{{wallet}}</option>
         </select>
-        <button class="btn btn-info" style="height: 35px;" (click)="manageWallet(chosenWallet)" *ngIf="chosenWallet">{{chosenWallet}} wallet</button>
+        <button class="btn btn-inverse" style="height: 35px;" (click)="manageWallet(chosenWallet)" *ngIf="chosenWallet">Import</button>
       </div>
     </div>
   </div>
@@ -165,7 +165,7 @@
     <button class="btn btn-info visit-marketplace" role="button">
       Visit Marketplace
     </button>
-    <button class="btn btn-secondary" role="button" (click)="bsModalRef.hide()">
+    <button class="btn btn-secondary" role="button" (click)="closeModal()">
       <span >Cancel</span>
     </button>
     <button class="btn btn-danger" role="button" (click)="doLogout()" [disabled]="!loggedIn">
