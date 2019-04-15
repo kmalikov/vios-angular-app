@@ -32,7 +32,7 @@ import {Select2Module} from 'ng2-select2';
     ModalModule.forRoot(),
     // AlertModule.forRoot(),
     ToastModule,
-    Select2Module
+    Select2Module,
   ],
   declarations: [
     LayoutComponent,

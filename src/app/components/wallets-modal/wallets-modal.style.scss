@@ -423,7 +423,7 @@ $slider-handle-size: 26px;
   left: 14px;
 }
 
-form select {
+.modal-body select {
   display: block;
   height: 35px;
   width: 100%;
@@ -436,6 +436,9 @@ form select {
   padding: 0 5px;
   margin-bottom: 10px;
   max-width: 100%;
+  &.select-wallet {
+    max-width: 20%;
+  }
   option {
     padding: 0.5rem 1rem;
   }
@@ -443,4 +446,11 @@ form select {
 
 .fa-user {
   padding: 0 2px;
+}
+
+.modal-header.loading {
+  background-color: #547fff;
+  animation-name: loading-record-item;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
 }

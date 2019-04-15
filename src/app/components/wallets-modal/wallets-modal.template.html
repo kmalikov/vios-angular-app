@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div class="modal-header" [class.loading]="!loggedIn || walletsLoading">
   <div style="width: 100%;">
     <div *ngIf="loggedIn">
       <div class="d-flex justify-content-between flex-wrap">
@@ -46,6 +46,18 @@
     <ul class="nav nav-tabs float-left" id="walletTabButton" role="tablist">
       <li class="nav-item dropdown">
         <a aria-controls="wallet" aria-haspopup="true" aria-expanded="true"
+           class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#wallet"
+           id="wallet-tab" role="button"> Wallets <b class="caret"></b>
+        </a>
+        <div class="dropdown-menu" x-placement="bottom-start"
+             style="position: absolute; transform: translate3d(0px, 45px, 0px); top: 0px; left: 0px; will-change: transform;">
+          <a *ngFor="let wallet of wallets" (click)="selectWallet(wallet.id)" aria-controls="wallets" aria-expanded="false"
+             class="dropdown-item show" data-toggle="tab" href="#wallets" id="wallets-tab" role="tab"
+             aria-selected="true">{{wallet.secretType}} - {{wallet.address | WalletIdPipe}}</a>
+        </div>
+      </li>
+      <!--<li class="nav-item dropdown">
+        <a aria-controls="wallet" aria-haspopup="true" aria-expanded="true"
            class="nav-link dropdown-toggle active" [class.loading]="!wallets.length" data-toggle="dropdown" href="#wallet"
            id="wallet-tab" role="button"> Wallets <b class="caret"></b>
         </a>
@@ -55,13 +67,15 @@
              class="dropdown-item show" data-toggle="tab" href="#fields" id="fields-tab" role="tab"
              aria-selected="true">{{wallet.secretType}} - {{wallet.address | WalletIdPipe}}</a>
         </div>
+      </li>-->
+      <li class="nav-item">
+        <a aria-controls="walletopts" aria-expanded="false" class="nav-link" data-toggle="tab"
+                              href="#walletopts" id="walletopts-tab" role="tab"> Options </a>
       </li>
-      <li class="nav-item"><a aria-controls="walletopts" aria-expanded="false" class="nav-link" data-toggle="tab"
-                              href="#walletopts" id="walletopts-tab" role="tab"> Options </a></li>
     </ul>
   </div>
   <div class="tab-content" id="walletTab">
-    <div aria-expanded="true" aria-labelledby="fields-tab" class="tab-pane active in clearfix" id="fields"
+    <div aria-expanded="true" aria-labelledby="wallets-tab" class="tab-pane active in clearfix" id="wallets"
          role="tabpanel" style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
       <form id="transaction-form" #transactionForm="ngForm" *ngIf="wallet">
         <fieldset>
@@ -72,7 +86,7 @@
                 <div class="input-group">
                     <span class="input-group-prepend">
                       <span class="input-group-text">
-                        <i class="fa fa-user text-primary"></i>
+                        <i class="fa fa-user text-warning"></i>
                       </span>
                     </span>
                   <input disabled type="text" class="form-control" value="{{wallet.address}}">
@@ -133,9 +147,14 @@
         </fieldset>
       </form>
     </div>
-    <div aria-labelledby="walletopts-tab" class="tab-pane" id="walletopts" role="tabpanel"
+    <div aria-labelledby="walletopts-tab" class="tab-pane p-3" id="walletopts" role="tabpanel"
          style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
-      <div class="clearfix" style="padding-left:30em; padding-right:30em;">
+      <h6 class="m-0">Manage wallets</h6>
+      <div class="d-flex">
+        <select class="select-wallet mr-2" [(ngModel)]="chosenWallet" #tokenAddressInput="ngModel" name="tokenAddress">
+          <option *ngFor="let wallet of walletsNameList" value="{{wallet}}">{{wallet}}</option>
+        </select>
+        <button class="btn btn-info" style="height: 35px;" (click)="manageWallet(chosenWallet)" *ngIf="chosenWallet">{{chosenWallet}} wallet</button>
       </div>
     </div>
   </div>

@@ -17,6 +17,8 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   loggedIn = false;
   walletsLoading = false;
   wallets = [];
+  walletsNameList = [];
+  chosenWallet = '';
   tokenBalances = [];
   wallet: any;
   name = '';
@@ -33,6 +35,8 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
 
   constructor(public bsModalRef: BsModalRef, private service: WalletsModalService,
               private toastService: ToastService) {
+    this.walletsNameList = [ 'Bitcoin', 'Ethereum', 'VeChain', 'Litecoin', 'GoChain', 'Tron' ];
+    this.chosenWallet = this.walletsNameList[0];
   }
 
 
@@ -169,7 +173,9 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
       );
       if (transactionResult && transactionResult.status === 'SUCCESS') {
         this.toastService.showToast('Success', 'Transaction was succeed');
-        this.refreshSelectedWallet();
+        setTimeout(() => {
+          this.getWallets();
+        }, 250);
       } else {
         this.toastService.showToast('Failed', 'Something went wrong...');
       }
@@ -182,5 +188,4 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
       console.error(reason);
     }
   }
-
 }
