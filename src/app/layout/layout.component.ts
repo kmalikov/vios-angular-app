@@ -58,22 +58,6 @@ export class LayoutComponent implements OnInit {
     localStorage.setItem('nav-static', JSON.stringify(this.navStatic));
   }
 
-  toggleChatListener(): void {
-    jQuery(this.el.nativeElement).find('.chat-notification-sing').remove();
-    this.chatOpened = !this.chatOpened;
-
-    setTimeout(() => {
-      // demo: add class & badge to indicate incoming messages from contact
-      // .js-notification-added ensures notification added only once
-      jQuery('.chat-sidebar-user-group:first-of-type ' +
-        '.list-group-item:first-child:not(.js-notification-added)')
-        .addClass('active js-notification-added')
-        .find('.fa-circle')
-        .before('<span class="badge badge-danger badge-pill ' +
-          'float-right animated bounceInDown">3</span>');
-    }, 1000);
-  }
-
   toggleNavigationState(): void {
     this.navStatic = !this.navStatic;
     if (!this.navStatic) {

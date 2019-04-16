@@ -1,17 +1,18 @@
-import { Component, EventEmitter, OnInit, ElementRef, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, EventEmitter, OnInit, ElementRef, Output, AfterViewInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from '@angular/router';
 import { AppConfig } from '../../app.config';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
+import {filter} from 'rxjs/operators';
 declare let jQuery: any;
 declare const window: any;
 
 @Component({
   selector: 'app-navbar',
+  styleUrls: [ './navbar.style.scss' ],
   templateUrl: './navbar.template.html'
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, AfterViewInit {
   @Output() toggleSidebarEvent: EventEmitter<any> = new EventEmitter();
-  @Output() toggleChatEvent: EventEmitter<any> = new EventEmitter();
   $el: any;
   config: any;
   router: Router;
@@ -21,51 +22,31 @@ export class NavbarComponent implements OnInit {
     label: '',
     domain: ''
   };
+  isMainPage;
 
   constructor(el: ElementRef, config: AppConfig, router: Router,
-              private modalService: BsModalService) {
+              private modalService: BsModalService,
+              private activatedRoute: ActivatedRoute) {
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
     this.router = router;
+
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((x: NavigationEnd) => {
+        this.isMainPage = !!x.url.includes('home');
+        setTimeout(() => this.initSlider(), 10);
+      });
   }
 
   toggleSidebar(state): void {
     this.toggleSidebarEvent.emit(state);
   }
 
-  toggleChat(): void {
-    this.toggleChatEvent.emit(null);
-  }
-
   onDashboardSearch(f): void {
     this.router.navigate(['/app', 'extra', 'search'], { queryParams: { search: f.value.search } });
   }
 
-  ngOnInit(): void {
-    setTimeout(() => {
-      const $chatNotification = jQuery('#chat-notification');
-      $chatNotification.removeClass('hide').addClass('animated fadeIn')
-        .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
-          $chatNotification.removeClass('animated fadeIn');
-          setTimeout(() => {
-            $chatNotification.addClass('animated fadeOut')
-              .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd' +
-                ' oanimationend animationend', () => {
-                $chatNotification.addClass('hide');
-              });
-          }, 8000);
-        });
-      $chatNotification.siblings('#toggle-chat')
-        .append('<i class="chat-notification-sing animated bounceIn"></i>');
-    }, 4000);
-
-    this.$el.find('.input-group-addon + .form-control').on('blur focus', function(e): void {
-      jQuery(this).parents('.input-group')
-        [e.type === 'focus' ? 'addClass' : 'removeClass']('focus');
-    });
-
-    this.initSlider();
-
+  ngAfterViewInit(): void {
   }
 
   initSlider() {
@@ -102,5 +83,8 @@ export class NavbarComponent implements OnInit {
 
   checkDataspaceForm(domain, label) {
     this.disabled = !(domain.length > 0 && label.length > 0);
+  }
+
+  ngOnInit(): void {
   }
 }
