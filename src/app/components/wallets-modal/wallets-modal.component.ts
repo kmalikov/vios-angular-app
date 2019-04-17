@@ -104,7 +104,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   populateWalletsSelect(wallets) {
     wallets = wallets.map(item => this.setWalletName(item));
     this.wallets = wallets;
-    
+
     if (!!this.wallet) {
       this.refreshSelectedWallet();
       return;
