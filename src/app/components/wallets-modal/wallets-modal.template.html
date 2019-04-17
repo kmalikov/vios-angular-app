@@ -30,7 +30,7 @@
           </div>
           <div class="row flex-nowrap">
             <div class="col-6">
-              <h6 class="m-0">VeChain Holdings</h6>
+              <h6 class="m-0">{{wallet.walletName}} Holdings</h6>
               <p class="value5">{{wallet.balance?.balance | WalletBalancePipe}} {{wallet.balance?.symbol}}</p>
             </div>
             <div class="col-6">
@@ -51,7 +51,7 @@
         </a>
         <div class="dropdown-menu" x-placement="bottom-start"
              style="position: absolute; transform: translate3d(0px, 45px, 0px); top: 0px; left: 0px; will-change: transform;">
-          <a *ngFor="let wallet of wallets" (click)="selectWallet(wallet.id)" aria-controls="wallets" aria-expanded="false"
+          <a *ngFor="let wallet of wallets" (click)="selectWallet(wallet)" aria-controls="wallets" aria-expanded="false"
              class="dropdown-item show" data-toggle="tab" href="#wallets" id="wallets-tab" role="tab"
              aria-selected="true">{{wallet.secretType}} - {{wallet.address | WalletIdPipe}}</a>
         </div>
