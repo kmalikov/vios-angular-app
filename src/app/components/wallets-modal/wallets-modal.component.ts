@@ -22,6 +22,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   chosenWallet = '';
   tokenBalances = [];
   wallet: any;
+
   name = '';
   alerts: any[] = [];
   transactionModel = {
@@ -36,10 +37,10 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
 
   constructor(public bsModalRef: BsModalRef, private service: WalletsModalService,
               private toastService: ToastService) {
-    this.walletsNameList = [ 'Bitcoin', 'Ethereum', 'VeChain', 'Litecoin', 'GoChain', 'Tron' ];
+    // this.walletsNameList = [ 'Bitcoin', 'Ethereum', 'VeChain', 'Litecoin', 'GoChain', 'Tron' ];
+    this.walletsNameList = [ 'Ethereum', 'VeChain' ];
     this.chosenWallet = this.walletsNameList[0];
   }
-
 
   ngOnInit() {
     this.initApp();
@@ -101,17 +102,40 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   }
 
   populateWalletsSelect(wallets) {
+    wallets = wallets.map(item => this.setWalletName(item));
     this.wallets = wallets;
+
     if (!!this.wallet) {
       this.refreshSelectedWallet();
       return;
     }
+
     const firstVechain = this.wallets.find(item => item.secretType === 'VECHAIN');
-    if (!!firstVechain) {
-      this.setWallet(firstVechain);
-    } else {
-      this.setWallet(this.wallets[0]);
+    (!!firstVechain) ? this.setWallet(firstVechain) : this.setWallet(this.wallets[0]);
+  }
+
+  setWalletName(item) {
+    switch (item.secretType) {
+      case 'BITCOIN':
+        item.walletName = 'Bitcoin';
+        break;
+      case 'ETHEREUM':
+        item.walletName = 'Ethereum';
+        break;
+      case 'VECHAIN':
+        item.walletName = 'VeChain';
+        break;
+      case 'LITECOIN':
+        item.walletName = 'Litecoin';
+        break;
+      case 'GOCHAIN':
+        item.walletName = 'GoChain';
+        break;
+      case 'TRON':
+        item.walletName = 'Tron';
+        break;
     }
+    return item;
   }
 
   preFillTransactionTokens(wallet, tokenBalances) {
@@ -135,10 +159,8 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     window.arkaneConnect.manageWallets(name);
   }
 
-  async selectWallet(event, type?) {
+  async selectWallet(wallet, type?) {
     if (event) {
-      const wallets = JSON.parse(localStorage.getItem('wallets'));
-      const wallet = wallets[event];
       this.wallet = wallet;
       this.setWallet(wallet);
     }
