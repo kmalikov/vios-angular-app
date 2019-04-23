@@ -12,7 +12,7 @@ const routes: Routes = [
     // { path: 'forms', loadChildren: '../forms/forms.module#FormModule' },
     // { path: 'ui', loadChildren: '../ui-elements/ui-elements.module#UiElementsModule' },
     // { path: 'extra', loadChildren: '../extra/extra.module#ExtraModule' },
-    // { path: 'tables', loadChildren: '../tables/tables.module#TablesModule' },
+    { path: 'tables', loadChildren: '../tables/tables.module#TablesModule' },
     // { path: 'maps', loadChildren: '../maps/maps.module#MapsModule' },
     // { path: 'grid', loadChildren: '../grid/grid.module#GridModule' },
     // { path: 'widgets', loadChildren: '../widgets/widgets.module#WidgetsModule' },
