@@ -98,20 +98,27 @@
     <div class="form-group row">
       <label for="LabelInput" class="col-md-4 form-control-label text-md-right">Label</label>
       <div class="col-md-7">
-        <input required type="text" id="LabelInput" [(ngModel)]="addDataspaceModel.label" #LabelInput="ngModel" class="form-control" placeholder="" name="label">
+        <input required type="text" id="LabelInput" [(ngModel)]="addDataspaceModel.label" #LabelInput="ngModel" class="form-control" placeholder="Enter a short name" name="label">
       </div>
     </div>
     <div class="form-group row">
       <label for="DomainInput" class="col-md-4 form-control-label text-md-right">Domain</label>
       <div class="col-md-7">
-        <input required type="text" id="DomainInput" [(ngModel)]="addDataspaceModel.domain" #DomainInput="ngModel" class="form-control" placeholder="" name="domain">
+        <input required type="text" id="DomainInput" [(ngModel)]="addDataspaceModel.domain" #DomainInput="ngModel" class="form-control" placeholder="Enter a Virtuoso domain" name="domain">
       </div>
     </div>
-    <div class="form-check abc-checkbox abc-checkbox-primary row d-flex">
+    <div class="form-check abc-checkbox abc-checkbox-primary row d-flex secure-form">
       <span for="DomainInput" class="col-md-4 form-control-label text-md-right">Secure</span>
       <div class="col-md-2">
         <input class="form-check-input" #SecureInput type="checkbox" id="Secure">
         <label class="form-check-label" for="Secure"></label>
+      </div>
+    </div>
+    <div class="form-check abc-checkbox abc-checkbox-primary row d-flex">
+      <span for="SpongerInput" class="col-md-4 form-control-label text-md-right">Sponger</span>
+      <div class="col-md-2">
+        <input class="form-check-input" #SpongerInput type="checkbox" id="Sponger">
+        <label class="form-check-label" for="Sponger"></label>
       </div>
     </div>
     <div class="form-actions text-center">
@@ -120,7 +127,7 @@
           <button type="button" class="btn btn-default" (click)="declineModal(addDataspaceForm)">Cancel</button>
           <button [disabled]="!addDataspaceForm.form.valid"
                   type="button" class="btn btn-primary"
-                  (click)="confirmModal(DomainInput.value, LabelInput.value, SecureInput.checked)">Add</button>
+                  (click)="confirmModal(DomainInput.value, LabelInput.value, SecureInput.checked, SpongerInput.checked)">Add</button>
         </div>
       </div>
     </div>

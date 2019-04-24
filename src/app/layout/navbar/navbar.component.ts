@@ -67,8 +67,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.modalRef = this.modalService.show(template);
   }
 
-  confirmModal(domain, label, secure): void {
-    window.addDataspace(domain, label, secure);
+  confirmModal(domain, label, secure, sponger): void {
+    const silent = true;
+    window.addDataspace(domain, label, secure, sponger, silent);
     this.addDataspaceModel = {
       label: '',
       domain: ''

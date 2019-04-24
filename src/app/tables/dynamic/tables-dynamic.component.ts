@@ -24,6 +24,7 @@ let PEOPLE = {
 export class TablesDynamicComponent implements OnInit {
   @ViewChild('mf') mf;
   data = [];
+  path: string = '';
   searchText: string = '';
 
   constructor() {
