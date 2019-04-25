@@ -22,7 +22,7 @@
       <section class="widget">
         <div class="widget-body clearfix">
           <div class="row flex-nowrap">
-            <div class="col-3"><span class="widget-icon"><i class="fa fa-ticket text-warning"></i></span></div>
+            <div class="col-3"><span class="widget-icon"><app-fi-icons icon="coin" class="vios-balance"></app-fi-icons></span></div>
             <div class="col-9">
               <h6 class="m-0">VIOS BALANCE</h6>
               <p class="h2 m-0 fw-normal">{{viosBalance | WalletBalancePipe}}</p>
@@ -111,10 +111,10 @@
               <div class="form-group row">
                 <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Amount</label>
                 <div class="col-md-7">
-                  <div class="input-group">
+                  <div class="input-group amount">
                     <span class="input-group-prepend">
                       <span class="input-group-text">
-                        <i class="fa fa-ticket"></i>
+                        <app-fi-icons icon="coin" size="sm" [class.text-warning]="wallets"></app-fi-icons>
                       </span>
                     </span>
                     <input class="form-control ng-pristine ng-invalid ng-touched" id="transaction-amount"

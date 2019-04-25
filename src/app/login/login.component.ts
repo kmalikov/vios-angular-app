@@ -1,4 +1,4 @@
-import {Component, HostBinding} from '@angular/core';
+import {Component, HostBinding, OnInit} from '@angular/core';
 import {LoginService} from './login.service';
 import {Router} from '@angular/router';
 import * as sha1 from 'js-sha1/build/sha1.min.js';
@@ -11,14 +11,16 @@ import {LoginModelEnum} from '../enums/login-model';
   styleUrls: [ './login.style.scss' ],
   templateUrl: './login.template.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   @HostBinding('class') classes = 'login-page app';
   registrationForm = false;
+  listOfDS = [];
   formModel = {
     email: '',
     login: '',
     password: '',
-    passwordCheck: ''
+    passwordCheck: '',
+    ds: ''
   };
 
   constructor(private service: LoginService,
@@ -27,9 +29,22 @@ export class LoginComponent {
               private cookieService: CookieService) {
   }
 
+  ngOnInit(): void {
+    try {
+      this.listOfDS = JSON.parse(localStorage.getItem('vios-ds'));
+    } catch (e) {
+      this.listOfDS = [
+        ['http://dbpedia.org', 'DBPedia'],
+        ['http://dbpedia-live.openlinksw.com', 'DBPedia Live'],
+        ['http://lod.openlinksw.com', 'LOD'],
+        ['http://linkeddata.uriburner.com', 'URIBurner']
+      ];
+    }
+  }
+
   doLogin() {
     this.service
-      .login(this.formModel.login, sha1(this.formModel.login + this.formModel.password))
+      .login(this.formModel.login, sha1(this.formModel.login + this.formModel.password), this.formModel.ds)
       .subscribe(result => {
         if (result && !result.includes('<failed>')) {
           const sid = this.getValue(result, 'sid');
@@ -51,6 +66,7 @@ export class LoginComponent {
         }
       },
         err => {
+          this.toastService.showToast('Unsuccessful', err.status + ' ' +  err.statusText);
           console.error(err);
         });
   }
@@ -61,7 +77,7 @@ export class LoginComponent {
 
   doRegister() {
     this.service
-      .registration(this.formModel.login, this.formModel.password, this.formModel.email)
+      .registration(this.formModel.login, this.formModel.password, this.formModel.email, this.formModel.ds)
       .subscribe(result => {
         if (result && !result.includes('<failed>')) {
           this.doLogin();

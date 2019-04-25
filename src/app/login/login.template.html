@@ -32,6 +32,15 @@
               <div class="form-group" *ngIf="registrationForm">
                 <input required type="password" id="passwordCheck" [(ngModel)]="formModel.passwordCheck" #passwordCheck="ngModel" name="passwordCheck" placeholder="Enter password again" class="form-control">
               </div>
+              <div class="form-group">
+                <select id="ds"
+                        required
+                        [(ngModel)]="formModel.ds" name="ds">
+                  <option value="">Select dataspace</option>
+                  <option *ngFor="let i of listOfDS" [value]="i[0]">{{i[1]}}</option>
+                  <option *ngIf="!listOfDS.length" [value]=""><a [routerLink]="['app']">No dataspaces found. Visit main page first</a></option>
+                </select>
+              </div>
               <div class="clearfix">
                 <div class="btn-toolbar float-right m-t-1">
                   <button (click)="registrationForm = false"

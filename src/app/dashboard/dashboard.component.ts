@@ -16,7 +16,12 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    setTimeout(() => this.saveDSToLocalstorage(), 2000);
     window.init();
+  }
+
+  saveDSToLocalstorage(): void {
+    localStorage.setItem('vios-ds', window.ds);
   }
 
   checkIfKeyDownEnter(event) {

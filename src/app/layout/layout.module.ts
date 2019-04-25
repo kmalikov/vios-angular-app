@@ -17,9 +17,10 @@ import {WalletsModalService} from '../components/wallets-modal/wallets-modal.ser
 import {ToastModule} from '../components/toast-directive/toast.module';
 import {ToastService} from '../components/toast-directive/toast.service';
 import {CookieService} from 'ngx-cookie-service';
-import {WalletIdPipe} from '../components/wallets-modal/wallet-id.pipe';
-import {WalletBalancePipe} from '../components/wallets-modal/wallet-balance.pipe';
 import {Select2Module} from 'ng2-select2';
+import {UiElementsModule} from '../ui-elements/ui-elements.module';
+import {WalletIdPipe} from '../components/wallets-modal/pipes/wallet-id.pipe';
+import {WalletBalancePipe} from '../components/wallets-modal/pipes/wallet-balance.pipe';
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import {Select2Module} from 'ng2-select2';
     // AlertModule.forRoot(),
     ToastModule,
     Select2Module,
+    UiElementsModule
   ],
   declarations: [
     LayoutComponent,
