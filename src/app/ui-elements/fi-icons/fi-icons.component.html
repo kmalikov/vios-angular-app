@@ -1,3 +1,4 @@
-<svg class="icon">
-  <use [attr.xlink:href]="'#' + icon" />
+<svg class="icon" [class.sm]="size === 'sm'" [class.lg]="size === 'lg'">
+  <use [attr.xlink:href]="'/assets/icon/briefcase-icons.svg' + '#' + icon" />
 </svg>
+<span *ngIf="label">{{label}}</span>

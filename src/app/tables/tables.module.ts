@@ -14,6 +14,7 @@ import { TablesBasicComponent } from './basic/tables-basic.component';
 import { TablesDynamicComponent } from './dynamic/tables-dynamic.component';
 import { SearchPipe } from './dynamic/pipes/search-pipe';
 import {UiElementsModule} from '../ui-elements/ui-elements.module';
+import { BriefcaseListComponent } from './dynamic/briefcase-list/briefcase-list.component';
 
 export const routes = [
   {path: '', redirectTo: 'basic', pathMatch: 'full'},
@@ -26,7 +27,8 @@ export const routes = [
     // Components / Directives/ Pipes
     TablesBasicComponent,
     TablesDynamicComponent,
-    SearchPipe
+    SearchPipe,
+    BriefcaseListComponent
   ],
   imports: [
     CommonModule,

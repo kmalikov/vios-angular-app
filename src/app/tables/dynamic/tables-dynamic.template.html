@@ -1,135 +1,56 @@
-<h1 class="page-title">Openlink - <span class="fw-semi-bold">Briefcase</span></h1>
+<h1 class="page-title"><span class="fw-semi-bold">Briefcase</span></h1>
+<div class="d-flex flex-row justify-content-between">
+  <h6><a [routerLink]="">konstantin.malikov's Briefcase</a> (<a [routerLink]="">konstantin.malikov</a>)</h6>
+  <h6>
+    <span class="icons-group"><a [routerLink]="">Preferences</a></span>
+    <span class="icons-group"><a [routerLink]="">About</a></span>
+    <span class="icons-group"><a [routerLink]=""><span class="glyphicon glyphicon-qrcode"></span></a></span>
+  </h6>
+</div>
 <section class="widget">
   <header>
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row animated fadeIn" *ngIf="isMainScreen === 'main'">
       <div class="icons-group d-flex flex-row">
-        <app-fi-icons icon="return"></app-fi-icons>
-        <app-fi-icons icon="expand"></app-fi-icons>
+        <app-fi-icons icon="return" label="refresh" active="true" (click)="setAnotherScreen('another')"></app-fi-icons>
+        <app-fi-icons icon="expand" label="up"></app-fi-icons>
       </div>
 
       <div class="icons-group d-flex flex-row">
-        <app-fi-icons icon="home"></app-fi-icons>
-        <app-fi-icons icon="folder"></app-fi-icons>
+        <app-fi-icons icon="home" label="home"></app-fi-icons>
+        <app-fi-icons icon="folder" label="new folder"></app-fi-icons>
       </div>
 
       <div class="icons-group d-flex flex-row">
-        <app-fi-icons icon="content"></app-fi-icons>
-        <app-fi-icons icon="right-arrow"></app-fi-icons>
-        <app-fi-icons icon="close"></app-fi-icons>
+        <app-fi-icons icon="content" label="copy"></app-fi-icons>
+        <app-fi-icons icon="right-arrow" label="move"></app-fi-icons>
+        <app-fi-icons icon="close" label="delete"></app-fi-icons>
       </div>
 
       <div class="icons-group d-flex flex-row">
-        <app-fi-icons icon="adjust"></app-fi-icons>
-        <app-fi-icons icon="share"></app-fi-icons>
-        <app-fi-icons icon="tag-black-shape"></app-fi-icons>
+        <app-fi-icons icon="adjust" label="properties"></app-fi-icons>
+        <app-fi-icons icon="share" label="share"></app-fi-icons>
+        <app-fi-icons icon="tag-black-shape" label="tag"></app-fi-icons>
       </div>
 
       <div class="icons-group d-flex flex-row">
-        <app-fi-icons icon="indicator"></app-fi-icons>
-        <app-fi-icons icon="document"></app-fi-icons>
-        <app-fi-icons icon="document"></app-fi-icons>
+        <app-fi-icons icon="indicator" label="upload"></app-fi-icons>
+        <app-fi-icons icon="document" label="create"></app-fi-icons>
+        <app-fi-icons icon="document" label="create link"></app-fi-icons>
       </div>
 
-      <app-fi-icons icon="bookmark"></app-fi-icons>
+      <div class="icons-group d-flex flex-row">
+        <app-fi-icons icon="bookmark" label="bookmark"></app-fi-icons>
+      </div>
     </div>
+
+    <div class="d-flex flex-row animated fadeIn" *ngIf="isMainScreen === 'another'">
+      <div class="icons-group d-flex flex-row">
+        <app-fi-icons icon="back" label="back" active="true" (click)="setAnotherScreen('main')"></app-fi-icons>
+      </div>
+    </div>
+
   </header>
   <div class="widget-body">
-    <div class="mt">
-      <div class="d-flex flex-row justify-content-between">
-        <div class="d-flex flex-row align-items-center">
-          <div class="width-400">
-            <div class="input-group">
-              <input class="form-control form-control-sm" id="table-path" [(ngModel)]="path" type="text" placeholder="">
-            </div>
-          </div>
-          <app-fi-icons icon="next"></app-fi-icons>
-        </div>
-        <div class="width-200">
-          <div class="input-group input-group-sm input-group-transparent input-group-rounded">
-            <span class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="fa fa-search"></i>
-              </span>
-            </span>
-            <input class="form-control form-control-sm" id="table-search-input" [(ngModel)]="searchText" type="text" placeholder="Search Countries">
-          </div>
-        </div>
-      </div>
-
-      <table class="table table-striped table-hover" [mfData]="data | SearchPipe : searchText" #mf="mfDataTable" [mfRowsOnPage]="10" (click)="showMe()">
-        <thead>
-        <tr>
-          <th>
-            <div class="form-check abc-checkbox">
-              <input class="form-check-input" id="toggle-all" type="checkbox" #checkAll (click)="selectAll(checkAll)">
-              <label class="form-check-label" for="toggle-all"></label>
-            </div>
-          </th>
-          <th>
-            <mfDefaultSorter by="name">Name</mfDefaultSorter>
-          </th>
-          <th class="no-sort d-none d-md-table-cell">
-            <mfDefaultSorter by="tags">Tags</mfDefaultSorter>
-          </th>
-          <th class="d-none d-md-table-cell">
-            <mfDefaultSorter by="size">Size</mfDefaultSorter>
-          </th>
-          <th class="d-none d-md-table-cell">
-            <mfDefaultSorter by="dateModified">Date Modified</mfDefaultSorter>
-          </th>
-          <th class="no-sort">
-            <mfDefaultSorter by="contentType">Content Type</mfDefaultSorter>
-          </th>
-          <th class="no-sort">
-            <mfDefaultSorter by="kind">Kind</mfDefaultSorter>
-          </th>
-          <th class="no-sort">
-            <mfDefaultSorter by="owner">Owner</mfDefaultSorter>
-          </th>
-          <th class="no-sort">
-            <mfDefaultSorter by="group">Group</mfDefaultSorter>
-          </th>
-          <th class="no-sort">
-            <mfDefaultSorter by="permissions">Permissions</mfDefaultSorter>
-          </th>
-          <th class="no-sort">
-            <mfDefaultSorter by="action">Action</mfDefaultSorter>
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let person of mf.data">
-          <td>
-            <div class="form-check abc-checkbox">
-              <input class="form-check-input" class="toggle-one" type="checkbox" id="checkbox{{person.id}}" [checked]="person.checked"  (click)="selectItem(person)">
-              <label class="form-check-label" attr.for="checkbox{{person.id}}"></label>
-            </div>
-          </td>
-          <td class="cursor-pointer">{{person.name}}</td>
-          <td class="cursor-pointer">{{person.tags}}</td>
-          <td class="cursor-pointer">{{person.size}}</td>
-          <td class="cursor-pointer">{{person.dateModified}}</td>
-          <td class="cursor-pointer">{{person.contentType}}</td>
-          <td class="cursor-pointer">{{person.kind}}</td>
-          <td class="cursor-pointer">{{person.owner}}</td>
-          <td class="cursor-pointer">{{person.groups}}</td>
-          <td class="cursor-pointer">{{person.permissions}}</td>
-          <td class="cursor-pointer">{{person.actions}}</td>
-        </tr>
-        <tr *ngIf="mf.data.length === 0">
-          <td colspan="100">
-            No matches
-          </td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-          <td colspan="12">
-            <mfBootstrapPaginator [rowsOnPageSet]="[10, 25, 50, 100]"></mfBootstrapPaginator>
-          </td>
-        </tr>
-        </tfoot>
-      </table>
-    </div>
+    <app-briefcase-list *ngIf="isMainScreen === 'main'"></app-briefcase-list>
   </div>
 </section>
