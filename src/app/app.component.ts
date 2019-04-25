@@ -7,6 +7,7 @@ import {environment} from '../environments/environment';
 })
 export class AppComponent {
   constructor() {
+    console.log(`Build version: ${environment.version}`);
     let link;
     link = document.createElement('script');
     link.id = 'id3';
