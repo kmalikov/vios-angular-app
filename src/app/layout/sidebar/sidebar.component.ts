@@ -7,6 +7,7 @@ import {WalletsModalComponent} from '../../components/wallets-modal/wallets-moda
 import {ToastService} from '../../components/toast-directive/toast.service';
 import {CookieService} from 'ngx-cookie-service';
 import {LoginModelEnum} from '../../enums/login-model';
+import {environment} from '../../../environments/environment';
 declare const jQuery: any;
 declare const window: any;
 declare const solid: any;
@@ -14,6 +15,7 @@ declare const $: any;
 
 @Component({
   selector: 'app-sidebar',
+  styleUrls: [ './sidebar.style.scss' ],
   templateUrl: './sidebar.template.html'
 })
 
@@ -27,6 +29,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   wallets: string;
   solidAccount: string;
   loggedIn: boolean;
+  environment = environment;
 
   constructor(config: AppConfig, el: ElementRef, router: Router, location: Location,
               private modalService: BsModalService, private toastService: ToastService,

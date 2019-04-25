@@ -1,6 +1,6 @@
 <div class="js-sidebar-content">
   <header class="logo d-none d-md-block">
-    <a href="index.html"><span class="text-info" style="padding-left: 5px;">vios</span> network</a>
+    <a href="index.html"><span class="text-info" [class.dev-marker]="!environment?.production" style="padding-left: 5px;">vios</span> network</a>
   </header>
   <div class="sidebar-status d-md-none dropdown" dropdown [autoClose]="false" (isOpenChange)="toggleSidebarOverflow($event)"
        placement="bottom left">
