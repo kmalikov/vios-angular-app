@@ -13,8 +13,8 @@ import { JqSparklineModule } from '../components/sparkline/sparkline.module';
 import { TablesBasicComponent } from './basic/tables-basic.component';
 import { TablesDynamicComponent } from './dynamic/tables-dynamic.component';
 import { SearchPipe } from './dynamic/pipes/search-pipe';
-import {UiElementsModule} from '../ui-elements/ui-elements.module';
 import { BriefcaseListComponent } from './dynamic/briefcase-list/briefcase-list.component';
+import {FiIconsModule} from '../components/fi-icons/fi-icons.module';
 
 export const routes = [
   {path: '', redirectTo: 'basic', pathMatch: 'full'},
@@ -43,7 +43,7 @@ export const routes = [
     UtilsModule,
     Ng2TableModule,
     DataTableModule,
-    UiElementsModule,
+    FiIconsModule,
     RouterModule.forChild(routes)
   ],
   schemas:  [ CUSTOM_ELEMENTS_SCHEMA ]

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {MainService} from './main.service';
 declare const window: any;
 
@@ -8,7 +8,7 @@ declare const window: any;
   styleUrls: ['./dashboard.style.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   groupByList: any[];
   enable = false;
 
@@ -17,7 +17,9 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     setTimeout(() => this.saveDSToLocalstorage(), 2000);
-    window.init();
+    if (!window.isActivated) {
+      window.init();
+    }
   }
 
   saveDSToLocalstorage(): void {
@@ -36,5 +38,9 @@ export class DashboardComponent implements OnInit {
       this.groupByList = this.service.loadGroupByMenu(data);
       console.log(this.groupByList);
     });
+  }
+
+  ngOnDestroy() {
+    // window.
   }
 }

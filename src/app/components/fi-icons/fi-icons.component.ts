@@ -19,5 +19,4 @@ export class FiIconsComponent implements OnInit {
     this.hostLabel = !!this.label;
     this.hostActive = this.active;
   }
-
 }

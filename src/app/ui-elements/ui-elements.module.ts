@@ -18,7 +18,7 @@ import { IconsComponent } from './icons/icons.component';
 import { TabsAccordionComponent } from './tabs-accordion/tabs-accordion.component';
 import { ListGroupsComponent } from './list-groups/list-groups.component';
 import { MessengerDemoDirective } from './notifications/messenger/messenger.directive';
-import { FiIconsComponent } from './fi-icons/fi-icons.component';
+import { FiIconsComponent } from '../components/fi-icons/fi-icons.component';
 
 export const routes = [
   {path: '', redirectTo: 'components', pathMatch: 'full'},
@@ -39,8 +39,7 @@ export const routes = [
     MessengerDemoDirective,
     IconsComponent,
     TabsAccordionComponent,
-    ListGroupsComponent,
-    FiIconsComponent
+    ListGroupsComponent
   ],
   imports: [
     CommonModule,
@@ -54,9 +53,6 @@ export const routes = [
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     AccordionModule.forRoot()
-  ],
-  exports: [
-    FiIconsComponent
   ]
 })
 export class UiElementsModule {

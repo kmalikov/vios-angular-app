@@ -18,9 +18,9 @@ import {ToastModule} from '../components/toast-directive/toast.module';
 import {ToastService} from '../components/toast-directive/toast.service';
 import {CookieService} from 'ngx-cookie-service';
 import {Select2Module} from 'ng2-select2';
-import {UiElementsModule} from '../ui-elements/ui-elements.module';
 import {WalletIdPipe} from '../components/wallets-modal/pipes/wallet-id.pipe';
 import {WalletBalancePipe} from '../components/wallets-modal/pipes/wallet-balance.pipe';
+import {FiIconsModule} from '../components/fi-icons/fi-icons.module';
 
 @NgModule({
   imports: [
@@ -34,7 +34,7 @@ import {WalletBalancePipe} from '../components/wallets-modal/pipes/wallet-balanc
     // AlertModule.forRoot(),
     ToastModule,
     Select2Module,
-    UiElementsModule
+    FiIconsModule
   ],
   declarations: [
     LayoutComponent,
@@ -47,7 +47,7 @@ import {WalletBalancePipe} from '../components/wallets-modal/pipes/wallet-balanc
     // ChatMessageComponent,
     WalletsModalComponent,
     WalletIdPipe,
-    WalletBalancePipe,
+    WalletBalancePipe
   ],
   providers: [
     WalletsModalService,
