@@ -15,7 +15,6 @@ const APP_PROVIDERS = [
 ];
 
 @NgModule({
-  bootstrap: [ AppComponent ],
   declarations: [
     AppComponent,
     ErrorComponent
@@ -28,7 +27,8 @@ const APP_PROVIDERS = [
     RouterModule.forRoot(ROUTES)
   ],
   providers: [
-    APP_PROVIDERS
-  ]
+    AppConfig
+  ],
+  bootstrap: [ AppComponent ]
 })
 export class AppModule {}
