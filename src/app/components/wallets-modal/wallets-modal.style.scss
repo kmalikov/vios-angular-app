@@ -28,23 +28,3 @@
   padding: 0 2px;
 }
 
-::ng-deep {
-  app-fi-icons {
-    &.vios-balance {
-      svg {
-        height: 40px !important;
-        width: 40px !important;
-      }
-    }
-  }
-}
-.amount {
-  .input-group-prepend .input-group-text {
-    width: 36px;
-    height: 33px;
-    app-fi-icons {
-      position: absolute;
-      left: 10px;
-    }
-  }
-}

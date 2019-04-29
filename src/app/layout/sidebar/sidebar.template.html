@@ -1,6 +1,6 @@
 <div class="js-sidebar-content">
   <header class="logo d-none d-md-block">
-    <a [routerLink]="['home']"><span class="text-info" [class.dev-marker]="!environment?.production" style="padding-left: 5px;">vios</span> network</a>
+    <a [routerLink]="['home']"><span class="text-info" style="padding-left: 5px;">vios</span> network</a>
   </header>
   <div class="sidebar-status d-md-none dropdown" dropdown [autoClose]="false" (isOpenChange)="toggleSidebarOverflow($event)"
        placement="bottom left">
@@ -84,8 +84,8 @@
     </li>
     <li>
       <a class="collapsed" (click)="openWalletOrLogin()">
-        <span class="icon" style="left: 6px;">
-          <app-fi-icons id="walletDiamond" icon="wallet-1" size="sm" [class.text-warning]="wallets"></app-fi-icons>
+        <span class="icon">
+          <i id="walletDiamond" class="fi flaticon-diamond" [class.text-warning]="wallets"></i>
         </span>
         Wallet
       </a>
