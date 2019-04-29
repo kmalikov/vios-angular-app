@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MainService} from './main.service';
+import {environment} from '../../environments/environment';
 declare const window: any;
 
 @Component({
@@ -16,7 +17,30 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    window.init();
+    this.initVios();
+  }
+
+  initVios() {
+    setTimeout(() => {
+      if (!!window.init) {
+        window.init();
+        let link;
+        link = document.createElement('script');
+        link.id = 'setSID';
+        link.type = 'application/javascript';
+        link.src = `https://api.ipify.org?format=jsonp&callback=setSID`;
+        document.head.appendChild(link);
+
+        link = document.createElement('link');
+        link.id = 'vioscss';
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.src = `https://data.vios.network/DAV/home/vios${environment.production ? '' : '/dev'}/css/vios.css`;
+        document.head.appendChild(link);
+      } else {
+        this.initVios();
+      }
+    }, 500);
   }
 
   checkIfKeyDownEnter(event) {
