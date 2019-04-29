@@ -1,6 +1,6 @@
 <div class="js-sidebar-content">
   <header class="logo d-none d-md-block">
-    <a href="index.html"><span class="text-info" style="padding-left: 5px;">vios</span> network</a>
+    <a [routerLink]="['home']"><span class="text-info" style="padding-left: 5px;">vios</span> network</a>
   </header>
   <div class="sidebar-status d-md-none dropdown" dropdown [autoClose]="false" (isOpenChange)="toggleSidebarOverflow($event)"
        placement="bottom left">
@@ -75,7 +75,7 @@
       </a>
     </li>
     <li>
-      <a >
+      <a [routerLink]="['tables', 'dynamic']">
         <span class="icon">
           <i class="fi flaticon-briefcase"></i>
         </span>

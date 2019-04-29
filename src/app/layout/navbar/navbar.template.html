@@ -14,9 +14,9 @@
       <i class="ml-3 la la-bars la-lg d-none d-md-block d-lg-none"></i>
     </a>
   </li>
-  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" id="backHistory"><i class="la la-arrow-left la-lg"></i></a></li>
-  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2" id="forwardHistory"><i class="la la-arrow-right la-lg"></i></a></li>
-  <li class="nav-item d-none d-md-block"><a class="nav-link pl-2 text-info" id="permalink"><i class="la la-chain la-lg"></i></a></li>
+  <li class="nav-item d-none d-md-block hide" id="backHistoryLi"><a class="nav-link pl-2" id="backHistory"><i class="la la-arrow-left la-lg"></i></a></li>
+  <li class="nav-item d-none d-md-block hide" id="forwardHistoryLi"><a class="nav-link pl-2" id="forwardHistory"><i class="la la-arrow-right la-lg"></i></a></li>
+  <li class="nav-item d-none d-md-block hide" id="permalinkLi"><a class="nav-link pl-2 text-info" id="permalink"><i class="la la-chain la-lg"></i></a></li>
 </ul>
 <a class="navbar-brand d-md-none" [routerLink]=" ['/app/dashboard'] ">
   <i class="la la-circle la-sm text-gray mr-n-sm"></i>
@@ -26,7 +26,7 @@
   <i class="la la-circle la-sm text-gray"></i>
 </a>
 
-<form class="navbar-form d-none d-md-block mr-auto" role="search">
+<form class="navbar-form d-none d-md-block mr-auto hide" id="searchForm" role="search">
   <div class="form-group">
     <div class="input-group input-group-no-border">
       <input size="35" onfocus="javascript:doFirstKeywords()" id="keywords" class="form-control" placeholder="Explore" type="text">
@@ -40,7 +40,7 @@
 </form>
 
 <ul class="navbar-nav mr-3 d-none d-md-flex flex-row align-items-center">
-  <li class="nav-item mr-3">
+  <li class="nav-item mr-3 hide" id="optionsButtons">
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
       <label class="btn btn-gray">
         <input id="isSearchAllFields" type="checkbox" onclick="javascript:doQuery(getQueryText());"/><span>Expand Search</span> &nbsp;
@@ -55,7 +55,7 @@
   </li>
 
   <li class="nav-item mr-4">
-    <div class="d-sm-none">
+    <div class="d-sm-none hide" id="clearButtonsXs">
       <button class="btn btn-default" role="button" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">
         <span>Clear Keywords</span>
       </button>
@@ -63,7 +63,7 @@
         <span>Clear Library</span>
       </button>
     </div>
-    <div class="d-sm-block">
+    <div class="d-sm-block hide" id="clearButtonsSm">
       <button class="btn btn-default" role="button" onclick="javascript:clearKeywords();doQuery($('#keywords').val())">
         <span class="clear-data">Keywords</span>
       </button>
@@ -81,7 +81,7 @@
     </div>
   </li>
 
-  <li class="nav-item dropdown" placement="bottom right">
+  <li class="nav-item dropdown hide" placement="bottom right" id="addDataspaceButton">
     <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dataSpaceMenu" [tooltip]="'Proxy connections'" placement="bottom">
       <i class="la la-hdd-o la-lg fs-largest"></i>
     </a>
