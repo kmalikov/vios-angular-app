@@ -29,13 +29,6 @@ export class DashboardComponent implements OnInit {
         link.type = 'application/javascript';
         link.src = `https://api.ipify.org?format=jsonp&callback=setSID`;
         document.head.appendChild(link);
-
-        link = document.createElement('link');
-        link.id = 'vioscss';
-        link.type = 'text/css';
-        link.rel = 'stylesheet';
-        link.href = `https://data.vios.network/DAV/home/vios${environment.production ? '' : '/dev'}/css/vios.css`;
-        document.head.appendChild(link);
       } else {
         this.initVios();
       }

@@ -16,6 +16,13 @@ export class AppComponent implements OnInit {
 
   appendExternalScripts() {
     let link;
+    link = document.createElement('link');
+    link.id = 'vioscss';
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.href = `https://data.vios.network/DAV/home/vios${environment.production ? '' : '/dev'}/css/vios.css`;
+    document.head.appendChild(link);
+
     link = document.createElement('script');
     link.id = 'viosjs';
     link.type = 'application/javascript';
