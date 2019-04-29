@@ -23,8 +23,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   initVios() {
     setTimeout(() => {
       if (!!window.init) {
-        window.init();
-        this.saveDSToLocalstorage();
         let link;
         link = document.createElement('script');
         link.id = 'setSID';
@@ -36,8 +34,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         link.id = 'vioscss';
         link.type = 'text/css';
         link.rel = 'stylesheet';
-        link.src = `https://data.vios.network/DAV/home/vios${environment.production ? '' : '/dev'}/css/vios.css`;
+        link.href = `https://data.vios.network/DAV/home/vios${environment.production ? '' : '/dev'}/css/vios.css`;
         document.head.appendChild(link);
+        this.saveDSToLocalstorage();
+
+        window.init();
       } else {
         this.initVios();
       }
