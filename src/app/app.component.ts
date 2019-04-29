@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
     link.id = 'vioscss';
     link.type = 'text/css';
     link.rel = 'stylesheet';
-    link.src = `https://data.vios.network/DAV/home/vios/dev/css/vios.css`;
+    link.src = `https://data.vios.network/DAV/home/vios${environment.production ? '' : '/dev'}/css/vios.css`;
     document.head.appendChild(link);
   }
 }
