@@ -36,6 +36,8 @@ export class DashboardComponent implements OnInit {
         link.rel = 'stylesheet';
         link.href = `https://data.vios.network/DAV/home/vios${environment.production ? '' : '/dev'}/css/vios.css`;
         document.head.appendChild(link);
+
+        window.init();
       } else {
         this.initVios();
       }
