@@ -100,12 +100,13 @@
     "@types/hammerjs": "2.0.36",
     "@types/node": "6.0.118",
     "@types/select2": "4.0.31",
+    "@vechain/connex": "^1.2.3",
     "codelyzer": "4.0.2",
     "metrojs": "0.9.77",
     "napa": "2.3.0",
     "ts-node": "4.1.0",
     "tslint": "5.9.1",
-    "typescript": "2.5.3"
+    "typescript": "2.6.2"
   },
   "overrides": {
     "rickshaw": {

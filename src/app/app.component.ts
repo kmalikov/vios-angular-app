@@ -6,12 +6,15 @@ import {environment} from '../environments/environment';
   template: `<router-outlet></router-outlet>`
 })
 export class AppComponent implements OnInit {
+  status;
   constructor() {
     console.log(`Build version: ${environment.version}`);
   }
 
   ngOnInit() {
     this.appendExternalScripts();
+
+
   }
 
   appendExternalScripts() {

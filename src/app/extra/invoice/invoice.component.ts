@@ -8,6 +8,6 @@ import { Component, ViewEncapsulation } from '@angular/core';
 })
 export class InvoiceComponent {
   print(): void {
-    window.print();
+    // window.print();
   }
 }

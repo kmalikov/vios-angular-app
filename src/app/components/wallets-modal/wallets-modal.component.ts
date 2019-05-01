@@ -6,6 +6,7 @@ import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 import {ToastService} from '../toast-directive/toast.service';
 declare const $;
 declare const window;
+declare const connex;
 
 @Component({
   selector: 'wallets-modal',
@@ -35,6 +36,9 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   };
   viosBalance: number;
 
+  thor;
+  acc;
+
   constructor(public bsModalRef: BsModalRef, private service: WalletsModalService,
               private toastService: ToastService) {
     // this.walletsNameList = [ 'Bitcoin', 'Ethereum', 'VeChain', 'Litecoin', 'GoChain', 'Tron' ];
@@ -47,6 +51,40 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    if (!window.connex) {
+      location.href = 'https://env.vechain.org/r/#' + encodeURIComponent(location.href);
+    }
+
+    this.thor = connex.thor;
+    this.thor = this.thor.account('0xA8A90344dA00ee3ED46da598c5128d268c140e8a');
+
+    console.log(connex.thor);
+    console.log(connex.thor.status);
+
+    /*
+       {
+        "constant": false,
+        "inputs": [
+         {
+          "name": "trusteeNominees",
+          "type": "address[]"
+         },
+         {
+          "name": "actionTypes",
+          "type": "uint256[]"
+         },
+         {
+          "name": "amount",
+          "type": "uint256"
+         }
+        ],
+        "name": "open",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+       }
+    */
   }
 
   async initApp() {
