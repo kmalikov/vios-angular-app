@@ -1,47 +1,21 @@
-<div class="modal-header" [class.loading]="!loggedIn || walletsLoading">
+<div class="modal-header" [class.loading]="!status || walletsLoading">
   <div style="width: 100%;">
-    <div *ngIf="loggedIn">
+    <div *ngIf="status">
       <div class="d-flex justify-content-between flex-wrap">
-        <h5 class="modal-title">Arkane Account - <span class="fw-semi-bold">{{name}}</span></h5>
+        <h5 class="modal-title">Vechain - <span class="fw-semi-bold">Vechain</span></h5>
         <div class="widget-controls">
-          <a [routerLink]="" (click)="getWallets()"><i class="la la-refresh"></i></a>
+          <a [routerLink]="" ><i class="la la-refresh"></i></a>
           <a [routerLink]="" data-widgster="close" (click)="closeModal()"><i class="la la-remove"></i></a>
         </div>
       </div>
     </div>
-    <div *ngIf="!loggedIn">
-      <h5 class="modal-title">Arkane Account</h5>
+    <div *ngIf="!status">
+      <h5 class="modal-title">Vechain</h5>
     </div>
   </div>
 </div>
 
 <div class="modal-body">
-  <div id="wallet-details" *ngIf="wallet">
-    <!--BALANCE SUMMARY-->
-    <div class="offset-lg-6 col-sm-12 col-lg-6 col-xl-6">
-      <section class="widget">
-        <div class="widget-body clearfix">
-          <div class="row flex-nowrap">
-            <div class="col-3"><span class="widget-icon"><i class="fa fa-ticket text-warning"></i></span></div>
-            <div class="col-9">
-              <h6 class="m-0">VIOS BALANCE</h6>
-              <p class="h2 m-0 fw-normal">{{viosBalance | WalletBalancePipe}}</p>
-            </div>
-          </div>
-          <div class="row flex-nowrap">
-            <div class="col-6">
-              <h6 class="m-0">{{wallet.walletName}} Holdings</h6>
-              <p class="value5">{{wallet.balance?.balance | WalletBalancePipe}} {{wallet.balance?.symbol}}</p>
-            </div>
-            <div class="col-6">
-              <h6 class="m-0">Gas Balance</h6>
-              <p class="value5">{{wallet.balance?.gasBalance | WalletBalancePipe}} {{wallet.balance?.gasSymbol}}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
   <div class="clearfix">
     <ul class="nav nav-tabs float-left" id="walletTabButton" role="tablist">
       <li class="nav-item dropdown">
@@ -58,26 +32,12 @@
       </li>
       <li class="nav-item">
         <a aria-controls="walletopts" aria-expanded="false" class="nav-link" data-toggle="tab"
-           href="#walletopts" id="walletopts-tab" role="tab"> Options </a>
+                              href="#walletopts" id="walletopts-tab" role="tab"> Options </a>
       </li>
-
-      <li class="nav-item">
-        <a aria-controls="proposeTab" aria-expanded="false" class="nav-link" data-toggle="tab"
-           href="#proposeTab" id="propose-tab" role="tab"> Propose </a>
-      </li>
-      <li class="nav-item">
-        <a aria-controls="voteTab" aria-expanded="false" class="nav-link" data-toggle="tab"
-           href="#voteTab" id="vote-tab" role="tab"> Vote </a>
-      </li>
-      <li class="nav-item">
-        <a aria-controls="verdictTab" aria-expanded="false" class="nav-link" data-toggle="tab"
-           href="#verdictTab" id="verdict-tab" role="tab"> Verdict </a>
-      </li>
-
     </ul>
   </div>
   <div class="tab-content" id="walletTab">
-    <div aria-labelledby="wallets-tab" aria-expanded="true" class="tab-pane active in clearfix" id="wallets"
+    <div aria-expanded="true" aria-labelledby="wallets-tab" class="tab-pane active in clearfix" id="wallets"
          role="tabpanel" style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
       <form id="transaction-form" #transactionForm="ngForm" *ngIf="wallet">
         <fieldset>
@@ -159,35 +119,13 @@
         <button class="btn btn-inverse" style="height: 35px;" (click)="manageWallet(chosenWallet)" *ngIf="chosenWallet">Import</button>
       </div>
     </div>
-    <div aria-labelledby="propose-tab" class="tab-pane p-3" id="proposeTab" role="tabpanel"
-         style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
-      <legend>Propose</legend>
-    </div>
-    <div aria-labelledby="vote-tab" class="tab-pane p-3" id="voteTab" role="tabpanel"
-         style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
-      <legend>Vote</legend>
-    </div>
-    <div aria-labelledby="verdict-tab" class="tab-pane p-3" id="verdictTab" role="tabpanel"
-         style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
-      <legend>Verdict</legend>
-    </div>
   </div>
 </div>
 
 <div class="modal-footer">
   <div class="clearfix">
-    <button class="btn btn-inverse visit-marketplace" role="button">
-      Visit Marketplace
-    </button>
     <button class="btn btn-secondary" role="button" (click)="closeModal()">
       <span >Cancel</span>
     </button>
-    <button class="btn btn-danger" role="button" (click)="doLogout()" [disabled]="!loggedIn">
-      Logout
-    </button>
   </div>
 </div>
-
-<!--WALLET TAB CONTENT-->
-<!-- see this page for the Select menu -->
-<!-- https://demo.flatlogic.com/sing-app/angular/#/app/forms/elements -->

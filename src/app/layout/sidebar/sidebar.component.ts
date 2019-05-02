@@ -8,6 +8,7 @@ import {ToastService} from '../../components/toast-directive/toast.service';
 import {CookieService} from 'ngx-cookie-service';
 import {LoginModelEnum} from '../../enums/login-model';
 import {environment} from '../../../environments/environment';
+import {VechainModalComponent} from '../../components/vechain-modal/vechain-modal.component';
 declare const jQuery: any;
 declare const window: any;
 declare const solid: any;
@@ -131,11 +132,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   openWallet() {
-    this.bsModalRef = this.modalService.show(WalletsModalComponent, {class: 'modal-lg', ignoreBackdropClick: true});
-    this.bsModalRef.content.closeBtnName = 'Close';
-    this.bsModalRef.content.onClose.subscribe(data => {
+    const bsModalRef = this.modalService.show(WalletsModalComponent, {class: 'modal-lg', ignoreBackdropClick: true});
+    bsModalRef.content.closeBtnName = 'Close';
+    bsModalRef.content.onClose.subscribe(data => {
       window.activate();
-    })
+    });
   }
 
   login() {

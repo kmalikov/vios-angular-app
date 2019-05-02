@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {WalletsModalService} from './wallets-modal.service';
+import {VechainModalService} from './vechain-modal.service';
 import { BsModalRef } from 'ngx-bootstrap';
 import {ArkaneConnect} from '@arkane-network/arkane-connect';
 import {ToastService} from '../toast-directive/toast.service';
@@ -8,11 +8,11 @@ declare const window;
 declare const connex;
 
 @Component({
-  selector: 'wallets-modal',
-  templateUrl: './wallets-modal.template.html',
-  styleUrls: ['./wallets-modal.style.scss']
+  selector: 'vechain-modal',
+  templateUrl: './vechain-modal.template.html',
+  styleUrls: ['./vechain-modal.style.scss']
 })
-export class WalletsModalComponent implements OnInit, AfterViewInit {
+export class VechainModalComponent implements OnInit, AfterViewInit {
   @Output() onClose = new EventEmitter();
   app: any = {};
   loggedIn = false;
@@ -39,11 +39,8 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   acc;
   status;
 
-  isVerdict;
-
-  constructor(public bsModalRef: BsModalRef, private service: WalletsModalService,
+  constructor(public bsModalRef: BsModalRef, private service: VechainModalService,
               private toastService: ToastService) {
-    // this.walletsNameList = [ 'Bitcoin', 'Ethereum', 'VeChain', 'Litecoin', 'GoChain', 'Tron' ];
     this.walletsNameList = [ 'Ethereum', 'VeChain' ];
     this.chosenWallet = this.walletsNameList[0];
   }
@@ -55,85 +52,11 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     if (!window.connex) {
       location.href = 'https://env.vechain.org/r/#' + encodeURIComponent(location.href);
-    } else {
       this.thor = connex.thor;
       this.status = this.thor.status;
       this.acc = this.thor.account('0xA8A90344dA00ee3ED46da598c5128d268c140e8a');
-      this.checkIfProposals((verdict) => this.isVerdict = verdict);
+      this.simulateContracting();
     }
-  }
-
-  checkIfProposals(callback) {
-    const proposalsABI = {
-      'constant': true,
-      'inputs': [
-        {
-          'name': '',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'proposals',
-      'outputs': [
-        {
-          'name': 'trusteeNominee',
-          'type': 'address'
-        },
-        {
-          'name': 'yay',
-          'type': 'uint256'
-        },
-        {
-          'name': 'nay',
-          'type': 'uint256'
-        },
-        {
-          'name': 'actionType',
-          'type': 'uint256'
-        },
-        {
-          'name': 'authorizedYay',
-          'type': 'uint256'
-        },
-        {
-          'name': 'authorizedNay',
-          'type': 'uint256'
-        },
-        {
-          'name': 'authorized',
-          'type': 'bool'
-        }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    };
-    const nameMethod = this.acc.method(proposalsABI);
-    nameMethod.call(0).then(output => {
-      console.log(output);
-      callback(output);
-    });
-  }
-
-  checkProposalFee(callback) {
-    const proposalFeeABI = {
-      'constant': true,
-      'inputs': [],
-      'name': 'proposal_fee',
-      'outputs': [
-        {
-          'name': '',
-          'type': 'uint256'
-        }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    };
-    const nameMethod = this.acc.method(proposalFeeABI);
-    nameMethod.call().then(output => {
-      console.log(output);
-      callback(output);
-    });
   }
 
   simulateContracting() {
@@ -166,7 +89,6 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
       console.log(output);
     });
   }
-
 
   async initApp() {
     window.arkaneConnect = new ArkaneConnect('vios', {environment: 'staging'});

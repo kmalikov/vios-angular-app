@@ -21,6 +21,7 @@ import {Select2Module} from 'ng2-select2';
 import {WalletIdPipe} from '../components/wallets-modal/pipes/wallet-id.pipe';
 import {WalletBalancePipe} from '../components/wallets-modal/pipes/wallet-balance.pipe';
 import {FiIconsModule} from '../components/fi-icons/fi-icons.module';
+import {VechainModalComponent} from '../components/vechain-modal/vechain-modal.component';
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ import {FiIconsModule} from '../components/fi-icons/fi-icons.module';
     // ChatMessageComponent,
     WalletsModalComponent,
     WalletIdPipe,
-    WalletBalancePipe
+    WalletBalancePipe,
+    VechainModalComponent
   ],
   providers: [
     WalletsModalService,
@@ -55,7 +57,8 @@ import {FiIconsModule} from '../components/fi-icons/fi-icons.module';
     CookieService
   ],
   entryComponents: [
-    WalletsModalComponent
+    WalletsModalComponent,
+    VechainModalComponent
   ]
 })
 export class LayoutModule {
