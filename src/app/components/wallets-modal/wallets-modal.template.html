@@ -61,15 +61,19 @@
            href="#walletopts" id="walletopts-tab" role="tab"> Options </a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item" >
         <a aria-controls="proposeTab" aria-expanded="false" class="nav-link" data-toggle="tab"
            href="#proposeTab" id="propose-tab" role="tab"> Propose </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="!isPollOpen && isInitialized">
+        <a aria-controls="proposeTab" aria-expanded="false" class="nav-link" data-toggle="tab"
+           href="#proposeTab" id="propose-tab" role="tab"> Propose </a>
+      </li>
+      <li class="nav-item" *ngIf="isPollOpen">
         <a aria-controls="voteTab" aria-expanded="false" class="nav-link" data-toggle="tab"
            href="#voteTab" id="vote-tab" role="tab"> Vote </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="isPollOpen && !isInitialized">
         <a aria-controls="verdictTab" aria-expanded="false" class="nav-link" data-toggle="tab"
            href="#verdictTab" id="verdict-tab" role="tab"> Verdict </a>
       </li>
@@ -95,56 +99,56 @@
                 </div>
               </div>
             </div>
-              <div class="form-group row">
-                <label for="transaction-to" class="col-md-4 form-control-label text-md-right">To</label>
-                <div class="col-md-7">
-                  <div class="input-group">
-                    <span class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="fa fa-user"></i>
-                      </span>
+            <div class="form-group row">
+              <label for="transaction-to" class="col-md-4 form-control-label text-md-right">To</label>
+              <div class="col-md-7">
+                <div class="input-group">
+                  <span class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fa fa-user"></i>
                     </span>
-                    <input class="form-control" id="secret-type" name="secretType" type="hidden" value="VECHAIN">
-                    <input class="form-control" id="wallet-address" name="secretType" type="hidden" value="0x110A84aFB1C0BEfA080dD6C36265e8178dFdA67B">
-                    <input required class="form-control" id="transaction-to" [(ngModel)]="transactionModel.to" #toInput="ngModel" name="to" placeholder="Enter recipient address"  type="text">
-                  </div>
+                  </span>
+                  <input class="form-control" id="secret-type" name="secretType" type="hidden" value="VECHAIN">
+                  <input class="form-control" id="wallet-address" name="secretType" type="hidden" value="0x110A84aFB1C0BEfA080dD6C36265e8178dFdA67B">
+                  <input required class="form-control" id="transaction-to" [(ngModel)]="transactionModel.to" #toInput="ngModel" name="to" placeholder="Enter recipient address"  type="text">
                 </div>
               </div>
-              <div class="form-group row">
-                <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Amount</label>
-                <div class="col-md-7">
-                  <div class="input-group amount">
-                    <span class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="fa fa-ticket"></i>
-                      </span>
+            </div>
+            <div class="form-group row">
+              <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Amount</label>
+              <div class="col-md-7">
+                <div class="input-group amount">
+                  <span class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fa fa-ticket"></i>
                     </span>
-                    <input class="form-control ng-pristine ng-invalid ng-touched" id="transaction-amount"
-                           [(ngModel)]="transactionModel.amount" #amountInput="ngModel"
-                           name="amount" placeholder="Enter number of tokens" required type="number">
-                  </div>
+                  </span>
+                  <input class="form-control ng-pristine ng-invalid ng-touched" id="transaction-amount"
+                         [(ngModel)]="transactionModel.amount" #amountInput="ngModel"
+                         name="amount" placeholder="Enter number of tokens" required type="number">
                 </div>
               </div>
-              <div class="form-group row">
-                <label for="transaction-to" class="col-md-4 form-control-label text-md-right">
-                  Token <span class="help-block">Optional</span>
-                </label>
-                <div class="col-md-7">
-                  <select id="transaction-token" [(ngModel)]="transactionModel.tokenAddress" #tokenAddressInput="ngModel" name="tokenAddress"></select>
-                </div>
+            </div>
+            <div class="form-group row">
+              <label for="transaction-to" class="col-md-4 form-control-label text-md-right">
+                Token <span class="help-block">Optional</span>
+              </label>
+              <div class="col-md-7">
+                <select id="transaction-token" [(ngModel)]="transactionModel.tokenAddress" #tokenAddressInput="ngModel" name="tokenAddress"></select>
               </div>
-              <div class="form-group row">
-                <label for="transaction-to" class="col-md-4 form-control-label text-md-right"></label>
-                <div class="col-md-7">
-                  <button class="btn btn-block btn-inverse mb-xs m-auto"
-                          role="button"
-                          [disabled]="!transactionForm.form.valid"
-                          (click)="doTransaction(transactionModel)">
-                    <i class="fa fa-flash text-info"></i>
-                    Transfer
-                  </button>
-                </div>
+            </div>
+            <div class="form-group row">
+              <label for="transaction-to" class="col-md-4 form-control-label text-md-right"></label>
+              <div class="col-md-7">
+                <button class="btn btn-block btn-inverse mb-xs m-auto"
+                        role="button"
+                        [disabled]="!transactionForm.form.valid"
+                        (click)="doTransaction(transactionModel)">
+                  <i class="fa fa-flash text-info"></i>
+                  Transfer
+                </button>
               </div>
+            </div>
           </div>
         </fieldset>
       </form>
@@ -161,7 +165,86 @@
     </div>
     <div aria-labelledby="propose-tab" class="tab-pane p-3" id="proposeTab" role="tabpanel"
          style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
-      <legend>Propose</legend>
+      <div class="d-flex flex-column">
+      <span><strong>DEPOSIT REQUIRED:</strong>  “123 VIOS”</span>
+        <form id="ballot-form" #ballotForm="ngForm">
+          <fieldset>
+            <div class="m-auto">
+              <div class="form-group row">
+                <label for="transaction-to" class="col-md-4 form-control-label text-md-right">Question</label>
+                <div class="col-md-7">
+                  <div class="input-group amount">
+                <span class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="fa fa-ticket"></i>
+                  </span>
+                </span>
+                    <input class="form-control ng-pristine ng-invalid ng-touched"
+                           [(ngModel)]="ballotModel.question" #amountInput="ngModel"
+                           name="question" placeholder="Enter a question for the ballot" required type="text">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="transaction-to" class="col-md-4 form-control-label text-md-right"></label>
+                  <div class="col-md-7">
+                    <button class="btn btn-block btn-inverse mb-xs m-auto"
+                            role="button"
+                            [disabled]="!ballotForm.form.valid"
+                            (click)="addOptionBallot()">
+                      <i class="fa fa-flash text-info"></i>
+                      Add Option
+                    </button>
+                    <button class="btn btn-block btn-inverse mb-xs m-auto"
+                            role="button"
+                            [disabled]="!ballotForm.form.valid"
+                            (click)="submitBallot(ballotModel)">
+                      <i class="fa fa-flash text-info"></i>
+                      Submit
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-7" *ngIf="questionBody">
+                  <div class="input-group amount">
+                <span class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="fa fa-ticket"></i>
+                  </span>
+                </span>
+                    <input class="form-control ng-pristine ng-invalid ng-touched"
+                           [(ngModel)]="questionBody.q1" #question1Input="ngModel"
+                           name="q1" placeholder="Enter a question for the ballot" required type="text">
+                  </div>
+                </div>
+                <div class="col-md-7" *ngIf="questionBody">
+                  <div class="input-group amount">
+                <span class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="fa fa-ticket"></i>
+                  </span>
+                </span>
+                    <input class="form-control ng-pristine ng-invalid ng-touched"
+                           [(ngModel)]="questionBody.q2" #question2Input="ngModel"
+                           name="q2" placeholder="Enter a question for the ballot" required type="text">
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="questionBody">
+                  <label for="transaction-to" class="col-md-4 form-control-label text-md-right"></label>
+                  <div class="col-md-7">
+                    <button class="btn btn-block btn-inverse mb-xs m-auto"
+                            role="button"
+                            [disabled]="!ballotModel.form.valid"
+                            (click)="saveOptionBallot(ballotModel)">
+                      <i class="fa fa-flash text-info"></i>
+                      Add
+                    </button>
+                  </div>
+                </div>
+                {{ballotModel | json}}
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
     </div>
     <div aria-labelledby="vote-tab" class="tab-pane p-3" id="voteTab" role="tabpanel"
          style="padding-top: 1em; padding-left: 0px; padding-right: 0px;">
