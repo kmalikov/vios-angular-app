@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {WalletsModalService} from './wallets-modal.service';
 import { BsModalRef } from 'ngx-bootstrap';
 import {ArkaneConnect} from '@arkane-network/arkane-connect';
@@ -97,6 +97,7 @@ const openABI = {
 })
 export class WalletsModalComponent implements OnInit, AfterViewInit {
   @Output() onClose = new EventEmitter();
+  @ViewChild('amountInput') amountInput: any;
   app: any = {};
   loggedIn = false;
   walletsLoading = false;
@@ -356,6 +357,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   }
 
   addOptionBallot() {
+    this.amountInput.control.markAsTouched();
     this.questionBody = {
       q1: '',
       q2: ''
