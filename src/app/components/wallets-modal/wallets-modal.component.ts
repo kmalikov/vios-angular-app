@@ -116,7 +116,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   };
   ballotModel = {
     question: '',
-    listOfQuestion: []
+    listOfQuestion: [],
   };
   questionBody;
   select2Options: any = {
@@ -360,16 +360,25 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     this.amountInput.control.markAsTouched();
     this.questionBody = {
       q1: '',
-      q2: ''
+      q2: '0',
+      q2other: ''
     };
   }
 
   submitBallot() {
-
+    this.questionBody = '';
   }
 
   saveOptionBallot() {
     this.ballotModel.listOfQuestion.push(this.questionBody);
     this.questionBody = '';
+  }
+
+  cancelOptionBallot() {
+    this.questionBody = '';
+  }
+
+  clearQuestionBodyValue(property) {
+    this.questionBody[property] = '';
   }
 }
