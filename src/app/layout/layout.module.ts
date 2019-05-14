@@ -22,6 +22,9 @@ import {WalletIdPipe} from '../components/wallets-modal/pipes/wallet-id.pipe';
 import {WalletBalancePipe} from '../components/wallets-modal/pipes/wallet-balance.pipe';
 import {FiIconsModule} from '../components/fi-icons/fi-icons.module';
 import {VechainModalComponent} from '../components/vechain-modal/vechain-modal.component';
+import {BallotProposeComponent} from '../components/wallets-modal/ballot-propose/ballot-propose.component';
+import {BallotVoteComponent} from '../components/wallets-modal/ballot-vote/ballot-vote.component';
+import {BallotVerdictComponent} from '../components/wallets-modal/ballot-verdict/ballot-verdict.component';
 
 @NgModule({
   imports: [
@@ -49,7 +52,10 @@ import {VechainModalComponent} from '../components/vechain-modal/vechain-modal.c
     WalletsModalComponent,
     WalletIdPipe,
     WalletBalancePipe,
-    VechainModalComponent
+    VechainModalComponent,
+    BallotProposeComponent,
+    BallotVoteComponent,
+    BallotVerdictComponent
   ],
   providers: [
     WalletsModalService,

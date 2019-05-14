@@ -97,7 +97,7 @@ const openABI = {
 })
 export class WalletsModalComponent implements OnInit, AfterViewInit {
   @Output() onClose = new EventEmitter();
-  @ViewChild('amountInput') amountInput: any;
+
   app: any = {};
   loggedIn = false;
   walletsLoading = false;
@@ -114,14 +114,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
     amount: '',
     tokenAddress: ''
   };
-  ballotModel = {
-    question: '',
-    listOfQuestion: [],
-  };
-  questionBody;
-  select2Options: any = {
-    theme: 'bootstrap'
-  };
+
   viosBalance: number;
 
   thor;
@@ -354,31 +347,5 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   closeModal() {
     this.onClose.emit();
     this.bsModalRef.hide();
-  }
-
-  addOptionBallot() {
-    this.amountInput.control.markAsTouched();
-    this.questionBody = {
-      q1: '',
-      q2: '0',
-      q2other: ''
-    };
-  }
-
-  submitBallot() {
-    this.questionBody = '';
-  }
-
-  saveOptionBallot() {
-    this.ballotModel.listOfQuestion.push(this.questionBody);
-    this.questionBody = '';
-  }
-
-  cancelOptionBallot() {
-    this.questionBody = '';
-  }
-
-  clearQuestionBodyValue(property) {
-    this.questionBody[property] = '';
   }
 }

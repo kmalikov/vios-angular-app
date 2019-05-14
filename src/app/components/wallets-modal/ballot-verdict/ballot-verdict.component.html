@@ -1,0 +1,22 @@
+<legend>Verdict</legend>
+
+<div class="d-flex flex-column">
+  <form #voteForm="ngForm">
+    <fieldset>
+      <div class="m-auto">
+
+        <div class="form-group row">
+          <label class="col-md-4 form-control-label text-md-right">
+            Question</label>
+          <div class="col-md-7">
+            <div class="d-flex flex-column">
+              <div *ngFor="let question of questions; let index = index">
+                {{index + 1}}) question</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </fieldset>
+  </form>
+</div>

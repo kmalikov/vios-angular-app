@@ -1,0 +1,144 @@
+<legend>Propose</legend>
+
+<div class="d-flex flex-column">
+  <div class="form-group row d-flex">
+    <div class="col-md-4 text-right">
+      DEPOSIT REQUIRED
+    </div>
+    <div class="col-md-7">
+      <strong>123 VIOS</strong>
+    </div>
+  </div>
+
+  <form id="ballot-form" #ballotForm="ngForm">
+    <fieldset>
+      <div class="m-auto">
+        <div class="form-group row">
+          <label class="col-md-4 form-control-label text-md-right">
+            Question</label>
+          <div class="col-md-7">
+            <div class="input-group amount">
+              <span class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-child"></i></span>
+              </span>
+              <input class="form-control"
+                     [(ngModel)]="ballotModel.question" required #amountInput="ngModel" name="question"
+                     type="text">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row" *ngIf="ballotModel.listOfQuestion?.length">
+          <label class="col-md-4 form-control-label text-md-right">
+            Options</label>
+          <div class="col-md-7">
+            <div class="d-flex flex-column">
+              <div *ngFor="let question of ballotModel.listOfQuestion; let index = index">
+                {{index + 1}}. {{question.q1}} / {{showQ2(question)}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row" *ngIf="questionBody">
+          <label class="col-md-4 form-control-label text-md-right">
+            Who is this about</label>
+          <div class="col-md-7 d-flex">
+            <div class="input-group amount">
+              <span class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+              </span>
+              <input class="form-control "
+                     [(ngModel)]="questionBody.q1" #q1Input="ngModel" required name="q1"
+                     type="text">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row" *ngIf="!questionBody">
+          <label class="col-md-4 form-control-label text-md-right"></label>
+          <div class="col-md-7 d-flex">
+            <button class="btn btn-block btn-inverse mb-xs m-auto mr-custom"
+                    role="button"
+                    [disabled]="!ballotForm.form.valid"
+                    (click)="addOptionBallot()">
+              <!--<i class="fa fa-flash text-info"></i>-->
+              Add Option
+            </button>
+            <button class="btn btn-block btn-inverse mb-xs m-auto"
+                    role="button"
+                    [disabled]="!ballotForm.form.valid"
+                    (click)="submitBallot(ballotModel)">
+              <!--<i class="fa fa-flash text-info"></i>-->
+              Submit
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group row animated fadeIn" *ngIf="questionBody">
+          <label class="col-md-4 form-control-label text-md-right">
+            What should the community do to/with this individual
+          </label>
+          <div class="col-md-7">
+            <div class="form-check abc-radio abc-radio-danger">
+              <input class="form-check-input" required [(ngModel)]="questionBody.q2" id="radio1" name="radio" type="radio" value="0" (change)="clearQuestionBodyValue('q2other')">
+              <label class="form-check-label" for="radio1">
+                Add trustee
+              </label>
+            </div>
+            <div class="form-check abc-radio abc-radio-danger">
+              <input class="form-check-input" required [(ngModel)]="questionBody.q2" id="radio2" name="radio" type="radio" value="1" (change)="clearQuestionBodyValue('q2other')">
+              <label class="form-check-label" for="radio2">
+                Remove trustee
+              </label>
+            </div>
+            <div class="form-check abc-radio abc-radio-danger">
+              <input class="form-check-input" required [(ngModel)]="questionBody.q2" id="radio3" name="radio" type="radio" value="2">
+              <label class="form-check-label" for="radio3">
+                Other
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row animated fadeIn" *ngIf="questionBody && questionBody.q2 === '2'">
+          <label class="col-md-4 form-control-label text-md-right"></label>
+          <div class="col-md-7">
+            <div class="input-group amount">
+                    <span class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-header"></i></span>
+                    </span>
+              <input class="form-control "
+                     [(ngModel)]="questionBody.q2other" #question2Input="ngModel"
+                     name="q2other" placeholder="Enter a question for the ballot" required type="text">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row animated fadeIn" *ngIf="questionBody">
+          <label class="col-md-4 form-control-label text-md-right"></label>
+          <div class="col-md-7 d-flex">
+            <button class="btn btn-block btn-inverse mb-xs m-auto mr-custom"
+                    role="button"
+                    (click)="cancelOptionBallot()">
+              <!--<i class="fa fa-flash text-info"></i>-->
+              Cancel
+            </button>
+            <button class="btn btn-block btn-inverse mb-xs m-auto"
+                    role="button"
+                    [disabled]="!ballotForm.form.valid"
+                    (click)="saveOptionBallot()">
+              <!--<i class="fa fa-flash text-info"></i>-->
+              Add
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group row animated fadeIn" *ngIf="!questionBody || ballotModel.listOfQuestion?.length">
+          <div class="offset-3 col-md-6">
+          </div>
+        </div>
+
+      </div>
+    </fieldset>
+  </form>
+</div>
