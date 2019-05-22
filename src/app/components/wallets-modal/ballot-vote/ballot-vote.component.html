@@ -14,8 +14,8 @@
                 <span class="input-group-text"><i class="fa fa-ticket"></i></span>
               </span>
               <input class="form-control"
-                     [(ngModel)]="depositAmount" #amountInput="ngModel" required
-                     name="amount" placeholder="Amount" type="text">
+                     [(ngModel)]="voteModel.amount" #amountInput="ngModel" required
+                     name="amount" placeholder="Amount" type="number">
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@
             <div class="d-flex flex-column">
               <div class="form-check abc-radio abc-radio-danger" *ngFor="let question of questions; let index = index">
                 <input class="form-check-input" id="radio{{index}}"
-                       required [(ngModel)]="answer" name="radio" type="radio" value="{{index}}">
+                       required [(ngModel)]="voteModel.questionNumber" name="radio" type="radio" value="{{index}}">
                 <label class="form-check-label" [for]="'radio' + index">
                   {{question}}
                 </label>

@@ -1,4 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {SyncService} from '../sync-service/sync.service';
 
 @Component({
   selector: 'app-ballot-propose',
@@ -6,6 +7,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
   styleUrls: ['./ballot-propose.component.scss']
 })
 export class BallotProposeComponent implements OnInit {
+  @Output() proposeSubmit = new EventEmitter();
   @ViewChild('amountInput') amountInput: any;
   @ViewChild('q1Input') q1Input: any;
 
@@ -16,23 +18,19 @@ export class BallotProposeComponent implements OnInit {
 
   questionBody;
 
-  constructor() { }
+  constructor(private syncSerice: SyncService) { }
 
   ngOnInit() {
   }
 
   addOptionBallot() {
-    if (this.amountInput) this.amountInput.control.markAsTouched();
-    if (this.q1Input) this.q1Input.control.markAsTouched();
+    if (this.amountInput) { this.amountInput.control.markAsTouched(); }
+    if (this.q1Input) { this.q1Input.control.markAsTouched(); }
     this.questionBody = {
       q1: '',
       q2: '0',
       q2other: ''
     };
-  }
-
-  submitBallot() {
-    this.questionBody = '';
   }
 
   saveOptionBallot() {
@@ -56,6 +54,11 @@ export class BallotProposeComponent implements OnInit {
     } else if (question.q2other) {
       return question.q2other;
     }
+  }
+
+  submitBallot(ballotModel) {
+    this.proposeSubmit.emit(ballotModel);
+    this.questionBody = '';
   }
 
 }

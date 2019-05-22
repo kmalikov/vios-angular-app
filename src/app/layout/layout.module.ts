@@ -25,6 +25,7 @@ import {VechainModalComponent} from '../components/vechain-modal/vechain-modal.c
 import {BallotProposeComponent} from '../components/wallets-modal/ballot-propose/ballot-propose.component';
 import {BallotVoteComponent} from '../components/wallets-modal/ballot-vote/ballot-vote.component';
 import {BallotVerdictComponent} from '../components/wallets-modal/ballot-verdict/ballot-verdict.component';
+import {SyncService} from '../components/wallets-modal/sync-service/sync.service';
 
 @NgModule({
   imports: [
@@ -60,7 +61,8 @@ import {BallotVerdictComponent} from '../components/wallets-modal/ballot-verdict
   providers: [
     WalletsModalService,
     ToastService,
-    CookieService
+    CookieService,
+    SyncService
   ],
   entryComponents: [
     WalletsModalComponent,

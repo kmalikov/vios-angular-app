@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-ballot-vote',
@@ -6,16 +6,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./ballot-vote.component.scss']
 })
 export class BallotVoteComponent implements OnInit {
-  depositAmount;
-  answer;
-  questions = [1, 2, 3, 4, 5];
+  @Output() voteSubmit = new EventEmitter();
+  @Input() questions: any[];
+
+  voteModel = {
+    amount: '',
+    questionNumber: ''
+  };
+
   constructor() { }
 
   ngOnInit() {
   }
 
   submit() {
-
+    this.voteSubmit.emit();
   }
 
 }

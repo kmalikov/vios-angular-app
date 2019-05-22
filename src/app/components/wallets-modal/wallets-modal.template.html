@@ -56,24 +56,11 @@
              aria-selected="true">{{wallet.secretType}} - {{wallet.address | WalletIdPipe}}</a>
         </div>
       </li>
+
       <li class="nav-item">
         <a aria-controls="walletopts" aria-expanded="false" class="nav-link" data-toggle="tab"
            href="#walletopts" id="walletopts-tab" role="tab"> Options </a>
       </li>
-
-      <li class="nav-item" *ngIf="!isPollOpen && isInitialized">
-        <a aria-controls="proposeTab" aria-expanded="false" class="nav-link" data-toggle="tab"
-           href="#proposeTab" id="propose-tab" role="tab"> Propose </a>
-      </li>
-      <li class="nav-item" *ngIf="isPollOpen">
-        <a aria-controls="voteTab" aria-expanded="false" class="nav-link" data-toggle="tab"
-           href="#voteTab" id="vote-tab" role="tab"> Vote </a>
-      </li>
-      <li class="nav-item" *ngIf="isPollOpen && !isInitialized">
-        <a aria-controls="verdictTab" aria-expanded="false" class="nav-link" data-toggle="tab"
-           href="#verdictTab" id="verdict-tab" role="tab"> Verdict </a>
-      </li>
-
     </ul>
   </div>
   <div class="tab-content" id="walletTab">
@@ -155,11 +142,20 @@
         <button class="btn btn-inverse" style="height: 35px;" (click)="manageWallet(chosenWallet)" *ngIf="chosenWallet">Import</button>
       </div>
 
-      <app-ballot-propose></app-ballot-propose>
-
-      <app-ballot-vote></app-ballot-vote>
-
+      <!-- FOR TESTING PROPOSES -->
+      <app-ballot-propose (proposeSubmit)="proposeSubmit($event)"></app-ballot-propose>
+      <app-ballot-vote (voteSubmit)="voteSubmit()" [questions]="[1,2,3,4,5]"></app-ballot-vote>
       <app-ballot-verdict></app-ballot-verdict>
+      <!-- FOR TESTING PROPOSES -->
+
+
+      <app-ballot-propose *ngIf="!isPollOpen && isInitialized"
+                          (proposeSubmit)="proposeSubmit()"></app-ballot-propose>
+
+      <app-ballot-vote *ngIf="isPollOpen"
+                       (voteSubmit)="voteSubmit()"></app-ballot-vote>
+
+      <app-ballot-verdict *ngIf="isPollOpen && !isInitialized"></app-ballot-verdict>
     </div>
 
   </div>
