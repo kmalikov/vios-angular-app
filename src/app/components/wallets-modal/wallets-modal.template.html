@@ -143,14 +143,15 @@
       </div>
 
       <!-- FOR TESTING PROPOSES -->
-      <app-ballot-propose (proposeSubmit)="proposeSubmit($event)"></app-ballot-propose>
-      <app-ballot-vote (voteSubmit)="voteSubmit()" [questions]="[1,2,3,4,5]"></app-ballot-vote>
+      <app-ballot-propose [proposalFee]="proposalFee"
+                          (proposeSubmit)="proposeSubmit($event)"></app-ballot-propose>
+      <app-ballot-vote (voteSubmit)="voteSubmit()" [depositAmount]="proposalFee" [questions]="proposals"></app-ballot-vote>
       <app-ballot-verdict></app-ballot-verdict>
       <!-- FOR TESTING PROPOSES -->
 
-
       <app-ballot-propose *ngIf="!isPollOpen && isInitialized"
-                          (proposeSubmit)="proposeSubmit()"></app-ballot-propose>
+                          [proposalFee]="proposalFee"
+                          (proposeSubmit)="proposeSubmit($event)"></app-ballot-propose>
 
       <app-ballot-vote *ngIf="isPollOpen"
                        (voteSubmit)="voteSubmit()"></app-ballot-vote>

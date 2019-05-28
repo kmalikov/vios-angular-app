@@ -7,7 +7,8 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class BallotVoteComponent implements OnInit {
   @Output() voteSubmit = new EventEmitter();
-  @Input() questions: any[];
+  @Input() questions: any;
+  @Input() depositAmount: any;
 
   voteModel = {
     amount: '',

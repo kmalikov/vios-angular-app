@@ -6,7 +6,7 @@
       DEPOSIT REQUIRED
     </div>
     <div class="col-md-7">
-      <strong>123 VIOS</strong>
+      <strong>{{proposalFee}} VIOS</strong>
     </div>
   </div>
 
@@ -19,11 +19,25 @@
           <div class="col-md-7">
             <div class="input-group amount">
               <span class="input-group-prepend">
-                <span class="input-group-text"><i class="fa fa-child"></i></span>
+                <span class="input-group-text"><i class="fa fa-question"></i></span>
               </span>
               <input class="form-control"
-                     [(ngModel)]="ballotModel.question" required #amountInput="ngModel" name="question"
-                     type="text">
+                     [(ngModel)]="ballotModel.question" required #questionInput="ngModel" name="question"
+                     type="text" placeholder="Enter your question">
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 form-control-label text-md-right">
+            Amount</label>
+          <div class="col-md-7 d-flex">
+            <div class="input-group amount">
+              <span class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-ticket"></i></span>
+              </span>
+              <input class="form-control "
+                     [(ngModel)]="ballotModel.amount" #amountInput="ngModel" required name="amount"
+                     type="number" placeholder="Enter number of tokens">
             </div>
           </div>
         </div>
@@ -41,7 +55,7 @@
 
         <div class="form-group row" *ngIf="questionBody">
           <label class="col-md-4 form-control-label text-md-right">
-            Who is this about</label>
+            Address</label>
           <div class="col-md-7 d-flex">
             <div class="input-group amount">
               <span class="input-group-prepend">
@@ -49,7 +63,7 @@
               </span>
               <input class="form-control "
                      [(ngModel)]="questionBody.q1" #q1Input="ngModel" required name="q1"
-                     type="text">
+                     type="text" placeholder="Enter recipient address">
             </div>
           </div>
         </div>

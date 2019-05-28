@@ -161,7 +161,14 @@ export class SyncService {
     nameMethod.call(0).then(output => {
       console.log(output);
       this.toastService.showToast('Proposals', 'Executed...');
-      callback(output && output.decoded && Array.isArray(output.decoded) && output.decoded[0].length > 5);
+      if (output && output.decoded && output.decoded[0] && output.decoded[0].length > 5) {
+        this.toastService.showToast('Open', 'Executed...');
+        callback(true);
+        return;
+      } else if (output && output.decoded && output.decoded['revertReason']) {
+        this.toastService.showToast('Open', `Error: ${output.vmError} \n ${output.decoded['revertReason']}`, 'warning');
+      }
+      callback(false);
     });
   }
 
@@ -170,8 +177,14 @@ export class SyncService {
     const nameMethod = this.acc.method(this.proposalFeeABI);
     nameMethod.call().then(output => {
       console.log(output);
-      this.toastService.showToast('Proposal Fee', 'Executed...');
-      callback(output && output.decoded && Array.isArray(output.decoded) && output.decoded[0] > 0);
+      if (output && output.decoded && output.decoded[0] && parseInt(output.decoded[0], 10) > 0) {
+        this.toastService.showToast('Proposal Fee', 'Executed...');
+        callback(true, parseInt(output.decoded[0], 10));
+        return;
+      } else if (output && output.decoded && output.decoded['revertReason']) {
+        this.toastService.showToast('Proposal Fee', `Error: ${output.vmError} \n ${output.decoded['revertReason']}`, 'warning');
+      }
+      callback(false, parseInt(output.decoded[0], 10));
     });
   }
 
@@ -179,7 +192,12 @@ export class SyncService {
     const nameMethod = this.acc.method(this.openABI);
     nameMethod.call(openBody.trusteeNominees, openBody.actionTypes, openBody.amount).then(output => {
       console.log(output);
-      this.toastService.showToast('Open', 'Executed...');
+
+      if (output && output.decoded && output.decoded['revertReason']) {
+        this.toastService.showToast('Open', `Error: ${output.vmError} \n ${output.decoded['revertReason']}`, 'warning');
+      } else {
+        this.toastService.showToast('Open', 'Executed...');
+      }
     });
   }
 
@@ -187,7 +205,11 @@ export class SyncService {
     const nameMethod = this.acc.method(this.claimBallotABI);
     nameMethod.call(amount).then(output => {
       console.log(output);
-      this.toastService.showToast('Claim Ballot', 'Executed...');
+      if (output && output.decoded && output.decoded['revertReason']) {
+        this.toastService.showToast('Claim Ballot', `Error: ${output.vmError} \n ${output.decoded['revertReason']}`, 'warning');
+      } else {
+        this.toastService.showToast('Claim Ballot', 'Executed...');
+      }
     });
   }
 
@@ -195,7 +217,11 @@ export class SyncService {
     const nameMethod = this.acc.method(this.voteABI);
     nameMethod.call(nominateeIndex, yayOrNay, actionType).then(output => {
       console.log(output);
-      this.toastService.showToast('Vote', 'Executed...');
+      if (output && output.decoded && output.decoded['revertReason']) {
+        this.toastService.showToast('Vote', `Error: ${output.vmError} \n ${output.decoded['revertReason']}`, 'warning');
+      } else {
+        this.toastService.showToast('Vote', 'Executed...');
+      }
     });
   }
 
@@ -205,12 +231,14 @@ export class SyncService {
 
   proposeSubmit(ballotModel) {
     const openBody = new ConnexOpenBody();
-    openBody.amount = 1000;
+    openBody.amount = ballotModel.amount;
     ballotModel.listOfQuestion.forEach(x => {
+      // q2 should be always unique
+      if (x.q2 === '2') { x.q2 = new Date().getTime(); }
       openBody.trusteeNominees.push(x.q1);
       openBody.actionTypes.push(x.q2);
     });
+    console.log(openBody);
     this.doOpen(openBody);
-    console.log(ballotModel);
   }
 }

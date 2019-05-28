@@ -9,6 +9,7 @@ export class ToastComponent implements OnInit {
   $el: any;
   body: any;
   title: any;
+  type: any;
   constructor(el: ElementRef, private toastService: ToastService) {
     this.$el = el.nativeElement;
   }
@@ -17,8 +18,9 @@ export class ToastComponent implements OnInit {
     this.toastService.getToastObserver().subscribe((data: any) => {
       this.title = data.title;
       this.body = data.body;
+      this.type = data.type ? data.type : '';
       this.$el.classList.add('showing');
-      setTimeout(() => this.$el.classList.remove('showing'), 4000);
+      setTimeout(() => this.$el.classList.remove('showing'), this.type === 'warning' ? 10000 : 4000);
     });
   }
 

@@ -1,7 +1,7 @@
 <div class="toast-header">
-  <strong class="mr-auto text-primary">{{title}}</strong>
+  <strong class="mr-auto text-primary" [class.text-warning]="type === 'warning'">{{title}}</strong>
   <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" (click)="deleteToast()">&times;</button>
 </div>
-<div class="toast-body">
+<div class="toast-body" [class.h6]="type !== 'warning'" [class.h5]="type === 'warning'">
   {{body}}
 </div>

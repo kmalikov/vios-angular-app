@@ -26,9 +26,9 @@
           <div class="col-md-7">
             <div class="d-flex flex-column">
               <div class="form-check abc-radio abc-radio-danger" *ngFor="let question of questions; let index = index">
-                <input class="form-check-input" id="radio{{index}}"
+                <input class="form-check-input" id="radio-{{index}}"
                        required [(ngModel)]="voteModel.questionNumber" name="radio" type="radio" value="{{index}}">
-                <label class="form-check-label" [for]="'radio' + index">
+                <label class="form-check-label" [for]="'radio-' + index">
                   {{question}}
                 </label>
               </div>

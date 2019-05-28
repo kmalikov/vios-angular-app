@@ -34,6 +34,8 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   };
 
   viosBalance: number;
+  proposalFee: number;
+  proposals: number;
 
   isPollOpen;
   isInitialized;
@@ -51,13 +53,7 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (!window.connex) {
-      location.href = 'https://env.vechain.org/r/#' + encodeURIComponent(location.href);
-    } else {
-      this.syncService.initConnex();
-      this.syncService.checkIfProposals((res) => this.isPollOpen = res);
-      this.syncService.checkProposalFee((res) => this.isInitialized = res);
-    }
+    this.connexInitialization();
   }
 
   async initApp() {
@@ -225,6 +221,22 @@ export class WalletsModalComponent implements OnInit, AfterViewInit {
 
   proposeSubmit(ballotModel) {
     this.syncService.proposeSubmit(ballotModel);
+  }
+
+  connexInitialization() {
+    if (!window.connex) {
+      location.href = 'https://env.vechain.org/r/#' + encodeURIComponent(location.href);
+    } else {
+      this.syncService.initConnex();
+      this.syncService.checkIfProposals(
+        (isPollOpen, proposals) => { this.isPollOpen = isPollOpen; this.proposals = proposals; });
+      this.syncService.checkProposalFee(
+        (isInitialized, proposalFee) => { this.isInitialized = isInitialized; this.proposalFee = proposalFee; });
+    }
+
+    if (this.isPollOpen && !this.isInitialized) {
+
+    }
   }
 
   closeModal() {

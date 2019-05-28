@@ -11,7 +11,7 @@ export class ToastService {
     return this.toastObserver.asObservable();
   }
 
-  showToast(title: string, body: string) {
-    this.toastObserver.next({title: title, body: body});
+  showToast(title: string, body: string, type?: string) {
+    this.toastObserver.next({title: title, body: body, type: type});
   }
 }

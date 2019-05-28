@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {SyncService} from '../sync-service/sync.service';
 
 @Component({
@@ -8,14 +8,16 @@ import {SyncService} from '../sync-service/sync.service';
 })
 export class BallotProposeComponent implements OnInit {
   @Output() proposeSubmit = new EventEmitter();
+  @Input() proposalFee: number;
+
   @ViewChild('amountInput') amountInput: any;
   @ViewChild('q1Input') q1Input: any;
 
   ballotModel = {
     question: '',
+    amount: '',
     listOfQuestion: [],
   };
-
   questionBody;
 
   constructor(private syncSerice: SyncService) { }
