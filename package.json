@@ -94,7 +94,7 @@
     "unsafe-perm": true
   },
   "devDependencies": {
-    "@angular/cli": "1.7.4",
+    "@angular/cli": "15.0.0",
     "@angular/compiler-cli": "5.2.11",
     "@angular/language-service": "5.2.11",
     "@types/hammerjs": "2.0.36",
